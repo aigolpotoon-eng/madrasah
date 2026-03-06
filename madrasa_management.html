@@ -968,6 +968,17 @@
     <div class="lock-logo">🔐</div>
     <div class="lock-title">হিফজুল কুরআন রশিদিয়া মাদ্রাসা</div>
     <div class="lock-subtitle">অ্যাপে প্রবেশ করতে পাসওয়ার্ড দিন</div>
+    <!-- Role selection -->
+    <div style="display:flex;gap:10px;margin-bottom:14px;justify-content:center;">
+      <button id="role-btn-admin" onclick="selectRole('admin')"
+        style="flex:1;padding:10px;border:2px solid #1a6b4a;border-radius:10px;background:#1a6b4a;color:white;font-family:var(--bn-font);font-size:13px;font-weight:700;cursor:pointer;">
+        👑 অ্যাডমিন
+      </button>
+      <button id="role-btn-operator" onclick="selectRole('operator')"
+        style="flex:1;padding:10px;border:2px solid #1a6b4a;border-radius:10px;background:white;color:#1a6b4a;font-family:var(--bn-font);font-size:13px;font-weight:700;cursor:pointer;">
+        👤 অপারেটর
+      </button>
+    </div>
     <input type="password" id="lock-input" class="lock-input" placeholder="••••••" maxlength="20"
       onkeydown="if(event.key==='Enter') checkPassword()">
     <button class="lock-btn" onclick="checkPassword()">🔓 প্রবেশ করুন</button>
@@ -3442,20 +3453,51 @@ window.addEventListener('appinstalled', function() {
   if (btn) btn.style.display = 'none';
 });
 
-// ===== PASSWORD SYSTEM =====
-var DEFAULT_PASS = 'madrasa123';
+// ===== ROLE-BASED PASSWORD SYSTEM =====
+var DEFAULT_ADMIN_PASS    = 'madrasa123';
+var DEFAULT_OPERATOR_PASS = 'operator123';
+var currentRole = 'admin'; // default selected role
 
-function getSavedPassword() {
-  return localStorage.getItem('madrasa_password') || DEFAULT_PASS;
+function selectRole(role) {
+  currentRole = role;
+  var adminBtn    = document.getElementById('role-btn-admin');
+  var operatorBtn = document.getElementById('role-btn-operator');
+  if (role === 'admin') {
+    adminBtn.style.background    = '#1a6b4a';
+    adminBtn.style.color         = 'white';
+    operatorBtn.style.background = 'white';
+    operatorBtn.style.color      = '#1a6b4a';
+  } else {
+    operatorBtn.style.background = '#1a6b4a';
+    operatorBtn.style.color      = 'white';
+    adminBtn.style.background    = 'white';
+    adminBtn.style.color         = '#1a6b4a';
+  }
+  document.getElementById('lock-input').value = '';
+  document.getElementById('lock-input').focus();
 }
+
+function getAdminPass()    { return localStorage.getItem('madrasa_admin_pass')    || DEFAULT_ADMIN_PASS; }
+function getOperatorPass() { return localStorage.getItem('madrasa_operator_pass') || DEFAULT_OPERATOR_PASS; }
 
 function checkPassword() {
   var input = document.getElementById('lock-input').value;
   var errEl = document.getElementById('lock-error');
-  if (input === getSavedPassword()) {
+  var valid = false;
+
+  if (currentRole === 'admin' && input === getAdminPass()) {
+    valid = true;
+    window.userRole = 'admin';
+  } else if (currentRole === 'operator' && input === getOperatorPass()) {
+    valid = true;
+    window.userRole = 'operator';
+  }
+
+  if (valid) {
     document.getElementById('lock-screen').classList.add('hidden');
     document.getElementById('lock-input').value = '';
     errEl.textContent = '';
+    applyRolePermissions();
   } else {
     errEl.textContent = '❌ পাসওয়ার্ড ভুল হয়েছে!';
     var inp = document.getElementById('lock-input');
@@ -3465,26 +3507,50 @@ function checkPassword() {
   }
 }
 
+function applyRolePermissions() {
+  // অপারেটর হলে সব মুছুন বাটন hide করো
+  if (window.userRole === 'operator') {
+    // CSS দিয়ে সব delete বাটন লুকাও
+    var style = document.getElementById('operator-style');
+    if (!style) {
+      style = document.createElement('style');
+      style.id = 'operator-style';
+      style.textContent = '[data-act="sdel"],[data-act="tdel"],[data-act="idel-inc"],[data-act="edel"] { display:none !important; }';
+      document.head.appendChild(style);
+    }
+    showToast('👤 অপারেটর হিসেবে login হয়েছে');
+  } else {
+    // Admin - সব দেখাবে
+    var style = document.getElementById('operator-style');
+    if (style) style.remove();
+    showToast('👑 অ্যাডমিন হিসেবে login হয়েছে');
+  }
+}
+
+function getSavedPassword() { return getAdminPass(); } // backward compat
+
 function changePassword() {
-  var current  = document.getElementById('cp-current').value;
+  var current = document.getElementById('cp-current').value;
   var newPass  = document.getElementById('cp-new').value;
   var confirm  = document.getElementById('cp-confirm').value;
 
-  if (current !== getSavedPassword()) {
-    showToast('বর্তমান পাসওয়ার্ড ভুল!'); return;
-  }
-  if (newPass.length < 4) {
-    showToast('নতুন পাসওয়ার্ড কমপক্ষে ৪ অক্ষর হতে হবে!'); return;
-  }
-  if (newPass !== confirm) {
-    showToast('নতুন পাসওয়ার্ড মিলছে না!'); return;
-  }
-  localStorage.setItem('madrasa_password', newPass);
+  // Check which role's password matches
+  var matchRole = null;
+  if (current === getAdminPass())    matchRole = 'admin';
+  if (current === getOperatorPass()) matchRole = 'operator';
+
+  if (!matchRole) { showToast('বর্তমান পাসওয়ার্ড ভুল!'); return; }
+  if (newPass.length < 4) { showToast('নতুন পাসওয়ার্ড কমপক্ষে ৪ অক্ষর হতে হবে!'); return; }
+  if (newPass !== confirm) { showToast('নতুন পাসওয়ার্ড মিলছে না!'); return; }
+
+  if (matchRole === 'admin')    localStorage.setItem('madrasa_admin_pass', newPass);
+  if (matchRole === 'operator') localStorage.setItem('madrasa_operator_pass', newPass);
+
   document.getElementById('cp-current').value = '';
   document.getElementById('cp-new').value = '';
   document.getElementById('cp-confirm').value = '';
   document.getElementById('change-pass-modal').classList.remove('open');
-  showToast('✅ পাসওয়ার্ড পরিবর্তন সফল!');
+  showToast('✅ ' + (matchRole==='admin'?'অ্যাডমিন':'অপারেটর') + ' পাসওয়ার্ড পরিবর্তন সফল!');
 }
 
 // Close change-pass modal on overlay click
