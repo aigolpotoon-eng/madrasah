@@ -1796,6 +1796,11 @@ document.addEventListener('click', function(e) {
   } else if (act === 'scopy') {
     var s = DB.students[idx];
     if (s) copyText(s.id);
+  } else if (act === 'sdel') {
+    var s = DB.students[idx];
+    if (s && confirm('⚠️ "' + s.name + '" কে মুছে ফেলবেন?')) {
+      DB.students.splice(idx, 1); saveDB(); renderStudentTable(); updateStats(); showToast('✅ ছাত্র মুছে ফেলা হয়েছে');
+    }
   } else if (act === 'ireceipt') {
     printCompactReceipt(DB.income[idx], 'income');
   } else if (act === 'idel-inc') {
@@ -2267,7 +2272,8 @@ function renderStudentTable() {
       + '<td style="white-space:nowrap">'
       + '<button class="btn-print-id" data-act="sid" data-idx="' + i + '">আইডি</button> '
       + '<button class="btn-print-id" style="background:#b8860b" data-act="scopy" data-idx="' + i + '">কপি</button> '
-      + '<button class="btn-print-id" style="background:#1a3a5c" data-act="sform" data-idx="' + i + '">ফরম</button>'
+      + '<button class="btn-print-id" style="background:#1a3a5c" data-act="sform" data-idx="' + i + '">ফরম</button> '
+      + '<button class="btn-print-id" style="background:#c0392b" data-act="sdel" data-idx="' + i + '">মুছুন</button>'
       + '</td></tr>';
   }
   tbody.innerHTML = html;
