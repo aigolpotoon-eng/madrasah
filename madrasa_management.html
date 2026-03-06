@@ -1,0 +1,3582 @@
+<!DOCTYPE html>
+<html lang="bn">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="apple-mobile-web-app-title" content="মাদ্রাসা">
+<meta name="theme-color" content="#0d2137">
+<link rel="manifest" id="manifest-placeholder">
+<title>হিফজুল কুরআন রশিদিয়া হোসাইনিয়া নূরাণী মাদ্রাসা</title>
+<link href="https://fonts.googleapis.com/css2?family=Noto+Serif+Bengali:wght@400;600;700&family=Noto+Sans+Bengali:wght@300;400;500;600&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Hind+Siliguri:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+
+<!-- Firebase SDK -->
+<script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore-compat.js"></script>
+<script>
+  const firebaseConfig = {
+    apiKey: "AIzaSyB1wRtO5Cjx2l_IgnX9OJ5Xb64fTqeU",
+    authDomain: "madrasah-management-4d137.firebaseapp.com",
+    projectId: "madrasah-management-4d137",
+    storageBucket: "madrasah-management-4d137.firebasestorage.app",
+    messagingSenderId: "330811743699",
+    appId: "1:330811743699:web:18205039fdad2cfbaa"
+  };
+  firebase.initializeApp(firebaseConfig);
+  const db = firebase.firestore();
+</script>
+<style>
+  @font-face {
+    font-family: 'SutonnyMJ';
+    src: url('https://cdn.jsdelivr.net/gh/bangladesh-font/sutonnymj@main/SutonnyMJ.woff2') format('woff2'),
+         url('https://cdn.jsdelivr.net/gh/bangladesh-font/sutonnymj@main/SutonnyMJ.woff') format('woff');
+    font-weight: normal;
+    font-style: normal;
+  }
+  :root {
+    --green-dark: #0a3d2e;
+    --green-mid: #1a6b4a;
+    --green-light: #2d9e6e;
+    --gold: #c9a84c;
+    --gold-light: #e8c97a;
+    --cream: #fdf8ef;
+    --cream-dark: #f5edda;
+    --white: #ffffff;
+    --text-dark: #1a1a1a;
+    --text-mid: #3a3a3a;
+    --shadow: 0 4px 24px rgba(10,61,46,0.13);
+    --shadow-lg: 0 8px 40px rgba(10,61,46,0.18);
+    --bn-font: 'Hind Siliguri', 'Noto Sans Bengali', sans-serif;
+    --bn-serif: 'Hind Siliguri', 'Noto Serif Bengali', serif;
+  }
+
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+
+  body {
+    font-family: var(--bn-font);
+    background: var(--cream);
+    color: var(--text-dark);
+    min-height: 100vh;
+    background-image:
+      radial-gradient(ellipse at 20% 20%, rgba(45,158,110,0.08) 0%, transparent 60%),
+      radial-gradient(ellipse at 80% 80%, rgba(201,168,76,0.07) 0%, transparent 60%);
+  }
+
+  /* ===== HEADER ===== */
+  .header {
+    background: linear-gradient(160deg, #0d2137 0%, #1a3a5c 30%, #1a6b4a 65%, #c9a84c 100%);
+    padding: 0;
+    position: relative;
+    overflow: hidden;
+    box-shadow: var(--shadow-lg);
+  }
+
+  .header::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background:
+      radial-gradient(ellipse at 20% 50%, rgba(201,168,76,0.18) 0%, transparent 55%),
+      radial-gradient(ellipse at 80% 50%, rgba(26,107,74,0.25) 0%, transparent 55%);
+    pointer-events: none;
+  }
+
+  .header::after {
+    content: '';
+    position: absolute;
+    top: -60px; left: -60px; right: -60px; bottom: -60px;
+    background-image: url("data:image/svg+xml,%3Csvg width='80' height='80' viewBox='0 0 80 80' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='none' fill-rule='evenodd'%3E%3Cg fill='%23ffffff' fill-opacity='0.03'%3E%3Cpath d='M40 40 L20 20 L40 0 L60 20 Z'/%3E%3Cpath d='M40 40 L60 60 L40 80 L20 60 Z'/%3E%3C/g%3E%3C/g%3E%3C/svg%3E");
+    pointer-events: none;
+  }
+
+  .header-top-band {
+    background: var(--gold);
+    height: 5px;
+    width: 100%;
+  }
+
+  .header-content {
+    padding: 28px 24px 24px;
+    text-align: center;
+    position: relative;
+    z-index: 1;
+  }
+
+  .arabic-bismillah {
+    font-size: 22px;
+    color: var(--gold-light);
+    letter-spacing: 4px;
+    margin-bottom: 10px;
+    opacity: 0.9;
+    font-family: var(--bn-serif);
+  }
+
+  .madrasa-name {
+    font-family: var(--bn-serif);
+    font-size: clamp(18px, 4vw, 28px);
+    font-weight: 700;
+    color: var(--white);
+    line-height: 1.5;
+    text-shadow: 0 2px 8px rgba(0,0,0,0.25);
+    margin-bottom: 10px;
+  }
+
+  .gold-divider {
+    width: 120px;
+    height: 2px;
+    background: linear-gradient(90deg, transparent, var(--gold), transparent);
+    margin: 12px auto;
+  }
+
+  .header-address {
+    font-size: 14px;
+    color: rgba(255,255,255,0.85);
+    line-height: 1.8;
+    font-weight: 300;
+  }
+
+  .header-phone {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    margin-top: 10px;
+    background: rgba(255,255,255,0.18);
+    border: 1.5px solid rgba(232,201,122,0.7);
+    border-radius: 24px;
+    padding: 7px 22px;
+    font-size: 15px;
+    color: #ffffff;
+    font-weight: 700;
+    letter-spacing: 0.5px;
+    text-shadow: 0 1px 4px rgba(0,0,0,0.4);
+    box-shadow: 0 2px 10px rgba(0,0,0,0.2);
+  }
+
+  .header-bottom-band {
+    height: 4px;
+    background: linear-gradient(90deg, var(--gold-light), var(--gold), var(--gold-light));
+  }
+
+  /* ===== NAV ===== */
+  .nav-bar {
+    background: var(--white);
+    border-bottom: 2px solid var(--cream-dark);
+    padding: 10px 16px;
+    display: flex;
+    gap: 6px;
+    overflow-x: auto;
+    scrollbar-width: none;
+    box-shadow: 0 2px 10px rgba(10,61,46,0.06);
+    position: sticky;
+    top: 0;
+    z-index: 100;
+  }
+
+  .nav-bar::-webkit-scrollbar { display: none; }
+
+  .nav-btn {
+    flex-shrink: 0;
+    padding: 7px 14px;
+    border-radius: 20px;
+    border: 1.5px solid var(--green-mid);
+    background: transparent;
+    color: var(--green-mid);
+    font-family: var(--bn-font);
+    font-size: 13px;
+    font-weight: 500;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    white-space: nowrap;
+  }
+
+  .nav-btn:hover, .nav-btn.active {
+    background: var(--green-mid);
+    color: var(--white);
+    box-shadow: 0 2px 10px rgba(26,107,74,0.3);
+  }
+
+  /* ===== MAIN ===== */
+  .main {
+    max-width: 900px;
+    margin: 0 auto;
+    padding: 24px 16px 60px;
+  }
+
+  /* ===== HOME GRID ===== */
+  .home-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+    gap: 16px;
+    margin-top: 8px;
+    animation: fadeUp 0.5s ease both;
+  }
+
+  @keyframes fadeUp {
+    from { opacity: 0; transform: translateY(20px); }
+    to { opacity: 1; transform: translateY(0); }
+  }
+
+  .menu-card {
+    background: var(--white);
+    border-radius: 16px;
+    padding: 24px 16px;
+    text-align: center;
+    cursor: pointer;
+    border: 1.5px solid var(--cream-dark);
+    box-shadow: var(--shadow);
+    transition: all 0.25s ease;
+    position: relative;
+    overflow: hidden;
+  }
+
+  .menu-card::before {
+    content: '';
+    position: absolute;
+    top: 0; left: 0; right: 0;
+    height: 4px;
+    background: linear-gradient(90deg, var(--green-mid), var(--gold));
+    transform: scaleX(0);
+    transition: transform 0.3s ease;
+  }
+
+  .menu-card:hover {
+    transform: translateY(-4px);
+    box-shadow: var(--shadow-lg);
+    border-color: var(--green-light);
+  }
+
+  .menu-card:hover::before { transform: scaleX(1); }
+
+  .menu-icon {
+    width: 48px;
+    height: 48px;
+    margin: 0 auto 10px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+
+  .menu-icon svg {
+    width: 100%;
+    height: 100%;
+  }
+
+  .menu-label {
+    font-family: var(--bn-serif);
+    font-size: 14px;
+    font-weight: 600;
+    color: var(--green-dark);
+    line-height: 1.4;
+  }
+
+  /* ===== SECTION ===== */
+  .section {
+    display: none;
+    animation: fadeUp 0.4s ease both;
+  }
+
+  .section.active { display: block; }
+
+  .section-header {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    margin-bottom: 20px;
+    padding-bottom: 14px;
+    border-bottom: 2px solid var(--cream-dark);
+  }
+
+  .section-icon {
+    width: 44px; height: 44px;
+    background: linear-gradient(135deg, var(--green-mid), var(--green-dark));
+    border-radius: 12px;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 22px;
+    box-shadow: 0 3px 10px rgba(26,107,74,0.25);
+  }
+
+  .section-title {
+    font-family: var(--bn-serif);
+    font-size: 20px;
+    font-weight: 700;
+    color: var(--green-dark);
+  }
+
+  /* ===== FORM ===== */
+  .form-card {
+    background: var(--white);
+    border-radius: 16px;
+    padding: 24px;
+    box-shadow: var(--shadow);
+    border: 1px solid var(--cream-dark);
+  }
+
+  .form-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+    gap: 16px;
+  }
+
+  .form-group {
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+  }
+
+  .form-group label {
+    font-size: 13px;
+    font-weight: 600;
+    color: var(--green-dark);
+  }
+
+  .form-group input,
+  .form-group select,
+  .form-group textarea {
+    padding: 10px 14px;
+    border: 1.5px solid #dde8e3;
+    border-radius: 10px;
+    font-family: var(--bn-font);
+    font-size: 14px;
+    color: var(--text-dark);
+    background: #f9fcfa;
+    transition: border-color 0.2s, box-shadow 0.2s;
+    outline: none;
+  }
+
+  .form-group input:focus,
+  .form-group select:focus,
+  .form-group textarea:focus {
+    border-color: var(--green-light);
+    box-shadow: 0 0 0 3px rgba(45,158,110,0.1);
+    background: var(--white);
+  }
+
+  .form-full { grid-column: 1 / -1; }
+
+  .btn-primary {
+    margin-top: 20px;
+    padding: 12px 32px;
+    background: linear-gradient(135deg, var(--green-mid), var(--green-dark));
+    color: var(--white);
+    border: none;
+    border-radius: 10px;
+    font-family: var(--bn-serif);
+    font-size: 15px;
+    font-weight: 600;
+    cursor: pointer;
+    box-shadow: 0 4px 14px rgba(26,107,74,0.35);
+    transition: all 0.2s;
+  }
+
+  .btn-primary:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 6px 20px rgba(26,107,74,0.4);
+  }
+
+  /* ===== TABLE ===== */
+  .table-container {
+    margin-top: 20px;
+    background: var(--white);
+    border-radius: 16px;
+    overflow: hidden;
+    box-shadow: var(--shadow);
+    border: 1px solid var(--cream-dark);
+  }
+
+  .table-title {
+    padding: 14px 20px;
+    background: linear-gradient(90deg, var(--green-dark), var(--green-mid));
+    color: var(--white);
+    font-family: var(--bn-serif);
+    font-size: 15px;
+    font-weight: 600;
+  }
+
+  table {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 13px;
+  }
+
+  thead th {
+    background: #e8f4ed;
+    color: var(--green-dark);
+    font-weight: 600;
+    padding: 11px 14px;
+    text-align: left;
+    border-bottom: 2px solid #c8e4d6;
+  }
+
+  tbody td {
+    padding: 10px 14px;
+    border-bottom: 1px solid #f0f0f0;
+    color: var(--text-mid);
+  }
+
+  tbody tr:hover td { background: #f5fbf7; }
+  tbody tr:last-child td { border-bottom: none; }
+
+  .badge {
+    display: inline-block;
+    padding: 3px 10px;
+    border-radius: 12px;
+    font-size: 12px;
+    font-weight: 600;
+  }
+  .badge-present { background: #d4f1e4; color: #1a6b4a; }
+  .badge-absent  { background: #fde8e8; color: #c0392b; }
+  .badge-income  { background: #d4f1e4; color: #1a6b4a; }
+  .badge-expense { background: #fde8e8; color: #c0392b; }
+
+  /* ===== RESULT TABS ===== */
+  .result-tab {
+    padding: 10px 20px;
+    border: 2px solid var(--green-mid);
+    border-radius: 10px;
+    background: white;
+    color: var(--green-mid);
+    font-family: var(--bn-font);
+    font-size: 14px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.2s;
+  }
+  .result-tab.active, .result-tab:hover {
+    background: var(--green-mid);
+    color: white;
+  }
+  .result-tab-content { }
+
+  /* Grade badge colors */
+  .grade-ap  { background:#1a6b4a;color:white;padding:3px 10px;border-radius:6px;font-weight:700;font-size:12px; }
+  .grade-a   { background:#2980b9;color:white;padding:3px 10px;border-radius:6px;font-weight:700;font-size:12px; }
+  .grade-b   { background:#8e44ad;color:white;padding:3px 10px;border-radius:6px;font-weight:700;font-size:12px; }
+  .grade-c   { background:#e67e22;color:white;padding:3px 10px;border-radius:6px;font-weight:700;font-size:12px; }
+  .grade-d   { background:#c0392b;color:white;padding:3px 10px;border-radius:6px;font-weight:700;font-size:12px; }
+  .grade-f   { background:#7f8c8d;color:white;padding:3px 10px;border-radius:6px;font-weight:700;font-size:12px; }
+
+  /* Result card for personal view */
+  .result-marksheet {
+    background: white;
+    border: 1px solid #e0e8e4;
+    border-radius: 14px;
+    padding: 20px;
+    margin-bottom: 16px;
+    box-shadow: var(--shadow);
+  }
+  .result-marksheet-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 14px;
+    padding-bottom: 10px;
+    border-bottom: 2px solid var(--gold);
+    flex-wrap: wrap;
+    gap: 8px;
+  }
+  .attendance-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(170px, 1fr));
+    gap: 12px;
+    margin-top: 16px;
+  }
+
+  .attendance-card {
+    background: var(--white);
+    border-radius: 12px;
+    padding: 16px;
+    border: 1.5px solid var(--cream-dark);
+    box-shadow: 0 2px 8px rgba(10,61,46,0.07);
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+  }
+
+  .att-name {
+    font-size: 14px;
+    font-weight: 600;
+    color: var(--green-dark);
+  }
+
+  .att-id { font-size: 12px; color: #777; }
+
+  .att-toggle {
+    display: flex;
+    border-radius: 8px;
+    overflow: hidden;
+    border: 1.5px solid #dde8e3;
+  }
+
+  .att-toggle button {
+    flex: 1;
+    padding: 6px;
+    border: none;
+    cursor: pointer;
+    font-family: var(--bn-font);
+    font-size: 12px;
+    font-weight: 600;
+    transition: all 0.15s;
+    background: #f5fbf7;
+    color: #888;
+  }
+
+  .att-toggle button.present-btn.selected { background: #1a6b4a; color: white; }
+  .att-toggle button.absent-btn.selected  { background: #c0392b; color: white; }
+
+  /* ===== FINANCE SUMMARY ===== */
+  .finance-summary {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 14px;
+    margin-bottom: 20px;
+  }
+
+  .fin-card {
+    background: var(--white);
+    border-radius: 14px;
+    padding: 18px 16px;
+    text-align: center;
+    box-shadow: var(--shadow);
+    border: 1px solid var(--cream-dark);
+  }
+
+  .fin-label { font-size: 12px; color: #777; margin-bottom: 6px; }
+  .fin-amount { font-family: var(--bn-serif); font-size: 20px; font-weight: 700; }
+  .fin-amount.income { color: #1a6b4a; }
+  .fin-amount.expense { color: #c0392b; }
+  .fin-amount.balance { color: var(--gold); }
+
+  /* ===== SEARCH ===== */
+  .search-box {
+    background: var(--white);
+    border-radius: 16px;
+    padding: 24px;
+    box-shadow: var(--shadow);
+    margin-bottom: 20px;
+  }
+
+  .search-input-wrap {
+    display: flex;
+    gap: 10px;
+    margin-top: 10px;
+  }
+
+  .search-input-wrap input {
+    flex: 1;
+    padding: 12px 16px;
+    border: 1.5px solid #dde8e3;
+    border-radius: 10px;
+    font-family: var(--bn-font);
+    font-size: 14px;
+    outline: none;
+    transition: border-color 0.2s;
+  }
+
+  .search-input-wrap input:focus { border-color: var(--green-light); }
+
+  .btn-search {
+    padding: 12px 22px;
+    background: var(--gold);
+    color: var(--green-dark);
+    border: none;
+    border-radius: 10px;
+    font-family: var(--bn-serif);
+    font-size: 14px;
+    font-weight: 700;
+    cursor: pointer;
+    transition: all 0.2s;
+  }
+
+  .btn-search:hover { background: var(--gold-light); }
+
+  .search-tabs {
+    display: flex;
+    gap: 8px;
+    margin-bottom: 14px;
+    flex-wrap: wrap;
+  }
+
+  .search-tab {
+    padding: 6px 16px;
+    border-radius: 16px;
+    border: 1.5px solid var(--green-mid);
+    background: transparent;
+    color: var(--green-mid);
+    font-family: var(--bn-font);
+    font-size: 13px;
+    cursor: pointer;
+    transition: all 0.2s;
+  }
+
+  .search-tab.active, .search-tab:hover {
+    background: var(--green-mid);
+    color: white;
+  }
+
+  /* ===== TOAST ===== */
+  .toast {
+    position: fixed;
+    bottom: 24px; left: 50%;
+    transform: translateX(-50%) translateY(80px);
+    background: var(--green-dark);
+    color: white;
+    padding: 12px 28px;
+    border-radius: 24px;
+    font-size: 14px;
+    font-family: var(--bn-font);
+    font-weight: 500;
+    box-shadow: var(--shadow-lg);
+    transition: transform 0.35s cubic-bezier(.34,1.56,.64,1);
+    z-index: 999;
+    border-left: 4px solid var(--gold);
+  }
+
+  .toast.show { transform: translateX(-50%) translateY(0); }
+
+  /* ===== BACK BTN ===== */
+  .back-btn {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    margin-bottom: 16px;
+    padding: 7px 16px;
+    background: transparent;
+    border: 1.5px solid var(--green-mid);
+    border-radius: 20px;
+    color: var(--green-mid);
+    font-family: var(--bn-font);
+    font-size: 13px;
+    cursor: pointer;
+    transition: all 0.2s;
+  }
+  .back-btn:hover { background: var(--green-mid); color: white; }
+
+  /* ===== AUTO ID FIELD ===== */
+  .id-display {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+  }
+  .id-badge {
+    flex: 1;
+    padding: 10px 14px;
+    border: 1.5px solid var(--gold);
+    border-radius: 10px;
+    background: linear-gradient(90deg, #fffbf0, #fdf6e3);
+    font-family: var(--bn-serif);
+    font-size: 15px;
+    font-weight: 700;
+    color: var(--green-dark);
+    letter-spacing: 1px;
+  }
+  .btn-copy {
+    padding: 10px 14px;
+    background: var(--gold);
+    border: none;
+    border-radius: 10px;
+    cursor: pointer;
+    font-size: 16px;
+    transition: all 0.2s;
+    color: var(--green-dark);
+  }
+  .btn-copy:hover { background: var(--gold-light); transform: scale(1.05); }
+
+  /* ===== ID CARD PRINT ===== */
+  .btn-print-id {
+    padding: 6px 12px;
+    background: var(--green-mid);
+    color: white;
+    border: none;
+    border-radius: 8px;
+    font-family: var(--bn-font);
+    font-size: 12px;
+    cursor: pointer;
+    transition: all 0.2s;
+    white-space: nowrap;
+  }
+  .btn-print-id:hover { background: var(--green-dark); }
+
+  @keyframes idPop {
+    0% { transform: scale(0.8); opacity: 0; }
+    70% { transform: scale(1.05); }
+    100% { transform: scale(1); opacity: 1; }
+  }
+  .id-badge { animation: idPop 0.4s ease both; }
+
+  /* ===== PRINT MODAL ===== */
+  .modal-overlay {
+    display: none;
+    position: fixed; inset: 0;
+    background: rgba(0,0,0,0.55);
+    z-index: 500;
+    align-items: center;
+    justify-content: center;
+  }
+  .modal-overlay.open { display: flex; }
+  .modal-box {
+    background: white;
+    border-radius: 20px;
+    padding: 30px;
+    max-width: 380px;
+    width: 90%;
+    box-shadow: 0 20px 60px rgba(0,0,0,0.3);
+    animation: fadeUp 0.3s ease both;
+  }
+  .id-card-preview {
+    border: 2px solid var(--gold);
+    border-radius: 14px;
+    padding: 20px;
+    text-align: center;
+    background: linear-gradient(135deg, #f9fcfa, #fdf8ef);
+    margin-bottom: 20px;
+  }
+  .id-card-preview .card-madrasa { font-family:var(--bn-serif); font-size:13px; font-weight:700; color:var(--green-dark); margin-bottom:4px; }
+  .id-card-preview .card-type { font-size:11px; color:#888; margin-bottom:12px; }
+  .id-card-preview .card-id { font-size:26px; font-weight:800; color:var(--green-mid); font-family:var(--bn-serif); margin-bottom:8px; letter-spacing:2px; }
+  .id-card-preview .card-name { font-size:16px; font-weight:700; color:var(--text-dark); margin-bottom:4px; }
+  .id-card-preview .card-info { font-size:12px; color:#666; }
+  .modal-btns { display:flex; gap:10px; }
+  .modal-btns button { flex:1; padding:11px; border-radius:10px; border:none; cursor:pointer; font-family:var(--bn-serif); font-size:14px; font-weight:600; transition:all 0.2s; }
+  .btn-modal-print { background:linear-gradient(135deg,var(--green-mid),var(--green-dark)); color:white; }
+  .btn-modal-close { background:#f0f0f0; color:#555; }
+
+  /* ===== FORM SECTION TITLE ===== */
+  .form-section-title {
+    font-family: var(--bn-serif);
+    font-size: 14px;
+    font-weight: 700;
+    color: var(--green-dark);
+    padding: 8px 12px;
+    background: linear-gradient(90deg, #e8f4ed, transparent);
+    border-left: 4px solid var(--green-mid);
+    border-radius: 0 8px 8px 0;
+    margin-bottom: 14px;
+  }
+
+  /* ===== NID FRAME ===== */
+  .nid-frame {
+    width: 220px;
+    height: 138px;
+    border: 2px dashed var(--gold);
+    border-radius: 10px;
+    background: linear-gradient(135deg, #fffbf0, #fdf6e3);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    overflow: hidden;
+    position: relative;
+    transition: border-color 0.2s, box-shadow 0.2s;
+  }
+  .nid-frame:hover { border-color: var(--green-mid); box-shadow: 0 0 0 3px rgba(45,158,110,0.1); }
+  .nid-frame img { width:100%; height:100%; object-fit:cover; display:none; }
+  .nid-placeholder { text-align:center; color:#aaa; font-size:12px; padding:10px; }
+  .nid-placeholder span { font-size:26px; display:block; margin-bottom:6px; }
+
+  /* ===== STUDENT TYPE TOGGLE ===== */
+  .student-type-toggle {
+    display: flex;
+    gap: 12px;
+    margin-bottom: 18px;
+    flex-wrap: wrap;
+  }
+  .type-btn {
+    flex: 1;
+    min-width: 150px;
+    padding: 14px 20px;
+    border-radius: 14px;
+    border: 2px solid var(--cream-dark);
+    background: var(--white);
+    color: #888;
+    font-family: var(--bn-serif);
+    font-size: 15px;
+    font-weight: 600;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    transition: all 0.25s ease;
+    box-shadow: var(--shadow);
+  }
+  .type-btn span { font-size: 20px; }
+  .type-btn:hover { border-color: var(--green-light); color: var(--green-mid); }
+  .type-btn.active {
+    border-color: var(--green-mid);
+    background: linear-gradient(135deg, var(--green-mid), var(--green-dark));
+    color: white;
+    box-shadow: 0 4px 16px rgba(26,107,74,0.3);
+  }
+
+  /* ===== PHOTO UPLOAD ===== */
+  .photo-upload-wrap {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 10px;
+  }
+  .photo-frame {
+    width: 113px; /* 4cm at 72dpi approx */
+    height: 142px; /* 5cm */
+    border: 2px dashed var(--gold);
+    border-radius: 10px;
+    background: linear-gradient(135deg, #fffbf0, #fdf6e3);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    overflow: hidden;
+    position: relative;
+    transition: border-color 0.2s, box-shadow 0.2s;
+  }
+  .photo-frame:hover { border-color: var(--green-mid); box-shadow: 0 0 0 3px rgba(45,158,110,0.1); }
+  .photo-frame img { width:100%; height:100%; object-fit:cover; display:none; }
+  .photo-frame .photo-placeholder { text-align:center; color:#aaa; font-size:12px; padding:8px; }
+  .photo-frame .photo-placeholder span { font-size:28px; display:block; margin-bottom:6px; }
+  .photo-size-label { font-size:11px; color:#999; font-weight:500; text-align:center; }
+  .btn-photo-clear { font-size:11px; padding:4px 12px; border-radius:8px; border:1px solid #dde8e3; background:#fff; color:#c0392b; cursor:pointer; display:none; transition:all 0.2s; }
+  .btn-photo-clear:hover { background:#fde8e8; }
+
+  /* ===== PASSWORD LOCK ===== */
+  #lock-screen {
+    position: fixed;
+    inset: 0;
+    background: linear-gradient(135deg, #0d2137 0%, #1a3a5c 40%, #1a6b4a 100%);
+    z-index: 9999;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    padding: 20px;
+  }
+  #lock-screen.hidden { display: none; }
+  .lock-box {
+    background: white;
+    border-radius: 20px;
+    padding: 36px 32px;
+    width: 100%;
+    max-width: 360px;
+    text-align: center;
+    box-shadow: 0 20px 60px rgba(0,0,0,0.4);
+  }
+  .lock-logo {
+    font-size: 48px;
+    margin-bottom: 8px;
+  }
+  .lock-title {
+    font-size: 16px;
+    font-weight: 700;
+    color: #0a3d2e;
+    margin-bottom: 4px;
+    font-family: var(--bn-font);
+  }
+  .lock-subtitle {
+    font-size: 12px;
+    color: #aaa;
+    margin-bottom: 24px;
+    font-family: var(--bn-font);
+  }
+  .lock-input {
+    width: 100%;
+    padding: 14px 16px;
+    border: 2px solid #e0e0e0;
+    border-radius: 12px;
+    font-size: 20px;
+    text-align: center;
+    letter-spacing: 6px;
+    font-family: monospace;
+    outline: none;
+    transition: border 0.2s;
+    box-sizing: border-box;
+  }
+  .lock-input:focus { border-color: #1a6b4a; }
+  .lock-input.error { border-color: #c0392b; animation: shake 0.3s; }
+  @keyframes shake {
+    0%,100%{transform:translateX(0)} 25%{transform:translateX(-8px)} 75%{transform:translateX(8px)}
+  }
+  .lock-btn {
+    width: 100%;
+    padding: 14px;
+    background: linear-gradient(135deg, #0a3d2e, #1a6b4a);
+    color: white;
+    border: none;
+    border-radius: 12px;
+    font-size: 16px;
+    font-weight: 700;
+    font-family: var(--bn-font);
+    cursor: pointer;
+    margin-top: 14px;
+    transition: opacity 0.2s;
+  }
+  .lock-btn:hover { opacity: 0.9; }
+  .lock-error { color: #c0392b; font-size: 13px; margin-top: 10px; font-family: var(--bn-font); min-height: 20px; }
+
+  /* Change password modal */
+  #change-pass-modal {
+    position: fixed;
+    inset: 0;
+    background: rgba(0,0,0,0.5);
+    z-index: 8888;
+    display: none;
+    align-items: center;
+    justify-content: center;
+    padding: 20px;
+  }
+  #change-pass-modal.open { display: flex; }
+  .change-pass-box {
+    background: white;
+    border-radius: 16px;
+    padding: 28px 24px;
+    width: 100%;
+    max-width: 340px;
+    box-shadow: 0 10px 40px rgba(0,0,0,0.3);
+  }
+  .change-pass-box h3 {
+    font-family: var(--bn-font);
+    color: #0a3d2e;
+    margin-bottom: 18px;
+    font-size: 16px;
+    text-align: center;
+  }
+  .cp-input {
+    width: 100%;
+    padding: 11px 14px;
+    border: 1.5px solid #ddd;
+    border-radius: 10px;
+    font-size: 15px;
+    font-family: var(--bn-font);
+    margin-bottom: 12px;
+    box-sizing: border-box;
+    outline: none;
+    transition: border 0.2s;
+  }
+  .cp-input:focus { border-color: #1a6b4a; }
+  .cp-label { font-size: 12px; color: #888; display: block; margin-bottom: 5px; font-family: var(--bn-font); }
+
+</style>
+</head>
+<body>
+
+<!-- LOCK SCREEN -->
+<div id="lock-screen">
+  <div class="lock-box">
+    <div class="lock-logo">🔐</div>
+    <div class="lock-title">হিফজুল কুরআন রশিদিয়া মাদ্রাসা</div>
+    <div class="lock-subtitle">অ্যাপে প্রবেশ করতে পাসওয়ার্ড দিন</div>
+    <input type="password" id="lock-input" class="lock-input" placeholder="••••••" maxlength="20"
+      onkeydown="if(event.key==='Enter') checkPassword()">
+    <button class="lock-btn" onclick="checkPassword()">🔓 প্রবেশ করুন</button>
+    <div class="lock-error" id="lock-error"></div>
+  </div>
+</div>
+
+<!-- CHANGE PASSWORD MODAL -->
+<div id="change-pass-modal">
+  <div class="change-pass-box">
+    <h3>🔑 পাসওয়ার্ড পরিবর্তন</h3>
+    <label class="cp-label">বর্তমান পাসওয়ার্ড</label>
+    <input type="password" id="cp-current" class="cp-input" placeholder="বর্তমান পাসওয়ার্ড">
+    <label class="cp-label">নতুন পাসওয়ার্ড</label>
+    <input type="password" id="cp-new" class="cp-input" placeholder="নতুন পাসওয়ার্ড (কমপক্ষে ৪ অক্ষর)">
+    <label class="cp-label">নতুন পাসওয়ার্ড নিশ্চিত করুন</label>
+    <input type="password" id="cp-confirm" class="cp-input" placeholder="আবার লিখুন">
+    <div style="display:flex;gap:10px;margin-top:6px;">
+      <button onclick="changePassword()" style="flex:1;padding:12px;background:linear-gradient(135deg,#0a3d2e,#1a6b4a);color:white;border:none;border-radius:10px;font-family:var(--bn-font);font-size:14px;font-weight:700;cursor:pointer;">সংরক্ষণ করুন</button>
+      <button onclick="document.getElementById('change-pass-modal').classList.remove('open')" style="flex:1;padding:12px;background:#f0f0f0;color:#555;border:none;border-radius:10px;font-family:var(--bn-font);font-size:14px;cursor:pointer;">বাতিল</button>
+    </div>
+  </div>
+</div>
+
+<!-- HEADER -->
+<div class="header">
+  <div class="header-top-band"></div>
+  <div class="header-content">
+    <div class="arabic-bismillah">بِسْمِ اللَّهِ الرَّحْمَنِ الرَّحِيم</div>
+    <div class="madrasa-name">হিফজুল কুরআন রশিদিয়া হোসাইনিয়া<br>নূরাণী মাদ্রাসা</div>
+    <div class="gold-divider"></div>
+    <div class="header-address">কালুশাহ্ সড়ক, সৈয়দ রশিদিয়া মঞ্জিল, বরিশাল।</div>
+    <div class="header-phone">
+      <svg width="16" height="16" viewBox="0 0 24 24" fill="white" style="vertical-align:middle;flex-shrink:0"><path d="M6.62 10.79c1.44 2.83 3.76 5.14 6.59 6.59l2.2-2.2c.27-.27.67-.36 1.02-.24 1.12.37 2.33.57 3.57.57.55 0 1 .45 1 1V20c0 .55-.45 1-1 1-9.39 0-17-7.61-17-17 0-.55.45-1 1-1h3.5c.55 0 1 .45 1 1 0 1.25.2 2.45.57 3.57.11.35.03.74-.25 1.02l-2.2 2.2z"/></svg>
+      ০১৭১১৩৪০২০৫ &nbsp;|&nbsp; ০১৭৭৭২১১৪২২
+    </div>
+    <div style="margin-top:10px;display:flex;gap:8px;justify-content:center;flex-wrap:wrap;align-items:center;">
+      <span id="sync-status" style="font-size:12px;color:rgba(255,255,255,0.9);min-width:160px;text-align:center;"></span>
+    </div>
+  </div>
+  <div class="header-bottom-band"></div>
+
+</div>
+
+<!-- NAV -->
+<nav class="nav-bar">
+  <button class="nav-btn active" onclick="showSection('home')">
+    <svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor" style="vertical-align:middle;margin-right:4px"><path d="M10 20v-6h4v6h5v-8h3L12 3 2 12h3v8z"/></svg>হোম
+  </button>
+  <button class="nav-btn" onclick="showSection('teacher-reg')">
+    <svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor" style="vertical-align:middle;margin-right:4px"><path d="M12 12c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm0 2c-2.67 0-8 1.34-8 4v2h16v-2c0-2.66-5.33-4-8-4z"/></svg>শিক্ষক নিবন্ধন
+  </button>
+  <button class="nav-btn" onclick="showSection('student-reg')">
+    <svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor" style="vertical-align:middle;margin-right:4px"><path d="M5 13.18v4L12 21l7-3.82v-4L12 17l-7-3.82zM12 3L1 9l11 6 9-4.91V17h2V9L12 3z"/></svg>ছাত্র নিবন্ধন
+  </button>
+  <button class="nav-btn" onclick="showSection('teacher-att')">
+    <svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor" style="vertical-align:middle;margin-right:4px"><path d="M9 16.17L4.83 12l-1.42 1.41L9 19 21 7l-1.41-1.41z"/></svg>শিক্ষক হাজিরা
+  </button>
+  <button class="nav-btn" onclick="showSection('student-att')">
+    <svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor" style="vertical-align:middle;margin-right:4px"><path d="M19 3H5c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2zm-7 3c1.93 0 3.5 1.57 3.5 3.5S13.93 13 12 13s-3.5-1.57-3.5-3.5S10.07 6 12 6zm7 13H5v-.23c0-.62.28-1.2.76-1.58C7.47 15.82 9.64 15 12 15s4.53.82 6.24 2.19c.48.38.76.97.76 1.58V19z"/></svg>ছাত্র হাজিরা
+  </button>
+  <button class="nav-btn" onclick="showSection('income')">
+    <svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor" style="vertical-align:middle;margin-right:4px"><path d="M11.8 10.9c-2.27-.59-3-1.2-3-2.15 0-1.09 1.01-1.85 2.7-1.85 1.78 0 2.44.85 2.5 2.1h2.21c-.07-1.72-1.12-3.3-3.21-3.81V3h-3v2.16c-1.94.42-3.5 1.68-3.5 3.61 0 2.31 1.91 3.46 4.7 4.13 2.5.6 3 1.48 3 2.41 0 .69-.49 1.79-2.7 1.79-2.06 0-2.87-.92-2.98-2.1h-2.2c.12 2.19 1.76 3.42 3.68 3.83V21h3v-2.15c1.95-.37 3.5-1.5 3.5-3.55 0-2.84-2.43-3.81-4.7-4.4z"/></svg>আয় এন্ট্রি
+  </button>
+  <button class="nav-btn" onclick="showSection('expense')">
+    <svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor" style="vertical-align:middle;margin-right:4px"><path d="M20 4H4c-1.11 0-2 .89-2 2v12c0 1.11.89 2 2 2h16c1.11 0 2-.89 2-2V6c0-1.11-.89-2-2-2zm0 14H4v-6h16v6zm0-10H4V6h16v2z"/></svg>ব্যয় এন্ট্রি
+  </button>
+  <button class="nav-btn" onclick="showSection('search')">
+    <svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor" style="vertical-align:middle;margin-right:4px"><path d="M15.5 14h-.79l-.28-.27C15.41 12.59 16 11.11 16 9.5 16 5.91 13.09 3 9.5 3S3 5.91 3 9.5 5.91 16 9.5 16c1.61 0 3.09-.59 4.23-1.57l.27.28v.79l5 4.99L20.49 19l-4.99-5zm-6 0C7.01 14 5 11.99 5 9.5S7.01 5 9.5 5 14 7.01 14 9.5 11.99 14 9.5 14z"/></svg>সার্চ
+  </button>
+  <button class="nav-btn" onclick="showSection('result')">
+    <svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor" style="vertical-align:middle;margin-right:4px"><path d="M19 3H5c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2zm-7 14l-5-5 1.41-1.41L12 14.17l7.59-7.59L21 8l-9 9z"/></svg>ফলাফল
+  </button>
+  <button class="nav-btn" onclick="document.getElementById('change-pass-modal').classList.add('open')" style="color:#c9a84c;border-color:#c9a84c;">
+    <svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor" style="vertical-align:middle;margin-right:4px"><path d="M18 8h-1V6c0-2.76-2.24-5-5-5S7 3.24 7 6v2H6c-1.1 0-2 .9-2 2v10c0 1.1.9 2 2 2h12c1.1 0 2-.9 2-2V10c0-1.1-.9-2-2-2zm-6 9c-1.1 0-2-.9-2-2s.9-2 2-2 2 .9 2 2-.9 2-2 2zm3.1-9H8.9V6c0-1.71 1.39-3.1 3.1-3.1 1.71 0 3.1 1.39 3.1 3.1v2z"/></svg>পাসওয়ার্ড
+  </button>
+</nav>
+
+<!-- MAIN -->
+<div class="main">
+
+  <!-- HOME -->
+  <div id="home" class="section active">
+    <div class="home-grid">
+      <div class="menu-card" onclick="showSection('teacher-reg')">
+        <span class="menu-icon">
+          <svg viewBox="0 0 24 24" fill="var(--green-mid)"><path d="M12 12c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm0 2c-2.67 0-8 1.34-8 4v2h16v-2c0-2.66-5.33-4-8-4z"/></svg>
+        </span>
+        <div class="menu-label">শিক্ষক নিবন্ধন</div>
+      </div>
+      <div class="menu-card" onclick="showSection('student-reg')">
+        <span class="menu-icon">
+          <svg viewBox="0 0 24 24" fill="var(--green-mid)"><path d="M5 13.18v4L12 21l7-3.82v-4L12 17l-7-3.82zM12 3L1 9l11 6 9-4.91V17h2V9L12 3z"/></svg>
+        </span>
+        <div class="menu-label">ছাত্র-ছাত্রী নিবন্ধন</div>
+      </div>
+      <div class="menu-card" onclick="showSection('teacher-att')">
+        <span class="menu-icon">
+          <svg viewBox="0 0 24 24" fill="var(--green-mid)"><path d="M9 16.17L4.83 12l-1.42 1.41L9 19 21 7l-1.41-1.41z"/></svg>
+        </span>
+        <div class="menu-label">শিক্ষক হাজীরা</div>
+      </div>
+      <div class="menu-card" onclick="showSection('student-att')">
+        <span class="menu-icon">
+          <svg viewBox="0 0 24 24" fill="var(--green-mid)"><path d="M19 3H5c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2zm-7 3c1.93 0 3.5 1.57 3.5 3.5S13.93 13 12 13s-3.5-1.57-3.5-3.5S10.07 6 12 6zm7 13H5v-.23c0-.62.28-1.2.76-1.58C7.47 15.82 9.64 15 12 15s4.53.82 6.24 2.19c.48.38.76.97.76 1.58V19z"/></svg>
+        </span>
+        <div class="menu-label">ছাত্র-ছাত্রী হাজিরা</div>
+      </div>
+      <div class="menu-card" onclick="showSection('income')">
+        <span class="menu-icon">
+          <svg viewBox="0 0 24 24" fill="var(--green-mid)"><path d="M11.8 10.9c-2.27-.59-3-1.2-3-2.15 0-1.09 1.01-1.85 2.7-1.85 1.78 0 2.44.85 2.5 2.1h2.21c-.07-1.72-1.12-3.3-3.21-3.81V3h-3v2.16c-1.94.42-3.5 1.68-3.5 3.61 0 2.31 1.91 3.46 4.7 4.13 2.5.6 3 1.48 3 2.41 0 .69-.49 1.79-2.7 1.79-2.06 0-2.87-.92-2.98-2.1h-2.2c.12 2.19 1.76 3.42 3.68 3.83V21h3v-2.15c1.95-.37 3.5-1.5 3.5-3.55 0-2.84-2.43-3.81-4.7-4.4z"/></svg>
+        </span>
+        <div class="menu-label">আয় এন্ট্রি</div>
+      </div>
+      <div class="menu-card" onclick="showSection('expense')">
+        <span class="menu-icon">
+          <svg viewBox="0 0 24 24" fill="var(--green-mid)"><path d="M20 4H4c-1.11 0-2 .89-2 2v12c0 1.11.89 2 2 2h16c1.11 0 2-.89 2-2V6c0-1.11-.89-2-2-2zm0 14H4v-6h16v6zm0-10H4V6h16v2z"/></svg>
+        </span>
+        <div class="menu-label">ব্যয় এন্ট্রি</div>
+      </div>
+      <div class="menu-card" onclick="showSection('search')">
+        <span class="menu-icon">
+          <svg viewBox="0 0 24 24" fill="var(--green-mid)"><path d="M15.5 14h-.79l-.28-.27C15.41 12.59 16 11.11 16 9.5 16 5.91 13.09 3 9.5 3S3 5.91 3 9.5 5.91 16 9.5 16c1.61 0 3.09-.59 4.23-1.57l.27.28v.79l5 4.99L20.49 19l-4.99-5zm-6 0C7.01 14 5 11.99 5 9.5S7.01 5 9.5 5 14 7.01 14 9.5 11.99 14 9.5 14z"/></svg>
+        </span>
+        <div class="menu-label">সার্চ</div>
+      </div>
+      <div class="menu-card" onclick="showSection('result')">
+        <span class="menu-icon">
+          <svg viewBox="0 0 24 24" fill="var(--green-mid)"><path d="M19 3H5c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2zm-7 14l-5-5 1.41-1.41L12 14.17l7.59-7.59L21 8l-9 9z"/></svg>
+        </span>
+        <div class="menu-label">পরীক্ষার ফলাফল</div>
+      </div>
+    </div>
+
+    <!-- Quick Stats -->
+    <div style="margin-top:28px; display:grid; grid-template-columns:repeat(auto-fit,minmax(130px,1fr)); gap:14px;">
+      <div class="fin-card">
+        <div class="fin-label">মোট শিক্ষক</div>
+        <div class="fin-amount" style="color:var(--green-mid)" id="stat-teachers">০</div>
+      </div>
+      <div class="fin-card">
+        <div class="fin-label">মোট ছাত্র</div>
+        <div class="fin-amount" style="color:var(--green-mid)" id="stat-students">০</div>
+      </div>
+      <div class="fin-card">
+        <div class="fin-label">মোট আয়</div>
+        <div class="fin-amount income" id="stat-income">৳০</div>
+      </div>
+      <div class="fin-card">
+        <div class="fin-label">মোট ব্যয়</div>
+        <div class="fin-amount expense" id="stat-expense">৳০</div>
+      </div>
+      <div class="fin-card" style="border:1.5px solid var(--gold)">
+        <div class="fin-label">জমা আছে</div>
+        <div class="fin-amount balance" id="stat-balance">৳০</div>
+      </div>
+    </div>
+
+    <!-- জরুরি ব্যাকআপ -->
+    <div style="margin-top:24px;text-align:center;padding:12px 0;border-top:1px dashed #ddd;">
+      <span style="font-size:11px;color:#bbb;">জরুরি ব্যাকআপ &nbsp;</span>
+      <button onclick="exportDB()" style="background:#f5f9f7;border:1px solid #c9e4d8;color:#555;padding:6px 14px;border-radius:16px;font-family:var(--bn-font);font-size:12px;cursor:pointer;margin:3px;">&#11015; ডাউনলোড</button>
+      <label style="background:#f5f9f7;border:1px solid #c9e4d8;color:#555;padding:6px 14px;border-radius:16px;font-family:var(--bn-font);font-size:12px;cursor:pointer;margin:3px;display:inline-block;">&#11014; লোড<input type="file" accept=".json" onchange="importDB(event)" style="display:none;"></label>
+      <br>
+      <button id="install-btn" onclick="installApp()" style="display:none;margin-top:10px;background:linear-gradient(135deg,#0a3d2e,#1a6b4a);color:white;border:none;padding:10px 24px;border-radius:20px;font-family:var(--bn-font);font-size:13px;font-weight:700;cursor:pointer;">
+        📲 হোম স্ক্রিনে ইনস্টল করুন
+      </button>
+    </div>
+  </div>
+
+  <!-- TEACHER REGISTRATION -->
+  <div id="teacher-reg" class="section">
+    <button class="back-btn" onclick="showSection('home')">&#8592; হোমে ফিরুন</button>
+    <div class="section-header">
+      <div class="section-icon"><svg viewBox="0 0 24 24" fill="white" width="24" height="24"><path d="M12 12c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm0 2c-2.67 0-8 1.34-8 4v2h16v-2c0-2.66-5.33-4-8-4z"/></svg></div>
+      <div class="section-title">শিক্ষক নিবন্ধন</div>
+    </div>
+
+    <div class="form-card">
+
+      <!-- TOP: Photo + ID -->
+      <div style="display:flex; gap:20px; flex-wrap:wrap; align-items:flex-start; margin-bottom:20px; padding-bottom:18px; border-bottom:2px dashed #e8f4ed;">
+        <div class="photo-upload-wrap">
+          <label style="font-size:13px;font-weight:600;color:var(--green-dark)">পাসপোর্ট সাইজ ছবি</label>
+          <div class="photo-frame" id="t-photo-frame" onclick="document.getElementById('t-photo-input').click()">
+            <img id="t-photo-preview" src="" alt="">
+            <div class="photo-placeholder" id="t-photo-placeholder"><span style="font-size:28px;display:block;margin-bottom:6px">&#128247;</span>ছবি আপলোড করুন</div>
+          </div>
+          <div class="photo-size-label">৪ সে.মি. × ৫ সে.মি.</div>
+          <button class="btn-photo-clear" id="t-photo-clear" onclick="clearPhoto('t')">মুছুন</button>
+          <input type="file" id="t-photo-input" accept="image/*" style="display:none" onchange="previewPhoto('t',this)">
+        </div>
+        <div style="flex:1;min-width:200px;display:flex;flex-direction:column;gap:12px;justify-content:flex-end;">
+          <div class="form-group">
+            <label>শিক্ষক আইডি (স্বয়ংক্রিয়)</label>
+            <div class="id-display">
+              <div class="id-badge" id="t-id-display">—</div>
+              <button class="btn-copy" title="কপি করুন" onclick="copyId('t-id-display')">কপি</button>
+            </div>
+          </div>
+          <div class="form-group">
+            <label>যোগদানের তারিখ</label>
+            <input type="date" id="t-join">
+          </div>
+          <div class="form-group">
+            <label>মাসিক বেতন (টাকা)</label>
+            <input type="number" id="t-salary" placeholder="টাকা">
+          </div>
+        </div>
+      </div>
+
+      <!-- SECTION: ব্যক্তিগত তথ্য -->
+      <div class="form-section-title">ব্যক্তিগত তথ্য</div>
+      <div class="form-grid">
+        <div class="form-group">
+          <label>শিক্ষকের নাম *</label>
+          <input type="text" id="t-name" placeholder="পূর্ণ নাম বাংলায় লিখুন">
+        </div>
+        <div class="form-group">
+          <label>পিতার নাম *</label>
+          <input type="text" id="t-father" placeholder="পিতার নাম">
+        </div>
+        <div class="form-group">
+          <label>মাতার নাম</label>
+          <input type="text" id="t-mother" placeholder="মাতার নাম">
+        </div>
+        <div class="form-group">
+          <label>জন্ম তারিখ</label>
+          <input type="date" id="t-dob">
+        </div>
+        <div class="form-group">
+          <label>লিঙ্গ</label>
+          <select id="t-gender">
+            <option value="">নির্বাচন করুন</option>
+            <option>পুরুষ</option>
+            <option>মহিলা</option>
+            <option>অন্যান্য</option>
+          </select>
+        </div>
+        <div class="form-group">
+          <label>বৈবাহিক অবস্থা</label>
+          <select id="t-marital">
+            <option value="">নির্বাচন করুন</option>
+            <option>অবিবাহিত</option>
+            <option>বিবাহিত</option>
+            <option>বিধবা/বিপত্নীক</option>
+            <option>তালাকপ্রাপ্ত</option>
+          </select>
+        </div>
+        <div class="form-group">
+          <label>ধর্ম</label>
+          <select id="t-religion">
+            <option value="">নির্বাচন করুন</option>
+            <option>ইসলাম</option>
+            <option>হিন্দু</option>
+            <option>খ্রিস্টান</option>
+            <option>বৌদ্ধ</option>
+            <option>অন্যান্য</option>
+          </select>
+        </div>
+      </div>
+
+      <!-- SECTION: পরিচয়পত্র -->
+      <div class="form-section-title" style="margin-top:20px;">পরিচয়পত্র</div>
+      <div class="form-grid">
+        <div class="form-group">
+          <label>জাতীয় পরিচয়পত্র (NID) নম্বর</label>
+          <input type="text" id="t-nid" placeholder="NID নম্বর লিখুন">
+        </div>
+        <div class="form-group">
+          <label>জন্ম নিবন্ধন নম্বর (যদি প্রযোজ্য)</label>
+          <input type="text" id="t-birth-reg" placeholder="জন্ম নিবন্ধন নম্বর">
+        </div>
+      </div>
+
+      <!-- SECTION: যোগাযোগ ও ঠিকানা -->
+      <div class="form-section-title" style="margin-top:20px;">যোগাযোগ ও ঠিকানা</div>
+      <div class="form-grid">
+        <div class="form-group">
+          <label>মোবাইল নম্বর *</label>
+          <input type="tel" id="t-phone" placeholder="০১XXXXXXXXX">
+        </div>
+        <div class="form-group">
+          <label>ই-মেইল ঠিকানা</label>
+          <input type="email" id="t-email" placeholder="example@email.com">
+        </div>
+        <div class="form-group form-full">
+          <label>স্থায়ী ঠিকানা</label>
+          <textarea id="t-perm-address" rows="2" placeholder="গ্রাম, ডাকঘর, উপজেলা, জেলা"></textarea>
+        </div>
+        <div class="form-group form-full">
+          <label>বর্তমান ঠিকানা</label>
+          <textarea id="t-address" rows="2" placeholder="বর্তমান বাসস্থানের ঠিকানা"></textarea>
+        </div>
+      </div>
+
+      <!-- SECTION: শিক্ষাগত ও পেশাগত তথ্য -->
+      <div class="form-section-title" style="margin-top:20px;">শিক্ষাগত ও পেশাগত তথ্য</div>
+      <div class="form-grid">
+        <div class="form-group">
+          <label>শিক্ষাগত যোগ্যতা</label>
+          <select id="t-education">
+            <option value="">নির্বাচন করুন</option>
+            <option>হিফজুল কুরআন</option>
+            <option>দাওরায়ে হাদিস (মাস্টার্স সমমান)</option>
+            <option>ফাজিল (স্নাতক সমমান)</option>
+            <option>আলিম (উচ্চ মাধ্যমিক সমমান)</option>
+            <option>দাখিল (মাধ্যমিক সমমান)</option>
+            <option>নূরাণী সনদ</option>
+            <option>অন্যান্য</option>
+          </select>
+        </div>
+        <div class="form-group">
+          <label>বিভাগ *</label>
+          <select id="t-dept">
+            <option value="">নির্বাচন করুন</option>
+            <option>নূরানী বিভাগ</option>
+            <option>নাজেরা বিভাগ</option>
+            <option>হিফজ বিভাগ</option>
+            <option>কিতাব বিভাগ</option>
+            <option>আরবি বিভাগ</option>
+          </select>
+        </div>
+        <div class="form-group">
+          <label>শিক্ষকতার অভিজ্ঞতা (বছর)</label>
+          <input type="number" id="t-experience" placeholder="যেমন: ৫" min="0" max="60">
+        </div>
+      </div>
+
+      <!-- SECTION: NID ছবি -->
+      <div class="form-section-title" style="margin-top:24px;">জাতীয় পরিচয়পত্রের ছবি</div>
+      <div style="display:flex;gap:20px;flex-wrap:wrap;margin-top:12px;">
+        <!-- NID Front -->
+        <div class="photo-upload-wrap">
+          <label style="font-size:13px;font-weight:600;color:var(--green-dark)">NID সামনের পাশ (Front)</label>
+          <div class="nid-frame" id="t-nid-front-frame" onclick="document.getElementById('t-nid-front-input').click()">
+            <img id="t-nid-front-preview" src="" alt="">
+            <div class="nid-placeholder" id="t-nid-front-placeholder">সামনের ছবি আপলোড</div>
+          </div>
+          <button class="btn-photo-clear" id="t-nid-front-clear" onclick="clearNid('t-nid-front')">মুছুন</button>
+          <input type="file" id="t-nid-front-input" accept="image/*" style="display:none" onchange="previewNid('t-nid-front',this)">
+        </div>
+        <!-- NID Back -->
+        <div class="photo-upload-wrap">
+          <label style="font-size:13px;font-weight:600;color:var(--green-dark)">NID পেছনের পাশ (Back)</label>
+          <div class="nid-frame" id="t-nid-back-frame" onclick="document.getElementById('t-nid-back-input').click()">
+            <img id="t-nid-back-preview" src="" alt="">
+            <div class="nid-placeholder" id="t-nid-back-placeholder">পেছনের ছবি আপলোড</div>
+          </div>
+          <button class="btn-photo-clear" id="t-nid-back-clear" onclick="clearNid('t-nid-back')">মুছুন</button>
+          <input type="file" id="t-nid-back-input" accept="image/*" style="display:none" onchange="previewNid('t-nid-back',this)">
+        </div>
+      </div>
+
+      <button class="btn-primary" onclick="saveTeacher()" style="margin-top:24px">শিক্ষক নিবন্ধন করুন</button>
+    </div>
+
+    <div class="table-container" style="margin-top:24px">
+      <div class="table-title" style="display:flex;justify-content:space-between;align-items:center;">
+        <span>নিবন্ধিত শিক্ষকগণ</span>
+        <button onclick="printAdmissionForm('teacher')" style="background:var(--gold);color:var(--green-dark);border:none;padding:6px 14px;border-radius:8px;font-family:var(--bn-font);font-size:13px;font-weight:600;cursor:pointer;">ভর্তি ফরম প্রিন্ট</button>
+      </div>
+      <div style="overflow-x:auto">
+        <table>
+          <thead>
+            <tr><th>ছবি</th><th>আইডি</th><th>নাম</th><th>বিভাগ</th><th>মোবাইল</th><th>অভিজ্ঞতা</th><th>যোগদান</th><th>অ্যাকশন</th></tr>
+          </thead>
+          <tbody id="teacher-table-body">
+            <tr><td colspan="8" style="text-align:center;color:#aaa;padding:20px">কোনো শিক্ষক নিবন্ধিত হননি</td></tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+
+  <!-- STUDENT REGISTRATION -->
+  <div id="student-reg" class="section">
+    <button class="back-btn" onclick="showSection('home')">&#8592; হোমে ফিরুন</button>
+    <div class="section-header">
+      <div class="section-icon"><svg viewBox="0 0 24 24" fill="white" width="24" height="24"><path d="M5 13.18v4L12 21l7-3.82v-4L12 17l-7-3.82zM12 3L1 9l11 6 9-4.91V17h2V9L12 3z"/></svg></div>
+      <div class="section-title">ছাত্র-ছাত্রী নিবন্ধন</div>
+    </div>
+
+    <!-- STUDENT TYPE TOGGLE -->
+    <div class="student-type-toggle">
+      <button class="type-btn active" id="btn-new-student" onclick="setStudentType('new')">
+        নতুন শিক্ষার্থী
+      </button>
+      <button class="type-btn" id="btn-old-student" onclick="setStudentType('old')">
+        পুরাতন শিক্ষার্থী
+      </button>
+    </div>
+
+    <div class="form-card">
+
+      <!-- TOP: Photo + ID -->
+      <div style="display:flex; gap:20px; flex-wrap:wrap; align-items:flex-start; margin-bottom:20px; padding-bottom:18px; border-bottom:2px dashed #e8f4ed;">
+        <div class="photo-upload-wrap">
+          <label style="font-size:13px;font-weight:600;color:var(--green-dark)">পাসপোর্ট সাইজ ছবি</label>
+          <div class="photo-frame" id="s-photo-frame" onclick="document.getElementById('s-photo-input').click()">
+            <img id="s-photo-preview" src="" alt="">
+            <div class="photo-placeholder" id="s-photo-placeholder"><span style="font-size:28px;display:block;margin-bottom:6px">&#128247;</span>ছবি আপলোড করুন</div>
+          </div>
+          <div class="photo-size-label">৪ সে.মি. × ৫ সে.মি.</div>
+          <button class="btn-photo-clear" id="s-photo-clear" onclick="clearPhoto('s')">মুছুন</button>
+          <input type="file" id="s-photo-input" accept="image/*" style="display:none" onchange="previewPhoto('s',this)">
+        </div>
+        <div style="flex:1;min-width:200px;display:flex;flex-direction:column;gap:12px;justify-content:flex-end;">
+          <div class="form-group">
+            <label>শিক্ষার্থী আইডি (স্বয়ংক্রিয়)</label>
+            <div class="id-display">
+              <div class="id-badge" id="s-id-display">—</div>
+              <button class="btn-copy" title="কপি করুন" onclick="copyId('s-id-display')">কপি</button>
+            </div>
+          </div>
+          <div class="form-group">
+            <label>ভর্তির তারিখ</label>
+            <input type="date" id="s-admit">
+          </div>
+          <div class="form-group">
+            <label>মাসিক বেতন (টাকা)</label>
+            <input type="number" id="s-fee" placeholder="টাকা">
+          </div>
+        </div>
+      </div>
+
+      <!-- SECTION: শিক্ষার্থীর তথ্য -->
+      <div class="form-section-title">শিক্ষার্থীর ব্যক্তিগত তথ্য</div>
+      <div class="form-grid">
+        <div class="form-group">
+          <label>শিক্ষার্থীর নাম *</label>
+          <input type="text" id="s-name" placeholder="পূর্ণ নাম বাংলায় লিখুন">
+        </div>
+        <div class="form-group">
+          <label>পিতার নাম *</label>
+          <input type="text" id="s-father" placeholder="পিতার নাম">
+        </div>
+        <div class="form-group">
+          <label>মাতার নাম</label>
+          <input type="text" id="s-mother" placeholder="মাতার নাম">
+        </div>
+        <div class="form-group">
+          <label>জন্ম তারিখ</label>
+          <input type="date" id="s-dob">
+        </div>
+        <div class="form-group">
+          <label>জন্ম নিবন্ধন নম্বর</label>
+          <input type="text" id="s-birth-reg" placeholder="জন্ম নিবন্ধন নম্বর">
+        </div>
+        <div class="form-group form-full">
+          <label>বর্তমান ঠিকানা</label>
+          <textarea id="s-curr-address" rows="2" placeholder="গ্রাম, ডাকঘর, উপজেলা, জেলা"></textarea>
+        </div>
+        <div class="form-group form-full">
+          <label>স্থায়ী ঠিকানা</label>
+          <textarea id="s-address" rows="2" placeholder="স্থায়ী ঠিকানা (বর্তমানের মতো হলে খালি রাখুন)"></textarea>
+        </div>
+      </div>
+
+      <!-- SECTION: পুরাতন শিক্ষার্থী (conditional) -->
+      <div id="old-student-section" style="display:none;">
+        <div class="form-section-title" style="margin-top:20px; background:linear-gradient(90deg,#fff3e0,transparent); border-left-color:#e67e22;">পুরাতন শিক্ষার্থীর তথ্য</div>
+        <div class="form-grid">
+          <div class="form-group">
+            <label>পূর্বের বিভাগ / শ্রেণি</label>
+            <select id="s-prev-class">
+              <option value="">নির্বাচন করুন</option>
+              <option>নূরাণী ১ম</option>
+              <option>নূরাণী ২য়</option>
+              <option>নূরাণী ৩য়</option>
+              <option>হিফজ ১ম বর্ষ</option>
+              <option>হিফজ ২য় বর্ষ</option>
+              <option>হিফজ ৩য় বর্ষ</option>
+              <option>কিতাব বিভাগ</option>
+            </select>
+          </div>
+          <div class="form-group">
+            <label>গত বছরের ফলাফল</label>
+            <select id="s-prev-result">
+              <option value="">নির্বাচন করুন</option>
+              <option>মুমতাজ (A+)</option>
+              <option>জায়্যিদ জিদ্দান (A)</option>
+              <option>জায়্যিদ (B)</option>
+              <option>মাকবুল (C)</option>
+              <option>পাস</option>
+              <option>ফেল</option>
+            </select>
+          </div>
+          <div class="form-group">
+            <label>বর্তমানে যে শ্রেণিতে ভর্তি হবে *</label>
+            <select id="s-class-old">
+              <option value="">নির্বাচন করুন</option>
+              <option>নূরাণী ১ম</option>
+              <option>নূরাণী ২য়</option>
+              <option>নূরাণী ৩য়</option>
+              <option>হিফজ ১ম বর্ষ</option>
+              <option>হিফজ ২য় বর্ষ</option>
+              <option>হিফজ ৩য় বর্ষ</option>
+              <option>কিতাব বিভাগ</option>
+            </select>
+          </div>
+        </div>
+      </div>
+
+      <!-- SECTION: নতুন শিক্ষার্থী (conditional) -->
+      <div id="new-student-section">
+        <div class="form-section-title" style="margin-top:20px; background:linear-gradient(90deg,#e8f4f8,transparent); border-left-color:#2980b9;">নতুন শিক্ষার্থীর তথ্য</div>
+        <div class="form-grid">
+          <div class="form-group">
+            <label>পূর্বের শিক্ষা প্রতিষ্ঠানের নাম</label>
+            <input type="text" id="s-prev-school" placeholder="প্রতিষ্ঠানের নাম">
+          </div>
+          <div class="form-group">
+            <label>পূর্বে যে শ্রেণিতে পড়েছে</label>
+            <input type="text" id="s-prev-class-new" placeholder="যেমন: ৩য় শ্রেণি">
+          </div>
+          <div class="form-group">
+            <label>পূর্বের ফলাফল</label>
+            <input type="text" id="s-prev-result-new" placeholder="যেমন: A+, ৮৫%">
+          </div>
+          <div class="form-group">
+            <label>ভর্তি পরীক্ষার নম্বর</label>
+            <input type="number" id="s-exam-mark" placeholder="প্রাপ্ত নম্বর">
+          </div>
+          <div class="form-group">
+            <label>বর্তমানে যে শ্রেণিতে পড়তে ইচ্ছুক *</label>
+            <select id="s-class">
+              <option value="">নির্বাচন করুন</option>
+              <option>নূরাণী ১ম</option>
+              <option>নূরাণী ২য়</option>
+              <option>নূরাণী ৩য়</option>
+              <option>হিফজ ১ম বর্ষ</option>
+              <option>হিফজ ২য় বর্ষ</option>
+              <option>হিফজ ৩য় বর্ষ</option>
+              <option>কিতাব বিভাগ</option>
+            </select>
+          </div>
+        </div>
+      </div>
+
+      <!-- SECTION: অভিভাবকের তথ্য -->
+      <div class="form-section-title" style="margin-top:20px;">অভিভাবকের তথ্য</div>
+      <div class="form-grid">
+        <div class="form-group">
+          <label>অভিভাবকের নাম *</label>
+          <input type="text" id="s-guardian-name" placeholder="অভিভাবকের পূর্ণ নাম">
+        </div>
+        <div class="form-group">
+          <label>সম্পর্ক</label>
+          <select id="s-guardian-rel">
+            <option value="">নির্বাচন করুন</option>
+            <option>পিতা</option>
+            <option>মাতা</option>
+            <option>ভাই</option>
+            <option>বোন</option>
+            <option>চাচা</option>
+            <option>মামা</option>
+            <option>নানা</option>
+            <option>দাদা</option>
+            <option>অন্যান্য</option>
+          </select>
+        </div>
+        <div class="form-group">
+          <label>মোবাইল নম্বর *</label>
+          <input type="tel" id="s-phone" placeholder="০১XXXXXXXXX">
+        </div>
+        <div class="form-group">
+          <label>অভিভাবকের NID নম্বর</label>
+          <input type="text" id="s-guardian-nid" placeholder="জাতীয় পরিচয়পত্র নম্বর">
+        </div>
+        <div class="form-group form-full">
+          <label>অভিভাবকের ঠিকানা</label>
+          <textarea id="s-guardian-address" rows="2" placeholder="অভিভাবকের বর্তমান ঠিকানা"></textarea>
+        </div>
+      </div>
+
+      <button class="btn-primary" onclick="saveStudent()" style="margin-top:24px">শিক্ষার্থী নিবন্ধন করুন</button>
+    </div>
+
+    <div class="table-container" style="margin-top:24px">
+      <div class="table-title" style="display:flex;justify-content:space-between;align-items:center;">
+        <span>নিবন্ধিত ছাত্র-ছাত্রী</span>
+        <button onclick="printAdmissionForm('student')" style="background:var(--gold);color:var(--green-dark);border:none;padding:6px 14px;border-radius:8px;font-family:var(--bn-font);font-size:13px;font-weight:600;cursor:pointer;">ভর্তি ফরম প্রিন্ট</button>
+      </div>
+      <div style="overflow-x:auto">
+        <table>
+          <thead>
+            <tr><th>ছবি</th><th>আইডি</th><th>নাম</th><th>পিতা</th><th>শ্রেণি</th><th>ধরন</th><th>মোবাইল</th><th>ভর্তি</th><th>অ্যাকশন</th></tr>
+          </thead>
+          <tbody id="student-table-body">
+            <tr><td colspan="9" style="text-align:center;color:#aaa;padding:20px">কোনো ছাত্র নিবন্ধিত হয়নি</td></tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+
+  <!-- TEACHER ATTENDANCE -->
+  <div id="teacher-att" class="section">
+    <button class="back-btn" onclick="showSection('home')">&#8592; হোমে ফিরুন</button>
+    <div class="section-header">
+      <div class="section-icon"><svg viewBox="0 0 24 24" fill="white" width="24" height="24"><path d="M9 16.17L4.83 12l-1.42 1.41L9 19 21 7l-1.41-1.41z"/></svg></div>
+      <div class="section-title">শিক্ষক হাজীরা</div>
+    </div>
+    <div class="form-card" style="margin-bottom:16px">
+      <div style="display:flex;gap:12px;align-items:center;flex-wrap:wrap">
+        <div class="form-group" style="flex:1;min-width:160px">
+          <label>তারিখ নির্বাচন</label>
+          <input type="date" id="t-att-date">
+        </div>
+        <button class="btn-primary" style="margin-top:24px" onclick="saveAttendance('teacher')">হাজিরা সংরক্ষণ</button>
+      </div>
+    </div>
+    <div class="attendance-grid" id="teacher-att-grid">
+      <div style="color:#aaa;font-size:14px;grid-column:1/-1;padding:20px;text-align:center">প্রথমে শিক্ষক নিবন্ধন করুন</div>
+    </div>
+
+    <div class="table-container" style="margin-top:24px">
+      <div class="table-title">হাজিরার ইতিহাস</div>
+      <div style="overflow-x:auto">
+        <table>
+          <thead>
+            <tr><th>তারিখ</th><th>নাম</th><th>ধরন</th><th>অবস্থা</th></tr>
+          </thead>
+          <tbody id="teacher-att-history">
+            <tr><td colspan="4" style="text-align:center;color:#aaa;padding:20px">কোনো হাজিরা নেই</td></tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+
+  <!-- STUDENT ATTENDANCE -->
+  <div id="student-att" class="section">
+    <button class="back-btn" onclick="showSection('home')">&#8592; হোমে ফিরুন</button>
+    <div class="section-header">
+      <div class="section-icon"><svg viewBox="0 0 24 24" fill="white" width="24" height="24"><path d="M19 3h-4.18C14.4 1.84 13.3 1 12 1c-1.3 0-2.4.84-2.82 2H5c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2zm-7 0c.55 0 1 .45 1 1s-.45 1-1 1-1-.45-1-1 .45-1 1-1zm2 14H7v-2h7v2zm3-4H7v-2h10v2zm0-4H7V7h10v2z"/></svg></div>
+      <div class="section-title">ছাত্র-ছাত্রী হাজিরা</div>
+    </div>
+    <div class="form-card" style="margin-bottom:16px">
+      <div style="display:flex;gap:12px;align-items:center;flex-wrap:wrap">
+        <div class="form-group" style="flex:1;min-width:160px">
+          <label>তারিখ নির্বাচন</label>
+          <input type="date" id="s-att-date">
+        </div>
+        <button class="btn-primary" style="margin-top:24px" onclick="saveAttendance('student')">হাজিরা সংরক্ষণ</button>
+      </div>
+    </div>
+    <div class="attendance-grid" id="student-att-grid">
+      <div style="color:#aaa;font-size:14px;grid-column:1/-1;padding:20px;text-align:center">প্রথমে ছাত্র নিবন্ধন করুন</div>
+    </div>
+
+    <div class="table-container" style="margin-top:24px">
+      <div class="table-title">হাজিরার ইতিহাস</div>
+      <div style="overflow-x:auto">
+        <table>
+          <thead>
+            <tr><th>তারিখ</th><th>নাম</th><th>শ্রেণি</th><th>অবস্থা</th></tr>
+          </thead>
+          <tbody id="student-att-history">
+            <tr><td colspan="4" style="text-align:center;color:#aaa;padding:20px">কোনো হাজিরা নেই</td></tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+
+  <!-- INCOME -->
+  <div id="income" class="section">
+    <button class="back-btn" onclick="showSection('home')">&#8592; হোমে ফিরুন</button>
+    <div class="section-header">
+      <div class="section-icon"><svg viewBox="0 0 24 24" fill="white" width="24" height="24"><path d="M11.8 10.9c-2.27-.59-3-1.2-3-2.15 0-1.09 1.01-1.85 2.7-1.85 1.78 0 2.44.85 2.5 2.1h2.21c-.07-1.72-1.12-3.3-3.21-3.81V3h-3v2.16c-1.94.42-3.5 1.68-3.5 3.61 0 2.31 1.91 3.46 4.7 4.13 2.5.6 3 1.48 3 2.41 0 .69-.49 1.79-2.7 1.79-2.06 0-2.87-.92-2.98-2.1h-2.2c.12 2.19 1.76 3.42 3.68 3.83V21h3v-2.15c1.95-.37 3.5-1.5 3.5-3.55 0-2.84-2.43-3.81-4.7-4.4z"/></svg></div>
+      <div class="section-title">আয় এন্ট্রি</div>
+    </div>
+    <div class="form-card">
+      <div class="form-grid">
+        <div class="form-group">
+          <label>আয়ের তারিখ *</label>
+          <input type="date" id="inc-date">
+        </div>
+        <div class="form-group">
+          <label>আয়ের উৎস *</label>
+          <select id="inc-source">
+            <option value="">নির্বাচন করুন</option>
+            <option>ছাত্র বেতন</option>
+            <option>ভর্তি ফি</option>
+            <option>পরীক্ষার ফি</option>
+            <option>দান / অনুদান</option>
+            <option>সরকারি অনুদান</option>
+            <option>অন্যান্য</option>
+          </select>
+        </div>
+        <div class="form-group">
+          <label>পরিমাণ (টাকা) *</label>
+          <input type="number" id="inc-amount" placeholder="টাকার পরিমাণ">
+        </div>
+        <div class="form-group">
+          <label>প্রদানকারী</label>
+          <input type="text" id="inc-from" placeholder="নাম / উৎস">
+        </div>
+        <div class="form-group form-full">
+          <label>বিবরণ</label>
+          <textarea id="inc-note" rows="2" placeholder="বিস্তারিত বিবরণ"></textarea>
+        </div>
+      </div>
+      <button class="btn-primary" onclick="saveIncome()">আয় সংরক্ষণ করুন</button>
+    </div>
+
+    <div class="table-container" style="margin-top:24px">
+      <div class="table-title" style="display:flex;justify-content:space-between;align-items:center;">
+        <span>আয়ের তালিকা</span>
+        <button onclick="printIncomeExpense('income')" style="background:var(--gold);color:var(--green-dark);border:none;padding:6px 14px;border-radius:8px;font-family:var(--bn-font);font-size:13px;font-weight:600;cursor:pointer;">রিসিট প্রিন্ট</button>
+      </div>
+      <div style="overflow-x:auto">
+        <table>
+          <thead>
+            <tr><th>#</th><th>তারিখ</th><th>উৎস</th><th>প্রদানকারী</th><th>পরিমাণ</th><th>অ্যাকশন</th></tr>
+          </thead>
+          <tbody id="income-table-body">
+            <tr><td colspan="6" style="text-align:center;color:#aaa;padding:20px">কোনো আয় এন্ট্রি নেই</td></tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+
+  <!-- EXPENSE -->
+  <div id="expense" class="section">
+    <button class="back-btn" onclick="showSection('home')">&#8592; হোমে ফিরুন</button>
+    <div class="section-header">
+      <div class="section-icon"><svg viewBox="0 0 24 24" fill="white" width="24" height="24"><path d="M20 4H4c-1.11 0-2 .89-2 2v12c0 1.11.89 2 2 2h16c1.11 0 2-.89 2-2V6c0-1.11-.89-2-2-2zm0 14H4v-6h16v6zm0-10H4V6h16v2z"/></svg></div>
+      <div class="section-title">ব্যয় এন্ট্রি</div>
+    </div>
+    <div class="form-card">
+      <div class="form-grid">
+        <div class="form-group">
+          <label>ব্যয়ের তারিখ *</label>
+          <input type="date" id="exp-date">
+        </div>
+        <div class="form-group">
+          <label>ব্যয়ের ধরন *</label>
+          <select id="exp-type">
+            <option value="">নির্বাচন করুন</option>
+            <option>শিক্ষক বেতন</option>
+            <option>বিদ্যুৎ বিল</option>
+            <option>পানির বিল</option>
+            <option>মেরামত কাজ</option>
+            <option>কিতাব / শিক্ষা উপকরণ</option>
+            <option>অফিস সামগ্রী</option>
+            <option>অন্যান্য</option>
+          </select>
+        </div>
+        <div class="form-group">
+          <label>পরিমাণ (টাকা) *</label>
+          <input type="number" id="exp-amount" placeholder="টাকার পরিমাণ">
+        </div>
+        <div class="form-group">
+          <label>প্রাপক</label>
+          <input type="text" id="exp-to" placeholder="নাম / প্রতিষ্ঠান">
+        </div>
+        <div class="form-group form-full">
+          <label>বিবরণ</label>
+          <textarea id="exp-note" rows="2" placeholder="বিস্তারিত বিবরণ"></textarea>
+        </div>
+      </div>
+      <button class="btn-primary" style="background:linear-gradient(135deg,#c0392b,#8e2b22)" onclick="saveExpense()">ব্যয় সংরক্ষণ করুন</button>
+    </div>
+
+    <div class="table-container" style="margin-top:24px">
+      <div class="table-title" style="display:flex;justify-content:space-between;align-items:center;">
+        <span>ব্যয়ের তালিকা</span>
+        <button onclick="printIncomeExpense('expense')" style="background:var(--gold);color:var(--green-dark);border:none;padding:6px 14px;border-radius:8px;font-family:var(--bn-font);font-size:13px;font-weight:600;cursor:pointer;">রিসিট প্রিন্ট</button>
+      </div>
+      <div style="overflow-x:auto">
+        <table>
+          <thead>
+            <tr><th>#</th><th>তারিখ</th><th>ধরন</th><th>প্রাপক</th><th>পরিমাণ</th><th>অ্যাকশন</th></tr>
+          </thead>
+          <tbody id="expense-table-body">
+            <tr><td colspan="6" style="text-align:center;color:#aaa;padding:20px">কোনো ব্যয় এন্ট্রি নেই</td></tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+
+  <!-- SEARCH -->
+  <div id="search" class="section">
+    <button class="back-btn" onclick="showSection('home')">&#8592; হোমে ফিরুন</button>
+    <div class="section-header">
+      <div class="section-icon"><svg viewBox="0 0 24 24" fill="white" width="24" height="24"><path d="M15.5 14h-.79l-.28-.27C15.41 12.59 16 11.11 16 9.5 16 5.91 13.09 3 9.5 3S3 5.91 3 9.5 5.91 16 9.5 16c1.61 0 3.09-.59 4.23-1.57l.27.28v.79l5 4.99L20.49 19l-4.99-5zm-6 0C7.01 14 5 11.99 5 9.5S7.01 5 9.5 5 14 7.01 14 9.5 11.99 14 9.5 14z"/></svg></div>
+      <div class="section-title">সার্চ</div>
+    </div>
+    <div class="search-box">
+      <div class="search-tabs">
+        <button class="search-tab active" onclick="setSearchTab('all',this)">সব</button>
+        <button class="search-tab" onclick="setSearchTab('teacher',this)">শিক্ষক</button>
+        <button class="search-tab" onclick="setSearchTab('student',this)">ছাত্র</button>
+        <button class="search-tab" onclick="setSearchTab('income',this)">আয়</button>
+        <button class="search-tab" onclick="setSearchTab('expense',this)">ব্যয়</button>
+      </div>
+      <div class="search-input-wrap">
+        <input type="text" id="search-input" placeholder="নাম, মোবাইল, তারিখ বা উৎস দিয়ে খুঁজুন...">
+        <button class="btn-search" onclick="doSearch()">খুঁজুন</button>
+      </div>
+    </div>
+    <div id="search-results">
+      <div style="text-align:center;color:#aaa;padding:40px;font-size:14px">উপরে কিছু লিখে খুঁজুন</div>
+    </div>
+  </div>
+
+</div>
+
+<!-- TOAST -->
+<!-- PRINT MODAL -->
+<div class="modal-overlay" id="print-modal">
+  <div class="modal-box">
+    <div class="id-card-preview" id="modal-card-content">
+      <div class="card-madrasa">হিফজুল কুরআন রশিদিয়া হোসাইনিয়া নূরাণী মাদ্রাসা</div>
+      <div class="card-type" id="modal-card-type">শিক্ষার্থী পরিচয়পত্র</div>
+      <div class="card-id" id="modal-card-id"></div>
+      <div class="card-name" id="modal-card-name"></div>
+      <div class="card-info" id="modal-card-info"></div>
+    </div>
+    <div class="modal-btns">
+      <button class="btn-modal-print" onclick="doPrint()">প্রিন্ট করুন</button>
+      <button class="btn-modal-close" onclick="closeModal()">বন্ধ করুন</button>
+    </div>
+  </div>
+</div>
+
+<div class="toast" id="toast"></div>
+
+<script>
+
+function escH(s) {
+  if (!s) return '';
+  return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
+}
+
+// Event delegation for table buttons
+document.addEventListener('click', function(e) {
+  var btn = e.target.closest('[data-act]');
+  if (!btn) return;
+  var act = btn.getAttribute('data-act');
+  var idx = parseInt(btn.getAttribute('data-idx'));
+  if (act === 'tid') {
+    var t = DB.teachers[idx];
+    if (t) openPrintModal('teacher', t.id, t.name, (t.dept||'')+' | '+t.phone, t.photo||'');
+  } else if (act === 'tform') {
+    var t = DB.teachers[idx];
+    if (t) { var s={teachers:[t],students:DB.students}; var bk=DB.teachers; DB.teachers=[t]; printAdmissionForm('teacher'); DB.teachers=bk; }
+  } else if (act === 'sid') {
+    var s = DB.students[idx];
+    if (s) openPrintModal('student', s.id, s.name, (s.cls||'')+' | '+s.phone, s.photo||'');
+  } else if (act === 'sform') {
+    var s = DB.students[idx];
+    if (s) { var bk=DB.students; DB.students=[s]; printAdmissionForm('student'); DB.students=bk; }
+  } else if (act === 'scopy') {
+    var s = DB.students[idx];
+    if (s) copyText(s.id);
+  } else if (act === 'ireceipt') {
+    printSingleReceipt('income', idx);
+  } else if (act === 'ereceipt') {
+    printSingleReceipt('expense', idx);
+  } else if (act === 'res-print') {
+    printResultMarksheet(idx);
+  } else if (act === 'res-del') {
+    if (confirm('এই ফলাফল মুছে ফেলবেন?')) {
+      DB.results.splice(idx, 1);
+      saveDB();
+      renderResultList();
+      showToast('মুছে ফেলা হয়েছে');
+    }
+  }
+});
+
+// ===== DATA STORE =====
+let DB = {
+  teachers: [],
+  students: [],
+  attendance: [],
+  income: [],
+  expense: [],
+  results: []
+};
+
+// ===== FIREBASE FIRESTORE SYNC =====
+
+var fbReady = false;
+var saveTimer = null;
+
+function showSyncStatus(msg, color) {
+  var el = document.getElementById('sync-status');
+  if (el) { el.textContent = msg; el.style.color = color || '#888'; }
+}
+
+function saveDB() {
+  // localStorage backup
+  try { localStorage.setItem('madrasa_db_backup', JSON.stringify(DB)); } catch(e) {}
+
+  // Debounce — wait 1.5s after last change before saving
+  clearTimeout(saveTimer);
+  showSyncStatus('সেভ হচ্ছে...', '#e67e22');
+  saveTimer = setTimeout(function() {
+    saveToFirebase();
+  }, 1500);
+}
+
+function saveToFirebase() {
+  if (typeof db === 'undefined') { showSyncStatus('Firebase সংযোগ নেই', '#c0392b'); return; }
+
+  showSyncStatus('Cloud-এ সেভ হচ্ছে...', '#e67e22');
+
+  // Photos are now compressed (~100KB each), safe to include
+  var payload = {
+    teachers:   JSON.stringify(DB.teachers   || []),
+    students:   JSON.stringify(DB.students   || []),
+    attendance: JSON.stringify(DB.attendance || []),
+    income:     JSON.stringify(DB.income     || []),
+    expense:    JSON.stringify(DB.expense    || []),
+    results:    JSON.stringify(DB.results    || []),
+    updatedAt:  new Date().toISOString()
+  };
+
+  db.collection('madrasa').doc('data').set(payload)
+    .then(function() {
+      showSyncStatus('✓ Cloud সেভ সম্পন্ন', '#1a6b4a');
+      setTimeout(function(){ showSyncStatus('', ''); }, 3000);
+    })
+    .catch(function(err) {
+      showSyncStatus('⚠ সেভ ব্যর্থ: ' + err.message, '#c0392b');
+    });
+}
+
+function loadDB() {
+  if (typeof db === 'undefined') {
+    try {
+      var saved = localStorage.getItem('madrasa_db_backup');
+      if (saved) { var p = JSON.parse(saved); DB.teachers=p.teachers||[]; DB.students=p.students||[]; DB.attendance=p.attendance||[]; DB.income=p.income||[]; DB.expense=p.expense||[]; DB.results=p.results||[]; }
+    } catch(e) {}
+    return;
+  }
+
+  showSyncStatus('ডেটা লোড হচ্ছে...', '#2980b9');
+
+  db.collection('madrasa').doc('data').get()
+    .then(function(doc) {
+      if (doc.exists) {
+        var d = doc.data();
+        try { DB.teachers   = JSON.parse(d.teachers   || '[]'); } catch(e){ DB.teachers=[]; }
+        try { DB.students   = JSON.parse(d.students   || '[]'); } catch(e){ DB.students=[]; }
+        try { DB.attendance = JSON.parse(d.attendance || '[]'); } catch(e){ DB.attendance=[]; }
+        try { DB.income     = JSON.parse(d.income     || '[]'); } catch(e){ DB.income=[]; }
+        try { DB.expense    = JSON.parse(d.expense    || '[]'); } catch(e){ DB.expense=[]; }
+        try { DB.results    = JSON.parse(d.results    || '[]'); } catch(e){ DB.results=[]; }
+      }
+      renderTeacherTable(); renderStudentTable(); renderIncomeTable();
+      renderExpenseTable(); renderResultList(); updateStats(); refreshNextIds();
+      showSyncStatus('✓ ডেটা লোড সম্পন্ন', '#1a6b4a');
+      setTimeout(function(){ showSyncStatus('', ''); }, 3000);
+    })
+    .catch(function(err) {
+      showSyncStatus('⚠ লোড ব্যর্থ', '#c0392b');
+      try {
+        var saved = localStorage.getItem('madrasa_db_backup');
+        if (saved) { var p = JSON.parse(saved); DB.teachers=p.teachers||[]; DB.students=p.students||[]; DB.attendance=p.attendance||[]; DB.income=p.income||[]; DB.expense=p.expense||[]; DB.results=p.results||[]; }
+      } catch(e2) {}
+      renderTeacherTable(); renderStudentTable(); renderIncomeTable();
+      renderExpenseTable(); renderResultList(); updateStats(); refreshNextIds();
+    });
+}
+
+function exportDB() {
+  var data = JSON.stringify(DB, null, 2);
+  var blob = new Blob([data], { type: 'application/json;charset=utf-8' });
+  var url = URL.createObjectURL(blob);
+  var a = document.createElement('a');
+  var date = new Date().toISOString().slice(0,10);
+  a.href = url;
+  a.download = 'madrasa-backup-' + date + '.json';
+  a.click();
+  URL.revokeObjectURL(url);
+  showToast('ব্যাকআপ ডাউনলোড হচ্ছে...');
+}
+
+function importDB(event) {
+  var file = event.target.files[0];
+  if (!file) return;
+  var reader = new FileReader();
+  reader.onload = function(e) {
+    try {
+      var parsed = JSON.parse(e.target.result);
+      DB.teachers   = parsed.teachers   || [];
+      DB.students   = parsed.students   || [];
+      DB.attendance = parsed.attendance || [];
+      DB.income     = parsed.income     || [];
+      DB.expense    = parsed.expense    || [];
+      DB.results    = parsed.results    || [];
+      saveDB();
+      renderTeacherTable(); renderStudentTable(); renderIncomeTable();
+      renderExpenseTable(); renderResultList(); updateStats(); refreshNextIds();
+      showToast('ডেটা সফলভাবে লোড হয়েছে!');
+    } catch(err) { showToast('ফাইলটি সঠিক নয়!'); }
+  };
+  reader.readAsText(file);
+  event.target.value = '';
+}
+
+let searchTab = 'all';
+
+// ===== ID GENERATION =====
+function getYear() { return new Date().getFullYear(); }
+
+function genTeacherId() {
+  const seq = String(DB.teachers.length + 1).padStart(3, '0');
+  return `TCH-${getYear()}${seq}`;
+}
+
+function genStudentId() {
+  const seq = String(DB.students.length + 1).padStart(3, '0');
+  return `${getYear()}${seq}`;
+}
+
+function refreshNextIds() {
+  const tid = document.getElementById('t-id-display');
+  const sid = document.getElementById('s-id-display');
+  if (tid) { tid.textContent = genTeacherId(); tid.style.animation = 'none'; void tid.offsetWidth; tid.style.animation = ''; }
+  if (sid) { sid.textContent = genStudentId(); sid.style.animation = 'none'; void sid.offsetWidth; sid.style.animation = ''; }
+}
+
+// ===== PHOTO FUNCTIONS =====
+
+// Compress image using canvas — max 400x500px, quality 0.7 → ~50-150KB
+function compressImage(file, maxW, maxH, quality, callback) {
+  var reader = new FileReader();
+  reader.onload = function(e) {
+    var image = new Image();
+    image.onload = function() {
+      var canvas = document.createElement('canvas');
+      var w = image.width, h = image.height;
+      // Scale down
+      if (w > maxW || h > maxH) {
+        var ratio = Math.min(maxW / w, maxH / h);
+        w = Math.round(w * ratio);
+        h = Math.round(h * ratio);
+      }
+      canvas.width = w;
+      canvas.height = h;
+      var ctx = canvas.getContext('2d');
+      ctx.drawImage(image, 0, 0, w, h);
+      var compressed = canvas.toDataURL('image/jpeg', quality);
+      callback(compressed);
+    };
+    image.src = e.target.result;
+  };
+  reader.readAsDataURL(file);
+}
+
+function previewPhoto(prefix, input) {
+  var file = input.files[0];
+  if (!file) return;
+  // Compress: max 400x500, quality 0.75 → ছবি ~100KB এর মধ্যে থাকবে
+  compressImage(file, 400, 500, 0.75, function(compressed) {
+    var img = document.getElementById(prefix + '-photo-preview');
+    var placeholder = document.getElementById(prefix + '-photo-placeholder');
+    var clearBtn = document.getElementById(prefix + '-photo-clear');
+    img.src = compressed;
+    img.style.display = 'block';
+    placeholder.style.display = 'none';
+    clearBtn.style.display = 'inline-block';
+  });
+}
+
+function clearPhoto(prefix) {
+  var img = document.getElementById(prefix + '-photo-preview');
+  var placeholder = document.getElementById(prefix + '-photo-placeholder');
+  var clearBtn = document.getElementById(prefix + '-photo-clear');
+  var input = document.getElementById(prefix + '-photo-input');
+  img.src = ''; img.style.display = 'none';
+  placeholder.style.display = 'flex';
+  clearBtn.style.display = 'none';
+  input.value = '';
+}
+
+function getPhotoData(prefix) {
+  var img = document.getElementById(prefix + '-photo-preview');
+  return img && img.style.display === 'block' ? img.src : '';
+}
+
+// ===== NID FUNCTIONS =====
+function previewNid(prefix, input) {
+  var file = input.files[0];
+  if (!file) return;
+  // Compress NID: max 800x500, quality 0.7 → ~150KB এর মধ্যে
+  compressImage(file, 800, 500, 0.70, function(compressed) {
+    var img = document.getElementById(prefix + '-preview');
+    var placeholder = document.getElementById(prefix + '-placeholder');
+    var clearBtn = document.getElementById(prefix + '-clear');
+    img.src = compressed;
+    img.style.display = 'block';
+    placeholder.style.display = 'none';
+    clearBtn.style.display = 'inline-block';
+  });
+}
+
+function clearNid(prefix) {
+  const img = document.getElementById(prefix + '-preview');
+  const placeholder = document.getElementById(prefix + '-placeholder');
+  const clearBtn = document.getElementById(prefix + '-clear');
+  const input = document.getElementById(prefix + '-input');
+  img.src = ''; img.style.display = 'none';
+  placeholder.style.display = 'flex';
+  clearBtn.style.display = 'none';
+  if (input) input.value = '';
+}
+
+function getNidData(prefix) {
+  const img = document.getElementById(prefix + '-preview');
+  return img && img.style.display === 'block' ? img.src : '';
+}
+
+function copyId(elId) {
+  const text = document.getElementById(elId).textContent;
+  navigator.clipboard.writeText(text).then(function(){ showToast('কপি হয়েছে: ' + text); });
+}
+
+// ===== PRINT MODAL =====
+function openPrintModal(type, id, name, info, photo) {
+  document.getElementById('modal-card-type').textContent = type === 'teacher' ? 'শিক্ষক পরিচয়পত্র' : 'শিক্ষার্থী পরিচয়পত্র';
+  document.getElementById('modal-card-id').textContent = id;
+  document.getElementById('modal-card-name').textContent = name;
+  document.getElementById('modal-card-info').textContent = info;
+  // photo
+  let photoEl = document.getElementById('modal-card-photo');
+  if (!photoEl) {
+    photoEl = document.createElement('div');
+    photoEl.id = 'modal-card-photo';
+    photoEl.style.cssText = 'margin:0 auto 12px;width:76px;height:95px;border-radius:8px;overflow:hidden;border:2px solid var(--gold);';
+    const cardContent = document.getElementById('modal-card-content');
+    const cardId = document.getElementById('modal-card-id');
+    cardContent.insertBefore(photoEl, cardId);
+  }
+  if (photo) {
+    photoEl.innerHTML = `<img src="${photo}" style="width:100%;height:100%;object-fit:cover">`;
+    photoEl.style.display = 'block';
+  } else {
+    photoEl.innerHTML = '<div style="width:100%;height:100%;background:#f0f0f0;display:flex;align-items:center;justify-content:center;font-size:32px">👤</div>';
+    photoEl.style.display = 'block';
+  }
+  document.getElementById('print-modal').classList.add('open');
+}
+
+function closeModal() {
+  document.getElementById('print-modal').classList.remove('open');
+}
+
+function doPrint() {
+  var card = document.getElementById('modal-card-content').innerHTML;
+  var html = '<!DOCTYPE html><html><head><meta charset="UTF-8"><title>ID Card</title>'
+    + '<link href="https://fonts.googleapis.com/css2?family=Hind+Siliguri:wght@400;700&display=swap" rel="stylesheet">'
+    + '<style>'
+    + 'body{display:flex;justify-content:center;align-items:center;min-height:100vh;margin:0;background:#f5f5f5;font-family:"Hind Siliguri","Noto Sans Bengali",sans-serif;}'
+    + '.id-card-preview{border:2px solid #c9a84c;border-radius:14px;padding:20px 24px;text-align:center;background:linear-gradient(135deg,#f9fcfa,#fdf8ef);width:300px;box-shadow:0 4px 20px rgba(0,0,0,0.15);}'
+    + '#modal-card-photo{margin:0 auto 12px;width:76px;height:95px;border-radius:8px;overflow:hidden;border:2px solid #c9a84c;}'
+    + '#modal-card-photo img{width:100%;height:100%;object-fit:cover;}'
+    + '.card-madrasa{font-size:13px;font-weight:700;color:#0a3d2e;margin-bottom:4px;}'
+    + '.card-type{font-size:11px;color:#888;margin-bottom:10px;border-bottom:1px solid #e8c97a;padding-bottom:10px;}'
+    + '.card-id{font-size:26px;font-weight:800;color:#1a6b4a;margin-bottom:8px;letter-spacing:2px;}'
+    + '.card-name{font-size:16px;font-weight:700;color:#1a1a1a;margin-bottom:4px;}'
+    + '.card-info{font-size:12px;color:#666;}'
+    + '@media print{body{background:white;}}'
+    + '</style></head>'
+    + '<body><div class="id-card-preview">' + card + '</div>'
+    + '<script>window.onload=function(){window.print();}<\/script>'
+    + '</body></html>';
+  var blob = new Blob([html], { type: 'text/html;charset=utf-8' });
+  var url = URL.createObjectURL(blob);
+  var w = window.open(url, '_blank');
+  if (w) { w.addEventListener('load', function(){ URL.revokeObjectURL(url); }); }
+  closeModal();
+}
+
+// ===== UTILS =====
+function showToast(msg) {
+  const t = document.getElementById('toast');
+  t.textContent = msg;
+  t.classList.add('show');
+  setTimeout(() => t.classList.remove('show'), 2800);
+}
+
+function showSection(id) {
+  document.querySelectorAll('.section').forEach(s => s.classList.remove('active'));
+  document.querySelectorAll('.nav-btn').forEach(b => b.classList.remove('active'));
+  document.getElementById(id).classList.add('active');
+  if (id === 'teacher-att') renderAttGrid('teacher');
+  if (id === 'student-att') renderAttGrid('student');
+  if (id === 'home') updateStats();
+  if (id === 'teacher-reg' || id === 'student-reg') refreshNextIds();
+  window.scrollTo(0, 0);
+}
+
+function updateStats() {
+  document.getElementById('stat-teachers').textContent = DB.teachers.length;
+  document.getElementById('stat-students').textContent = DB.students.length;
+  const totalInc = DB.income.reduce((a, b) => a + b.amount, 0);
+  const totalExp = DB.expense.reduce((a, b) => a + b.amount, 0);
+  const balance = totalInc - totalExp;
+  document.getElementById('stat-income').textContent = '৳' + totalInc.toLocaleString('bn-BD');
+  document.getElementById('stat-expense').textContent = '৳' + totalExp.toLocaleString('bn-BD');
+  const balEl = document.getElementById('stat-balance');
+  balEl.textContent = '৳' + Math.abs(balance).toLocaleString('bn-BD');
+  balEl.style.color = balance >= 0 ? 'var(--gold)' : '#c0392b';
+}
+
+function toBn(n) {
+  return n.toString().replace(/\d/g, d => '০১২৩৪৫৬৭৮৯'[d]);
+}
+
+// ===== TEACHER =====
+function saveTeacher() {
+  const name = document.getElementById('t-name').value.trim();
+  const phone = document.getElementById('t-phone').value.trim();
+  if (!name || !phone) { showToast('⚠️ নাম ও মোবাইল নম্বর আবশ্যক'); return; }
+  const autoId = genTeacherId();
+  const t = {
+    id: autoId,
+    photo: getPhotoData('t'),
+    name,
+    father: document.getElementById('t-father').value,
+    mother: document.getElementById('t-mother').value,
+    dob: document.getElementById('t-dob').value,
+    gender: document.getElementById('t-gender').value,
+    marital: document.getElementById('t-marital').value,
+    religion: document.getElementById('t-religion').value,
+    nid: document.getElementById('t-nid').value,
+    birthReg: document.getElementById('t-birth-reg').value,
+    phone,
+    email: document.getElementById('t-email').value,
+    permAddress: document.getElementById('t-perm-address').value,
+    address: document.getElementById('t-address').value,
+    education: document.getElementById('t-education').value,
+    dept: document.getElementById('t-dept').value,
+    experience: document.getElementById('t-experience').value,
+    join: document.getElementById('t-join').value,
+    salary: document.getElementById('t-salary').value,
+    nidFront: getNidData('t-nid-front'),
+    nidBack: getNidData('t-nid-back'),
+  };
+  DB.teachers.push(t);
+  saveDB();
+  renderTeacherTable();
+  ['t-name','t-father','t-mother','t-dob','t-nid','t-birth-reg','t-phone','t-email','t-perm-address','t-address','t-experience','t-join','t-salary'].forEach(id => { const el = document.getElementById(id); if(el) el.value = ''; });
+  ['t-gender','t-marital','t-religion','t-education','t-dept'].forEach(id => { const el = document.getElementById(id); if(el) el.value = ''; });
+  clearPhoto('t');
+  clearNid('t-nid-front');
+  clearNid('t-nid-back');
+  refreshNextIds();
+  showToast(`✅ শিক্ষক নিবন্ধিত! আইডি: ${autoId}`);
+}
+
+function renderTeacherTable() {
+  var tbody = document.getElementById('teacher-table-body');
+  if (!DB.teachers.length) {
+    tbody.innerHTML = '<tr><td colspan="8" style="text-align:center;color:#aaa;padding:20px">কোনো শিক্ষক নিবন্ধিত হননি</td></tr>';
+    return;
+  }
+  var html = '';
+  for (var i = 0; i < DB.teachers.length; i++) {
+    var t = DB.teachers[i];
+    var ph = t.photo ? '<img src="' + t.photo + '" style="width:32px;height:40px;object-fit:cover;border-radius:4px;border:1px solid #ddd">' : '<div style="width:32px;height:40px;background:#f0f0f0;border-radius:4px;display:inline-flex;align-items:center;justify-content:center;">&#128100;</div>';
+    html += '<tr>'
+      + '<td>' + ph + '</td>'
+      + '<td><strong style="color:var(--green-mid)">' + t.id + '</strong></td>'
+      + '<td><strong>' + escH(t.name) + '</strong><br><small style="color:#888">' + (t.gender||'') + (t.religion ? ' | '+t.religion : '') + '</small></td>'
+      + '<td>' + (t.dept||'-') + '</td>'
+      + '<td>' + t.phone + '</td>'
+      + '<td>' + (t.experience ? t.experience+' বছর' : '-') + '</td>'
+      + '<td>' + (t.join||'-') + '</td>'
+      + '<td><button class="btn-print-id" data-act="tid" data-idx="' + i + '">আইডি</button> '
+      + '<button class="btn-print-id" style="background:#1a3a5c" data-act="tform" data-idx="' + i + '">ফরম</button></td>'
+      + '</tr>';
+  }
+  tbody.innerHTML = html;
+}
+
+function renderStudentTable() {
+  var tbody = document.getElementById('student-table-body');
+  if (!DB.students.length) {
+    tbody.innerHTML = '<tr><td colspan="9" style="text-align:center;color:#aaa;padding:20px">কোনো ছাত্র নিবন্ধিত হয়নি</td></tr>';
+    return;
+  }
+  var html = '';
+  for (var i = 0; i < DB.students.length; i++) {
+    var s = DB.students[i];
+    var ph = s.photo
+      ? '<img src="' + s.photo + '" style="width:32px;height:40px;object-fit:cover;border-radius:4px;border:1px solid #ddd">'
+      : '<div style="width:32px;height:40px;background:#f0f0f0;border-radius:4px;display:inline-flex;align-items:center;justify-content:center;">&#128100;</div>';
+    var tbg = s.type==='নতুন' ? '#e8f4f8' : '#fff3e0';
+    var tc  = s.type==='নতুন' ? '#2980b9' : '#e67e22';
+    html += '<tr>'
+      + '<td>' + ph + '</td>'
+      + '<td><strong style="color:var(--green-mid)">' + s.id + '</strong></td>'
+      + '<td><strong>' + (s.name||'') + '</strong></td>'
+      + '<td>' + (s.father||'-') + '</td>'
+      + '<td>' + (s.cls||'-') + '</td>'
+      + '<td><span class="badge" style="background:' + tbg + ';color:' + tc + '">' + (s.type||'-') + '</span></td>'
+      + '<td>' + s.phone + '</td>'
+      + '<td>' + (s.admit||'-') + '</td>'
+      + '<td style="white-space:nowrap">'
+      + '<button class="btn-print-id" data-act="sid" data-idx="' + i + '">আইডি</button> '
+      + '<button class="btn-print-id" style="background:#b8860b" data-act="scopy" data-idx="' + i + '">কপি</button> '
+      + '<button class="btn-print-id" style="background:#1a3a5c" data-act="sform" data-idx="' + i + '">ফরম</button>'
+      + '</td></tr>';
+  }
+  tbody.innerHTML = html;
+}
+
+function copyText(text) {
+  navigator.clipboard.writeText(text).then(function(){ showToast('কপি হয়েছে: ' + text); });
+}
+
+// ===== STUDENT TYPE TOGGLE =====
+var currentStudentType = 'new';
+
+function setStudentType(type) {
+  currentStudentType = type;
+  document.getElementById('btn-new-student').classList.toggle('active', type === 'new');
+  document.getElementById('btn-old-student').classList.toggle('active', type === 'old');
+  document.getElementById('new-student-section').style.display = type === 'new' ? 'block' : 'none';
+  document.getElementById('old-student-section').style.display = type === 'old' ? 'block' : 'none';
+}
+
+// ===== SAVE STUDENT =====
+function saveStudent() {
+  var name = document.getElementById('s-name').value.trim();
+  var phone = document.getElementById('s-phone').value.trim();
+  if (!name) { showToast('শিক্ষার্থীর নাম আবশ্যক'); return; }
+  if (!phone) { showToast('অভিভাবকের মোবাইল নম্বর আবশ্যক'); return; }
+
+  var autoId = genStudentId();
+
+  var clsEl = currentStudentType === 'new'
+    ? document.getElementById('s-class')
+    : document.getElementById('s-class-old');
+  var cls = clsEl ? clsEl.value : '';
+
+  var s = {
+    id: autoId,
+    type: currentStudentType === 'new' ? 'নতুন' : 'পুরাতন',
+    photo: getPhotoData('s'),
+    name: name,
+    father: document.getElementById('s-father').value,
+    mother: document.getElementById('s-mother').value,
+    dob: document.getElementById('s-dob').value,
+    birthReg: document.getElementById('s-birth-reg').value,
+    currAddress: document.getElementById('s-curr-address').value,
+    address: document.getElementById('s-address').value,
+    cls: cls,
+    admit: document.getElementById('s-admit').value,
+    fee: document.getElementById('s-fee').value,
+    guardianName: document.getElementById('s-guardian-name').value,
+    guardianRel: document.getElementById('s-guardian-rel').value,
+    guardianNid: document.getElementById('s-guardian-nid').value,
+    guardianAddress: document.getElementById('s-guardian-address').value,
+    phone: phone,
+    prevSchool: (document.getElementById('s-prev-school') || {}).value || '',
+    prevClassNew: (document.getElementById('s-prev-class-new') || {}).value || '',
+    prevResultNew: (document.getElementById('s-prev-result-new') || {}).value || '',
+    examMark: (document.getElementById('s-exam-mark') || {}).value || '',
+    prevClass: (document.getElementById('s-prev-class') || {}).value || '',
+    prevResult: (document.getElementById('s-prev-result') || {}).value || ''
+  };
+
+  DB.students.push(s);
+  saveDB();
+  renderStudentTable();
+  updateStats();
+
+  // Clear all fields
+  var clearIds = ['s-name','s-father','s-mother','s-dob','s-birth-reg','s-curr-address',
+    's-address','s-phone','s-admit','s-fee','s-guardian-name','s-guardian-nid',
+    's-guardian-address','s-prev-school','s-prev-class-new','s-prev-result-new','s-exam-mark'];
+  clearIds.forEach(function(id) {
+    var el = document.getElementById(id);
+    if (el) el.value = '';
+  });
+  var selIds = ['s-class','s-class-old','s-prev-class','s-prev-result','s-guardian-rel'];
+  selIds.forEach(function(id) {
+    var el = document.getElementById(id);
+    if (el) el.value = '';
+  });
+  clearPhoto('s');
+  refreshNextIds();
+  showToast('শিক্ষার্থী নিবন্ধিত! আইডি: ' + autoId);
+}
+
+// ===== ATTENDANCE =====
+function renderAttGrid(type) {
+  var list = type === 'teacher' ? DB.teachers : DB.students;
+  var gridId = type === 'teacher' ? 'teacher-att-grid' : 'student-att-grid';
+  var grid = document.getElementById(gridId);
+  if (!list.length) {
+    grid.innerHTML = '<div style="color:#aaa;font-size:14px;grid-column:1/-1;padding:20px;text-align:center">প্রথমে ' + (type === 'teacher' ? 'শিক্ষক' : 'ছাত্র') + ' নিবন্ধন করুন</div>';
+    return;
+  }
+  var html2 = '';
+  for (var j=0; j<list.length; j++) {
+    var p = list[j];
+    html2 += '<div class="attendance-card">'
+      + '<div class="att-name">' + (p.name||'') + '</div>'
+      + '<div class="att-id"><strong style="color:var(--green-mid)">' + p.id + '</strong> | ' + (p.dept||p.cls||'') + '</div>'
+      + '<div class="att-toggle">'
+      + '<button class="present-btn selected" onclick="toggleAtt(this,&quot;present&quot;)">উপস্থিত</button>'
+      + '<button class="absent-btn" onclick="toggleAtt(this,&quot;absent&quot;)">অনুপস্থিত</button>'
+      + '</div></div>';
+  }
+  grid.innerHTML = html2;
+}
+
+function toggleAtt(btn, status) {
+  const toggle = btn.parentElement;
+  toggle.querySelectorAll('button').forEach(b => b.classList.remove('selected'));
+  btn.classList.add('selected');
+}
+
+function saveAttendance(type) {
+  const dateId = type === 'teacher' ? 't-att-date' : 's-att-date';
+  const date = document.getElementById(dateId).value;
+  if (!date) { showToast('⚠️ তারিখ নির্বাচন করুন'); return; }
+  const list = type === 'teacher' ? DB.teachers : DB.students;
+  const gridId = type === 'teacher' ? 'teacher-att-grid' : 'student-att-grid';
+  const cards = document.getElementById(gridId).querySelectorAll('.attendance-card');
+  let saved = 0;
+  cards.forEach((card, i) => {
+    const person = list[i];
+    const selectedBtn = card.querySelector('.att-toggle .selected');
+    const status = selectedBtn ? (selectedBtn.classList.contains('present-btn') ? 'present' : 'absent') : 'present';
+    DB.attendance.push({ date, type, id: person.id, name: person.name, extra: person.dept || person.cls || '', status });
+    saveDB();
+    saved++;
+  });
+  renderAttHistory(type);
+  showToast(`✅ ${toBn(saved)} জনের হাজিরা সংরক্ষিত হয়েছে`);
+}
+
+function renderAttHistory(type) {
+  var records = DB.attendance.filter(function(a){ return a.type === type; }).slice(-20).reverse();
+  var tbodyId = type === 'teacher' ? 'teacher-att-history' : 'student-att-history';
+  var tbody = document.getElementById(tbodyId);
+  if (!records.length) {
+    tbody.innerHTML = '<tr><td colspan="5" style="text-align:center;color:#aaa;padding:20px">কোনো হাজিরা রেকর্ড নেই</td></tr>';
+    return;
+  }
+  tbody.innerHTML = records.map(function(r) {
+    var sc = r.status === 'present' ? 'badge-income' : 'badge-expense';
+    var st = r.status === 'present' ? 'উপস্থিত' : 'অনুপস্থিত';
+    return '<tr><td>' + r.date + '</td><td>' + r.id + '</td><td>' + r.name + '</td><td>' + (r.extra||'-') + '</td><td><span class="badge ' + sc + '">' + st + '</span></td></tr>';
+  }).join('');
+}
+
+// ===== INCOME =====
+function saveIncome() {
+  const date = document.getElementById('inc-date').value;
+  const source = document.getElementById('inc-source').value;
+  const amount = parseFloat(document.getElementById('inc-amount').value);
+  if (!date || !source || !amount) { showToast('⚠️ তারিখ, উৎস ও পরিমাণ আবশ্যক'); return; }
+  DB.income.push({
+    date, source, amount,
+    from: document.getElementById('inc-from').value,
+    note: document.getElementById('inc-note').value
+  });
+  saveDB();
+  renderIncomeTable();
+  ['inc-date','inc-amount','inc-from','inc-note'].forEach(id => document.getElementById(id).value = '');
+  document.getElementById('inc-source').value = '';
+  showToast('✅ আয় সফলভাবে সংরক্ষিত হয়েছে');
+}
+
+function renderIncomeTable() {
+  var tbody = document.getElementById('income-table-body');
+  if (!DB.income.length) {
+    tbody.innerHTML = '<tr><td colspan="6" style="text-align:center;color:#aaa;padding:20px">কোনো আয় এন্ট্রি নেই</td></tr>';
+    return;
+  }
+  var reversed = DB.income.slice().reverse();
+  tbody.innerHTML = reversed.map(function(inc, i) {
+    var realIdx = DB.income.length - 1 - i;
+    return '<tr>'
+      + '<td>' + toBn(DB.income.length - i) + '</td>'
+      + '<td>' + inc.date + '</td>'
+      + '<td><span class="badge badge-income">' + inc.source + '</span></td>'
+      + '<td>' + (inc.from||'-') + '</td>'
+      + '<td><strong style="color:#1a6b4a">৳' + inc.amount.toLocaleString() + '</strong></td>'
+      + '<td><button class="btn-print-id" data-act="ireceipt" data-idx="' + realIdx + '">রিসিট</button></td>'
+      + '</tr>';
+  }).join('');
+}
+
+// ===== EXPENSE =====
+function saveExpense() {
+  const date = document.getElementById('exp-date').value;
+  const type = document.getElementById('exp-type').value;
+  const amount = parseFloat(document.getElementById('exp-amount').value);
+  if (!date || !type || !amount) { showToast('⚠️ তারিখ, ধরন ও পরিমাণ আবশ্যক'); return; }
+  DB.expense.push({
+    date, type, amount,
+    to: document.getElementById('exp-to').value,
+    note: document.getElementById('exp-note').value
+  });
+  saveDB();
+  renderExpenseTable();
+  ['exp-date','exp-amount','exp-to','exp-note'].forEach(id => document.getElementById(id).value = '');
+  document.getElementById('exp-type').value = '';
+  showToast('✅ ব্যয় সফলভাবে সংরক্ষিত হয়েছে');
+}
+
+function renderExpenseTable() {
+  var tbody = document.getElementById('expense-table-body');
+  if (!DB.expense.length) {
+    tbody.innerHTML = '<tr><td colspan="6" style="text-align:center;color:#aaa;padding:20px">কোনো ব্যয় এন্ট্রি নেই</td></tr>';
+    return;
+  }
+  var reversed = DB.expense.slice().reverse();
+  tbody.innerHTML = reversed.map(function(exp, i) {
+    var realIdx = DB.expense.length - 1 - i;
+    return '<tr>'
+      + '<td>' + toBn(DB.expense.length - i) + '</td>'
+      + '<td>' + exp.date + '</td>'
+      + '<td><span class="badge badge-expense">' + exp.type + '</span></td>'
+      + '<td>' + (exp.to||'-') + '</td>'
+      + '<td><strong style="color:#c0392b">৳' + exp.amount.toLocaleString() + '</strong></td>'
+      + '<td><button class="btn-print-id" style="background:#c0392b" data-act="ereceipt" data-idx="' + realIdx + '">রিসিট</button></td>'
+      + '</tr>';
+  }).join('');
+}
+
+// ===== SEARCH =====
+function setSearchTab(tab, btn) {
+  searchTab = tab;
+  document.querySelectorAll('.search-tab').forEach(b => b.classList.remove('active'));
+  btn.classList.add('active');
+}
+
+function doSearch() {
+  var q = document.getElementById('search-input').value.trim().toLowerCase();
+  if (!q) { showToast('কিছু লিখে সার্চ করুন'); return; }
+  var results = [];
+  if (searchTab === 'all' || searchTab === 'teacher') {
+    DB.teachers.forEach(function(t, i) {
+      if (t.name.toLowerCase().includes(q) || t.phone.includes(q) || t.id.toLowerCase().includes(q) || (t.dept||'').toLowerCase().includes(q)) {
+        results.push({ type:'শিক্ষক', id:t.id, name:escH(t.name), info:t.dept||'-', extra:t.phone, act:'tid', idx:i });
+      }
+    });
+  }
+  if (searchTab === 'all' || searchTab === 'student') {
+    DB.students.forEach(function(s, i) {
+      if (s.name.toLowerCase().includes(q) || s.phone.includes(q) || s.id.includes(q) || (s.cls||'').toLowerCase().includes(q) || (s.father||'').toLowerCase().includes(q)) {
+        results.push({ type:'ছাত্র', id:s.id, name:escH(s.name), info:s.cls||'-', extra:s.phone, act:'sid', idx:i });
+      }
+    });
+  }
+  if (searchTab === 'all' || searchTab === 'income') {
+    DB.income.forEach(function(inc, i) {
+      if (inc.source.toLowerCase().includes(q) || (inc.from||'').toLowerCase().includes(q) || (inc.note||'').toLowerCase().includes(q)) {
+        results.push({ type:'আয়', id:'-', name:inc.source, info:inc.date, extra:'৳'+inc.amount });
+      }
+    });
+  }
+  if (searchTab === 'all' || searchTab === 'expense') {
+    DB.expense.forEach(function(exp, i) {
+      if (exp.type.toLowerCase().includes(q) || (exp.to||'').toLowerCase().includes(q) || (exp.note||'').toLowerCase().includes(q)) {
+        results.push({ type:'ব্যয়', id:'-', name:exp.type, info:exp.date, extra:'৳'+exp.amount });
+      }
+    });
+  }
+  var container = document.getElementById('search-results');
+  if (!results.length) {
+    container.innerHTML = '<div style="text-align:center;color:#aaa;padding:30px;">কোনো ফলাফল পাওয়া যায়নি</div>';
+    return;
+  }
+  var rows = '';
+  for (var i = 0; i < results.length; i++) {
+    var r = results[i];
+    var btn = r.act ? '<button class="btn-print-id" data-act="' + r.act + '" data-idx="' + r.idx + '">আইডি প্রিন্ট</button>' : '';
+    rows += '<tr><td><span class="badge">' + r.type + '</span></td><td style="color:var(--green-mid);font-weight:700;">' + r.id + '</td><td>' + r.name + '</td><td>' + r.info + '</td><td>' + r.extra + '</td><td>' + btn + '</td></tr>';
+  }
+  container.innerHTML = '<table><thead><tr><th>ধরন</th><th>আইডি</th><th>নাম</th><th>তথ্য</th><th>বিস্তারিত</th><th>অ্যাকশন</th></tr></thead><tbody>' + rows + '</tbody></table>';
+}
+
+
+// ===== PRINT FUNCTIONS =====
+
+// ===== PRINT FUNCTIONS =====
+
+function madrasaHeader() {
+  return document.getElementById('tpl-madrasa-header').innerHTML;
+}
+
+function simpleHeader() {
+  return document.getElementById('tpl-simple-header').innerHTML;
+}
+
+function printStyles() {
+  return '<link href="https://fonts.googleapis.com/css2?family=Hind+Siliguri:wght@400;500;600;700&display=swap" rel="stylesheet">'
+    + '<style>'
+    + '* { margin:0; padding:0; box-sizing:border-box; }'
+    + 'body { font-family:"Hind Siliguri","Noto Sans Bengali",sans-serif; background:#fff; color:#1a1a1a; font-size:13px; }'
+    + '@media print { .no-print { display:none !important; } .page { page-break-after:always; } .page:last-child { page-break-after:auto; } }'
+    + '@page { size:A4; margin:12mm; }'
+    + 'table { width:100%; border-collapse:collapse; }'
+    + 'th { background:#0a3d2e; color:white; padding:8px 10px; text-align:left; font-size:12px; }'
+    + 'td { padding:7px 10px; border-bottom:1px solid #eee; }'
+    + 'tr:nth-child(even) td { background:#f9f9f9; }'
+    + '.total-row td { font-weight:700; background:#e8f4ed !important; color:#0a3d2e; }'
+    + '.receipt-box { border:1px solid #ddd; border-radius:8px; padding:16px; margin:14px 0; }'
+    + '.frow { display:flex; gap:10px; margin-bottom:8px; flex-wrap:wrap; }'
+    + '.fcell { flex:1; min-width:160px; }'
+    + '.fcell label { font-size:11px; color:#888; display:block; margin-bottom:2px; }'
+    + '.fcell span { font-weight:600; color:#0a3d2e; font-size:13px; }'
+    + '.print-btn { background:#0a3d2e; color:white; border:none; padding:12px 36px; border-radius:8px; font-size:15px; cursor:pointer; margin:10px 8px; font-weight:600; }'
+    + '.close-btn { background:#888; color:white; border:none; padding:12px 28px; border-radius:8px; font-size:15px; cursor:pointer; margin:10px 8px; font-weight:600; }'
+    + '</style>';
+}
+
+function openPrintWindow(html) {
+  var footer = document.getElementById('tpl-print-footer').innerHTML;
+  var fullHtml = '<!DOCTYPE html><html><head><meta charset="UTF-8">'
+    + printStyles()
+    + '</head><body>'
+    + html
+    + footer
+    + '</body></html>';
+
+  // Blob URL ensures UTF-8 charset — Bengali text renders correctly
+  var blob = new Blob([fullHtml], { type: 'text/html;charset=utf-8' });
+  var url = URL.createObjectURL(blob);
+  var w = window.open(url, '_blank');
+  if (w) {
+    w.addEventListener('load', function() { URL.revokeObjectURL(url); });
+  }
+}
+
+function printSingleReceipt(type, idx) {
+  var item = type === 'income' ? DB.income[idx] : DB.expense[idx];
+  if (!item) { showToast('তথ্য পাওয়া যায়নি'); return; }
+  var title = type === 'income' ? 'আয়ের রিসিট' : 'ব্যয়ের রিসিট';
+  var color = type === 'income' ? '#1a6b4a' : '#c0392b';
+  var serial = new Date().getFullYear() + '-' + String(idx+1).padStart(4,'0');
+  var html = simpleHeader()
+    + '<div style="text-align:center;margin-bottom:16px;">'
+    + '<span style="font-size:18px;font-weight:700;color:' + color + ';">' + title + '</span>'
+    + '<div style="font-size:11px;color:#888;margin-top:4px;">রিসিট নং: ' + serial + '</div>'
+    + '</div>'
+    + '<div class="receipt-box">'
+    + '<div class="frow"><div class="fcell"><label>তারিখ</label><span>' + item.date + '</span></div>'
+    + '<div class="fcell"><label>' + (type==='income'?'উৎস':'ধরন') + '</label><span>' + (type==='income'?item.source:item.type) + '</span></div></div>'
+    + '<div class="frow"><div class="fcell"><label>' + (type==='income'?'প্রদানকারী':'প্রাপক') + '</label><span>' + (type==='income'?(item.from||'-'):(item.to||'-')) + '</span></div>'
+    + '<div class="fcell"><label>পরিমাণ</label><span style="font-size:20px;font-weight:700;color:' + color + ';">৳' + item.amount.toLocaleString() + '</span></div></div>'
+    + (item.note ? '<div class="frow"><div class="fcell" style="flex:2"><label>বিবরণ</label><span>' + item.note + '</span></div></div>' : '')
+    + '</div>'
+    + '<div style="display:flex;justify-content:space-between;margin-top:50px;padding-top:12px;">'
+    + '<div style="text-align:center;"><div style="border-top:1.5px solid #333;width:120px;margin:0 auto;"></div><div style="font-size:11px;margin-top:4px;">গ্রহীতার স্বাক্ষর</div></div>'
+    + '<div style="text-align:center;"><div style="border-top:1.5px solid #333;width:120px;margin:0 auto;"></div><div style="font-size:11px;margin-top:4px;">প্রদানকারীর স্বাক্ষর</div></div>'
+    + '<div style="text-align:center;"><div style="border-top:1.5px solid #333;width:120px;margin:0 auto;"></div><div style="font-size:11px;margin-top:4px;">অনুমোদনকারীর স্বাক্ষর</div></div>'
+    + '</div>';
+  openPrintWindow(html);
+}
+
+function printIncomeExpense(type) {
+  var list = type === 'income' ? DB.income : DB.expense;
+  if (!list.length) { showToast('কোনো তথ্য নেই'); return; }
+  var title = type === 'income' ? 'আয়ের হিসাব' : 'ব্যয়ের হিসাব';
+  var color = type === 'income' ? '#1a6b4a' : '#c0392b';
+  var total = list.reduce(function(a,b){ return a + b.amount; }, 0);
+  var rows = list.map(function(item, i) {
+    return '<tr><td>' + (i+1) + '</td><td>' + item.date + '</td>'
+      + '<td>' + (type==='income'?item.source:item.type) + '</td>'
+      + '<td>' + (type==='income'?(item.from||'-'):(item.to||'-')) + '</td>'
+      + '<td style="text-align:right;color:' + color + ';font-weight:600;">৳' + item.amount.toLocaleString() + '</td>'
+      + '<td>' + (item.note||'-') + '</td></tr>';
+  }).join('');
+  var html = simpleHeader()
+    + '<div style="text-align:center;margin-bottom:14px;"><span style="font-size:17px;font-weight:700;color:' + color + ';">' + title + '</span></div>'
+    + '<table><thead><tr><th>#</th><th>তারিখ</th><th>' + (type==='income'?'উৎস':'ধরন') + '</th><th>' + (type==='income'?'প্রদানকারী':'প্রাপক') + '</th><th>পরিমাণ</th><th>বিবরণ</th></tr></thead>'
+    + '<tbody>' + rows
+    + '<tr class="total-row"><td colspan="4" style="text-align:right;font-weight:700;">মোট</td><td style="text-align:right;font-size:15px;color:' + color + ';">৳' + total.toLocaleString() + '</td><td></td></tr>'
+    + '</tbody></table>'
+    + '<div style="margin-top:40px;display:flex;justify-content:flex-end;">'
+    + '<div style="text-align:center;"><div style="border-top:1.5px solid #333;width:150px;margin:0 auto;"></div><div style="font-size:11px;margin-top:4px;">অনুমোদনকারীর স্বাক্ষর ও সীল</div></div>'
+    + '</div>';
+  openPrintWindow(html);
+}
+
+function printAdmissionForm(type) {
+  var list = type === 'teacher' ? DB.teachers : DB.students;
+  if (!list.length) { showToast('কোনো তথ্য নেই'); return; }
+  var forms = '';
+  for (var i = 0; i < list.length; i++) {
+    forms += buildAdmissionPage(type, list[i], i, list.length);
+  }
+  openPrintWindow(forms);
+}
+
+function buildAdmissionPage(type, p, idx, total) {
+  var isT = type === 'teacher';
+  var title = isT ? 'শিক্ষক নিবন্ধন ফরম' : 'শিক্ষার্থী ভর্তি ফরম';
+  var serial = new Date().getFullYear() + '-' + String(idx+1).padStart(4,'0');
+  var today = new Date().toLocaleDateString('bn-BD');
+
+  var photoBox = p.photo
+    ? '<img src="' + p.photo + '" style="width:113px;height:142px;object-fit:cover;border:2px solid #c9a84c;border-radius:4px;display:block;">'
+    : '<div style="width:113px;height:142px;border:2px dashed #c9a84c;border-radius:4px;display:flex;flex-direction:column;align-items:center;justify-content:center;background:#fffbf0;"><div style="font-size:28px;color:#ddd;">&#128247;</div><div style="font-size:10px;color:#aaa;margin-top:6px;text-align:center;">৪x৫ সে.মি.</div></div>';
+
+  function row(l1, v1, l2, v2) {
+    var c2 = (l2 !== undefined)
+      ? '<td style="width:22%;background:#f0f7f3;font-size:12px;color:#555;padding:7px 10px;border:1px solid #d0e8db;">' + l2 + '</td><td style="width:28%;padding:7px 10px;border:1px solid #d0e8db;font-weight:600;color:#0a2d1e;">' + (v2||'—') + '</td>'
+      : '<td colspan="2" style="border:1px solid #d0e8db;"></td>';
+    return '<tr><td style="width:22%;background:#f0f7f3;font-size:12px;color:#555;padding:7px 10px;border:1px solid #d0e8db;">' + l1 + '</td><td style="width:28%;padding:7px 10px;border:1px solid #d0e8db;font-weight:600;color:#0a2d1e;">' + (v1||'—') + '</td>' + c2 + '</tr>';
+  }
+  function sec(t, c, bg) {
+    return '<tr><td colspan="4" style="background:' + (bg||'#e8f4ed') + ';color:' + (c||'#0a3d2e') + ';font-weight:700;font-size:13px;padding:8px 12px;border:1px solid #d0e8db;">&#9658; ' + t + '</td></tr>';
+  }
+
+  var tableRows = '';
+  if (isT) {
+    tableRows = sec('ব্যক্তিগত তথ্য')
+      + row('শিক্ষক আইডি', '<span style="color:#1a6b4a;font-size:15px;font-weight:700;">' + p.id + '</span>', 'যোগদানের তারিখ', p.join)
+      + row('পূর্ণ নাম', p.name, 'পিতার নাম', p.father)
+      + row('মাতার নাম', p.mother, 'জন্ম তারিখ', p.dob)
+      + row('লিঙ্গ', p.gender, 'বৈবাহিক অবস্থা', p.marital)
+      + row('ধর্ম', p.religion)
+      + sec('পরিচয়পত্র')
+      + row('NID নম্বর', p.nid, 'জন্ম নিবন্ধন নম্বর', p.birthReg)
+      + sec('যোগাযোগ ও ঠিকানা')
+      + row('মোবাইল নম্বর', p.phone, 'ই-মেইল', p.email)
+      + row('স্থায়ী ঠিকানা', p.permAddress, 'বর্তমান ঠিকানা', p.address)
+      + sec('শিক্ষাগত ও পেশাগত তথ্য')
+      + row('শিক্ষাগত যোগ্যতা', p.education, 'বিভাগ', p.dept)
+      + row('শিক্ষকতার অভিজ্ঞতা', p.experience ? p.experience+' বছর' : '', 'মাসিক বেতন', p.salary ? '৳'+p.salary : '');
+  } else {
+    tableRows = sec('শিক্ষার্থীর ব্যক্তিগত তথ্য')
+      + row('শিক্ষার্থী আইডি', '<span style="color:#1a6b4a;font-size:15px;font-weight:700;">' + p.id + '</span>', 'ভর্তির তারিখ', p.admit)
+      + row('ভর্তির ধরন', p.type, 'শ্রেণি / জামাত', p.cls)
+      + row('শিক্ষার্থীর নাম', p.name, 'পিতার নাম', p.father)
+      + row('মাতার নাম', p.mother, 'জন্ম তারিখ', p.dob)
+      + row('জন্ম নিবন্ধন নম্বর', p.birthReg, 'মাসিক বেতন', p.fee ? '৳'+p.fee : '')
+      + row('বর্তমান ঠিকানা', p.currAddress, 'স্থায়ী ঠিকানা', p.address)
+      + sec('অভিভাবকের তথ্য', '#5d3a00', '#fff3e0')
+      + row('অভিভাবকের নাম', p.guardianName, 'সম্পর্ক', p.guardianRel)
+      + row('মোবাইল নম্বর', p.phone, 'NID নম্বর', p.guardianNid)
+      + row('অভিভাবকের ঠিকানা', p.guardianAddress)
+      + sec('পূর্ববর্তী শিক্ষা তথ্য', '#1a3a5c', '#e8f0f8');
+    if (p.type === 'পুরাতন') {
+      tableRows += row('পূর্বের বিভাগ / শ্রেণি', p.prevClass, 'গত বছরের ফলাফল', p.prevResult);
+    } else {
+      tableRows += row('পূর্বের প্রতিষ্ঠান', p.prevSchool, 'পূর্বের শ্রেণি', p.prevClassNew)
+        + row('পূর্বের ফলাফল', p.prevResultNew, 'ভর্তি পরীক্ষার নম্বর', p.examMark);
+    }
+  }
+
+  var nidHtml = '';
+  if (isT && (p.nidFront || p.nidBack)) {
+    nidHtml = '<div style="margin-top:14px;">'
+      + '<div style="background:#e8f4ed;color:#0a3d2e;font-weight:700;font-size:12px;padding:7px 12px;border-left:4px solid #1a6b4a;margin-bottom:10px;">জাতীয় পরিচয়পত্রের ছবি</div>'
+      + '<div style="display:flex;gap:16px;flex-wrap:wrap;">'
+      + (p.nidFront ? '<div><div style="font-size:11px;color:#888;margin-bottom:4px;">সামনের পাশ (Front)</div><img src="' + p.nidFront + '" style="width:200px;height:125px;object-fit:cover;border:1px solid #c9a84c;border-radius:4px;"></div>' : '')
+      + (p.nidBack ? '<div><div style="font-size:11px;color:#888;margin-bottom:4px;">পেছনের পাশ (Back)</div><img src="' + p.nidBack + '" style="width:200px;height:125px;object-fit:cover;border:1px solid #c9a84c;border-radius:4px;"></div>' : '')
+      + '</div></div>';
+  }
+
+  return '<div class="page" style="max-width:794px;margin:0 auto;min-height:1060px;position:relative;padding-bottom:55px;">'
+    + madrasaHeader()
+    + '<div style="display:flex;align-items:center;justify-content:space-between;background:#0a3d2e;color:white;padding:9px 18px;">'
+    + '<div style="font-size:15px;font-weight:700;">' + title + '</div>'
+    + '<div style="font-size:11px;color:#e8c97a;">ফরম নং: ' + serial + ' | তারিখ: ' + today + '</div>'
+    + '</div>'
+    + '<div style="padding:14px 18px;">'
+    + '<div style="display:flex;gap:14px;align-items:flex-start;margin-bottom:12px;">'
+    + '<div style="flex-shrink:0;text-align:center;">' + photoBox + '<div style="font-size:10px;color:#aaa;margin-top:4px;">সত্যায়িত ছবি</div></div>'
+    + '<div style="flex:1;overflow:hidden;"><table style="width:100%;border-collapse:collapse;font-size:12.5px;"><tbody>' + tableRows + '</tbody></table></div>'
+    + '</div>'
+    + nidHtml
+    + '<div style="background:#fffbf0;border:1px solid #e8c97a;border-radius:5px;padding:10px 14px;margin-top:12px;">'
+    + '<span style="font-size:12px;font-weight:700;color:#0a3d2e;">ঘোষণাপত্র: </span>'
+    + '<span style="font-size:12px;color:#444;line-height:1.8;">আমি এতদ্বারা ঘোষণা করছি যে উপরে প্রদত্ত সকল তথ্য সম্পূর্ণ সত্য ও নির্ভুল। কোনো তথ্য মিথ্যা প্রমাণিত হলে আমার ' + (isT?'নিবন্ধন':'ভর্তি') + ' বাতিলযোগ্য বলে গণ্য হবে।</span>'
+    + '</div>'
+    + '<div style="display:flex;justify-content:space-between;margin-top:32px;gap:10px;">'
+    + '<div style="text-align:center;flex:1;"><div style="border-top:1.5px solid #555;margin:0 auto 5px;width:120px;"></div><div style="font-size:11px;font-weight:600;">' + (isT?'শিক্ষকের স্বাক্ষর':'শিক্ষার্থীর স্বাক্ষর') + '</div><div style="font-size:10px;color:#aaa;margin-top:2px;">তারিখ: ___________</div></div>'
+    + '<div style="text-align:center;flex:1;"><div style="border-top:1.5px solid #555;margin:0 auto 5px;width:120px;"></div><div style="font-size:11px;font-weight:600;">অভিভাবকের স্বাক্ষর</div><div style="font-size:10px;color:#aaa;margin-top:2px;">তারিখ: ___________</div></div>'
+    + '<div style="text-align:center;flex:1;"><div style="border-top:1.5px solid #555;margin:0 auto 5px;width:120px;"></div><div style="font-size:11px;font-weight:600;">প্রধান শিক্ষকের স্বাক্ষর ও সীল</div><div style="font-size:10px;color:#aaa;margin-top:2px;">তারিখ: ___________</div></div>'
+    + '</div>'
+    + '</div>'
+    + '<div style="position:absolute;bottom:0;left:0;right:0;border-top:2px solid #c9a84c;padding:6px 18px;display:flex;justify-content:space-between;background:#f9fcfa;">'
+    + '<div style="font-size:10px;color:#888;">হিফজুল কুরআন রশিদিয়া হোসাইনিয়া নূরাণী মাদ্রাসা, বরিশাল</div>'
+    + '<div style="font-size:10px;color:#888;">পৃষ্ঠা ' + (idx+1) + ' / ' + total + '</div>'
+    + '</div>'
+    + '</div>';
+}
+
+function printSingleAdmission(type, id) {
+  var list = type === 'teacher' ? DB.teachers : DB.students;
+  var person = null;
+  for (var i = 0; i < list.length; i++) { if (list[i].id === id) { person = list[i]; break; } }
+  if (!person) { showToast('তথ্য পাওয়া যায়নি'); return; }
+  openPrintWindow(buildAdmissionPage(type, person, 0, 1));
+}
+
+
+
+// ===== RESULT FUNCTIONS =====
+
+var SUBJECTS = {
+  general: [
+    { name: 'আরবি প্রথম পত্র (লিখিত)', full: 100 },
+    { name: 'আরবি দ্বিতীয় পত্র (মৌখিক)', full: 100 },
+    { name: 'বাংলা', full: 100 },
+    { name: 'গণিত', full: 100 },
+    { name: 'ইংরেজি', full: 100 },
+    { name: 'হাদিস ও দোয়া', full: 100 },
+    { name: 'মাসয়ালা', full: 100 },
+    { name: 'সাধারণ জ্ঞান ও ইলমী আমলী', full: 100 },
+    { name: 'ICT', full: 100 }
+  ],
+  hifz: [
+    { name: 'মাসয়ালা', full: 100 },
+    { name: 'দোয়া', full: 100 },
+    { name: 'তাজবিদ', full: 100 },
+    { name: 'কুরআন শরীফ', full: 100 }
+  ]
+};
+
+function getGrade(percent) {
+  if (percent >= 80) return { label: 'A+', cls: 'grade-ap', points: 5.0 };
+  if (percent >= 70) return { label: 'A',  cls: 'grade-a',  points: 4.0 };
+  if (percent >= 60) return { label: 'B',  cls: 'grade-b',  points: 3.5 };
+  if (percent >= 50) return { label: 'C',  cls: 'grade-c',  points: 3.0 };
+  if (percent >= 33) return { label: 'D',  cls: 'grade-d',  points: 2.0 };
+  return { label: 'F', cls: 'grade-f', points: 0.0 };
+}
+
+function getResultStatus(percent) {
+  return percent >= 33 ? 'পাস' : 'ফেল';
+}
+
+function setResultTab(tab, btn) {
+  document.querySelectorAll('.result-tab').forEach(function(b){ b.classList.remove('active'); });
+  btn.classList.add('active');
+  document.querySelectorAll('.result-tab-content').forEach(function(el){ el.style.display = 'none'; });
+  document.getElementById('result-' + tab).style.display = 'block';
+  if (tab === 'personal') populatePersonalStudentList();
+}
+
+function loadResultSubjects() {
+  var dept = document.getElementById('res-dept').value;
+  var clsEl = document.getElementById('res-class');
+  var container = document.getElementById('res-subjects-container');
+
+  // Update class options based on dept
+  if (dept === 'general') {
+    clsEl.innerHTML = '<option value="">নির্বাচন করুন</option>'
+      + '<option>প্লে</option><option>নার্সারি</option>'
+      + '<option>প্রথম শ্রেণি</option><option>দ্বিতীয় শ্রেণি</option><option>তৃতীয় শ্রেণি</option>';
+  } else if (dept === 'hifz') {
+    clsEl.innerHTML = '<option value="">নির্বাচন করুন</option>'
+      + '<option>নাজেরা</option><option>হিফজ</option>';
+  } else {
+    clsEl.innerHTML = '<option value="">নির্বাচন করুন</option>';
+    container.style.display = 'none';
+    return;
+  }
+
+  var subjects = SUBJECTS[dept] || [];
+  var tbody = document.getElementById('res-marks-body');
+  tbody.innerHTML = subjects.map(function(s, i) {
+    return '<tr>'
+      + '<td style="padding:8px 12px;border-bottom:1px solid #eee;">' + s.name + '</td>'
+      + '<td style="padding:8px 12px;border-bottom:1px solid #eee;text-align:center;">' + s.full + '</td>'
+      + '<td style="padding:8px 12px;border-bottom:1px solid #eee;text-align:center;">'
+      + '<input type="number" id="mark-' + i + '" min="0" max="' + s.full + '" placeholder="০"'
+      + ' style="width:70px;padding:6px;text-align:center;border:1.5px solid #ddd;border-radius:6px;font-family:var(--bn-font);font-size:14px;"'
+      + ' oninput="calcResultTotal()">'
+      + '</td>'
+      + '<td style="padding:8px 12px;border-bottom:1px solid #eee;text-align:center;" id="grade-' + i + '">—</td>'
+      + '</tr>';
+  }).join('');
+
+  // Calc total full marks
+  var totalFull = subjects.reduce(function(a, b){ return a + b.full; }, 0);
+  document.getElementById('res-total-full').textContent = totalFull;
+  document.getElementById('res-total-obtained').textContent = '০';
+  document.getElementById('res-final-grade').textContent = '—';
+  container.style.display = 'block';
+
+  // Load students for this class
+  loadStudentsForClass();
+}
+
+function loadStudentsForClass() {
+  var cls = document.getElementById('res-class').value;
+  var sel = document.getElementById('res-student');
+  var matching = DB.students.filter(function(s){ return !cls || s.cls === cls; });
+  if (matching.length) {
+    sel.innerHTML = '<option value="">নির্বাচন করুন</option>'
+      + matching.map(function(s){ return '<option value="' + s.id + '">' + s.name + ' (' + s.id + ')</option>'; }).join('');
+  } else {
+    sel.innerHTML = '<option value="">এই শ্রেণিতে কোনো শিক্ষার্থী নেই</option>';
+  }
+}
+
+function calcResultTotal() {
+  var dept = document.getElementById('res-dept').value;
+  var subjects = SUBJECTS[dept] || [];
+  var totalFull = subjects.reduce(function(a, b){ return a + b.full; }, 0);
+  var totalObtained = 0;
+  var failed = false;
+  subjects.forEach(function(s, i) {
+    var inp = document.getElementById('mark-' + i);
+    var val = inp ? (parseFloat(inp.value) || 0) : 0;
+    if (val > s.full) { inp.value = s.full; val = s.full; }
+    var pct = s.full > 0 ? (val / s.full) * 100 : 0;
+    var g = getGrade(pct);
+    var cell = document.getElementById('grade-' + i);
+    if (cell) cell.innerHTML = '<span class="' + g.cls + '">' + g.label + '</span>';
+    if (g.label === 'F') failed = true;
+    totalObtained += val;
+  });
+  document.getElementById('res-total-obtained').textContent = totalObtained;
+  var overallPct = totalFull > 0 ? (totalObtained / totalFull) * 100 : 0;
+  var finalG = failed ? { label: 'F', cls: 'grade-f' } : getGrade(overallPct);
+  document.getElementById('res-final-grade').innerHTML = '<span class="' + finalG.cls + '">' + finalG.label + '</span>';
+}
+
+function saveResult() {
+  var examName = document.getElementById('res-exam-name').value;
+  var dept = document.getElementById('res-dept').value;
+  var cls = document.getElementById('res-class').value;
+  var studentId = document.getElementById('res-student').value;
+  var date = document.getElementById('res-date').value;
+  var year = document.getElementById('res-year').value;
+  var comment = document.getElementById('res-comment').value;
+
+  if (!examName) { showToast('পরীক্ষার নাম দিন'); return; }
+  if (!dept) { showToast('বিভাগ নির্বাচন করুন'); return; }
+  if (!cls) { showToast('শ্রেণি নির্বাচন করুন'); return; }
+  if (!studentId) { showToast('শিক্ষার্থী নির্বাচন করুন'); return; }
+
+  var subjects = SUBJECTS[dept] || [];
+  var marks = subjects.map(function(s, i) {
+    var inp = document.getElementById('mark-' + i);
+    return { subject: s.name, full: s.full, obtained: inp ? (parseFloat(inp.value) || 0) : 0 };
+  });
+
+  var totalFull = marks.reduce(function(a, b){ return a + b.full; }, 0);
+  var totalObtained = marks.reduce(function(a, b){ return a + b.obtained; }, 0);
+  var pct = totalFull > 0 ? (totalObtained / totalFull * 100).toFixed(1) : 0;
+  var anyFail = marks.some(function(m){ return m.full > 0 && (m.obtained / m.full * 100) < 33; });
+  var finalGrade = anyFail ? { label: 'F', cls: 'grade-f' } : getGrade(parseFloat(pct));
+
+  // Find student name
+  var student = DB.students.find(function(s){ return s.id === studentId; });
+  var studentName = student ? student.name : studentId;
+
+  DB.results.push({
+    id: 'RES-' + Date.now(),
+    examName: examName,
+    dept: dept,
+    cls: cls,
+    studentId: studentId,
+    studentName: studentName,
+    date: date,
+    year: year,
+    marks: marks,
+    totalFull: totalFull,
+    totalObtained: totalObtained,
+    percent: pct,
+    grade: finalGrade.label,
+    status: anyFail ? 'ফেল' : getResultStatus(parseFloat(pct)),
+    comment: comment
+  });
+
+  saveDB();
+  renderResultList();
+  // Clear marks
+  marks.forEach(function(m, i) {
+    var inp = document.getElementById('mark-' + i);
+    if (inp) inp.value = '';
+  });
+  document.getElementById('res-student').value = '';
+  document.getElementById('res-comment').value = '';
+  calcResultTotal();
+  showToast('ফলাফল সংরক্ষিত!');
+}
+
+function renderResultList() {
+  var tbody = document.getElementById('result-list-body');
+  if (!DB.results.length) {
+    tbody.innerHTML = '<tr><td colspan="7" style="text-align:center;color:#aaa;padding:20px;">কোনো ফলাফল এন্ট্রি নেই</td></tr>';
+    return;
+  }
+  tbody.innerHTML = DB.results.map(function(r, i) {
+    var gCls = getGrade(parseFloat(r.percent)).cls;
+    return '<tr>'
+      + '<td>' + (i + 1) + '</td>'
+      + '<td>' + r.examName + '</td>'
+      + '<td>' + r.cls + '</td>'
+      + '<td><strong>' + r.studentName + '</strong><br><small style="color:#888">' + r.studentId + '</small></td>'
+      + '<td style="text-align:center;">' + r.totalObtained + '/' + r.totalFull + '<br><small style="color:#888">' + r.percent + '%</small></td>'
+      + '<td style="text-align:center;"><span class="' + gCls + '">' + r.grade + '</span><br><small>' + r.status + '</small></td>'
+      + '<td><button class="btn-print-id" data-act="res-print" data-idx="' + i + '">প্রিন্ট</button>'
+      + ' <button class="btn-print-id" style="background:#c0392b" data-act="res-del" data-idx="' + i + '">মুছুন</button></td>'
+      + '</tr>';
+  }).join('');
+}
+
+function loadClassResult() {
+  var examFilter = document.getElementById('cls-exam-filter').value;
+  var classFilter = document.getElementById('cls-class-filter').value;
+  var filtered = DB.results.filter(function(r) {
+    return (!examFilter || r.examName === examFilter) && (!classFilter || r.cls === classFilter);
+  });
+  var output = document.getElementById('class-result-output');
+  if (!filtered.length) {
+    output.innerHTML = '<div style="text-align:center;color:#aaa;padding:30px;background:white;border-radius:12px;">কোনো ফলাফল পাওয়া যায়নি</div>';
+    return;
+  }
+
+  // Sort by obtained marks desc
+  filtered.sort(function(a, b){ return b.totalObtained - a.totalObtained; });
+
+  var rows = filtered.map(function(r, i) {
+    var gCls = getGrade(parseFloat(r.percent)).cls;
+    return '<tr>'
+      + '<td style="font-weight:700;color:var(--gold);">' + (i + 1) + '</td>'
+      + '<td><strong>' + r.studentName + '</strong><br><small style="color:#888">' + r.studentId + '</small></td>'
+      + '<td>' + r.cls + '</td>'
+      + r.marks.map(function(m){ return '<td style="text-align:center;">' + m.obtained + '</td>'; }).join('')
+      + '<td style="text-align:center;font-weight:700;">' + r.totalObtained + '/' + r.totalFull + '</td>'
+      + '<td style="text-align:center;">' + r.percent + '%</td>'
+      + '<td style="text-align:center;"><span class="' + gCls + '">' + r.grade + '</span></td>'
+      + '<td style="text-align:center;">' + r.status + '</td>'
+      + '</tr>';
+  });
+
+  var subjects = filtered[0].marks.map(function(m){ return '<th style="padding:8px 6px;font-size:11px;">' + m.subject + '</th>'; }).join('');
+  var html = '<div class="result-marksheet">'
+    + '<div class="result-marksheet-header">'
+    + '<div style="font-size:16px;font-weight:700;color:#0a3d2e;">'
+    + (examFilter || 'সব পরীক্ষা') + ' — ' + (classFilter || 'সব শ্রেণি')
+    + '</div>'
+    + '<div style="font-size:12px;color:#888;">মোট শিক্ষার্থী: ' + filtered.length + '</div>'
+    + '</div>'
+    + '<div style="overflow-x:auto;">'
+    + '<table style="width:100%;border-collapse:collapse;font-size:12px;">'
+    + '<thead><tr style="background:#0a3d2e;color:white;">'
+    + '<th style="padding:8px 10px;">মেধা</th>'
+    + '<th style="padding:8px 10px;">নাম</th>'
+    + '<th style="padding:8px 10px;">শ্রেণি</th>'
+    + subjects
+    + '<th style="padding:8px 10px;">মোট</th>'
+    + '<th style="padding:8px 10px;">%</th>'
+    + '<th style="padding:8px 10px;">গ্রেড</th>'
+    + '<th style="padding:8px 10px;">ফলাফল</th>'
+    + '</tr></thead>'
+    + '<tbody>' + rows.join('') + '</tbody>'
+    + '</table></div></div>';
+  output.innerHTML = html;
+}
+
+function populatePersonalStudentList() {
+  var sel = document.getElementById('personal-student-select');
+  sel.innerHTML = '<option value="">নির্বাচন করুন</option>'
+    + DB.students.map(function(s){
+      return '<option value="' + s.id + '">' + s.name + ' (' + s.id + ')</option>';
+    }).join('');
+}
+
+function filterPersonalStudents() {
+  var q = document.getElementById('personal-search').value.toLowerCase();
+  var sel = document.getElementById('personal-student-select');
+  var filtered = DB.students.filter(function(s){
+    return s.name.toLowerCase().includes(q) || s.id.toLowerCase().includes(q);
+  });
+  sel.innerHTML = '<option value="">নির্বাচন করুন</option>'
+    + filtered.map(function(s){
+      return '<option value="' + s.id + '">' + s.name + ' (' + s.id + ')</option>';
+    }).join('');
+}
+
+function loadPersonalResult() {
+  var sid = document.getElementById('personal-student-select').value;
+  var output = document.getElementById('personal-result-output');
+  if (!sid) { output.innerHTML = ''; return; }
+  var student = DB.students.find(function(s){ return s.id === sid; });
+  var studentResults = DB.results.filter(function(r){ return r.studentId === sid; });
+  if (!studentResults.length) {
+    output.innerHTML = '<div style="text-align:center;color:#aaa;padding:30px;background:white;border-radius:12px;">এই শিক্ষার্থীর কোনো ফলাফল নেই</div>';
+    return;
+  }
+  var cards = studentResults.map(function(r) {
+    var gCls = getGrade(parseFloat(r.percent)).cls;
+    var rows = r.marks.map(function(m) {
+      var mpct = m.full > 0 ? (m.obtained / m.full * 100) : 0;
+      var mg = getGrade(mpct);
+      return '<tr>'
+        + '<td style="padding:8px 12px;border-bottom:1px solid #eee;">' + m.subject + '</td>'
+        + '<td style="padding:8px 12px;border-bottom:1px solid #eee;text-align:center;">' + m.full + '</td>'
+        + '<td style="padding:8px 12px;border-bottom:1px solid #eee;text-align:center;font-weight:700;">' + m.obtained + '</td>'
+        + '<td style="padding:8px 12px;border-bottom:1px solid #eee;text-align:center;"><span class="' + mg.cls + '">' + mg.label + '</span></td>'
+        + '</tr>';
+    }).join('');
+    return '<div class="result-marksheet">'
+      + '<div class="result-marksheet-header">'
+      + '<div>'
+        + '<div style="font-size:15px;font-weight:700;color:#0a3d2e;">' + r.examName + '</div>'
+        + '<div style="font-size:12px;color:#888;margin-top:2px;">' + r.cls + (r.year ? ' | ' + r.year : '') + (r.date ? ' | ' + r.date : '') + '</div>'
+      + '</div>'
+      + '<div style="text-align:right;">'
+        + '<span class="' + gCls + '" style="font-size:20px;padding:6px 16px;">' + r.grade + '</span>'
+        + '<div style="font-size:12px;margin-top:4px;font-weight:700;">' + r.status + '</div>'
+      + '</div>'
+      + '</div>'
+      + '<table style="width:100%;border-collapse:collapse;font-size:13px;">'
+      + '<thead><tr style="background:#f0f7f3;"><th style="padding:8px 12px;text-align:left;">বিষয়</th><th style="padding:8px 12px;text-align:center;">পূর্ণমান</th><th style="padding:8px 12px;text-align:center;">প্রাপ্ত</th><th style="padding:8px 12px;text-align:center;">গ্রেড</th></tr></thead>'
+      + '<tbody>' + rows + '</tbody>'
+      + '<tfoot><tr style="background:#e8f4ed;font-weight:700;">'
+      + '<td style="padding:10px 12px;">মোট</td>'
+      + '<td style="padding:10px 12px;text-align:center;">' + r.totalFull + '</td>'
+      + '<td style="padding:10px 12px;text-align:center;">' + r.totalObtained + ' (' + r.percent + '%)</td>'
+      + '<td style="padding:10px 12px;text-align:center;"><span class="' + gCls + '">' + r.grade + '</span></td>'
+      + '</tr></tfoot>'
+      + '</table>'
+      + (r.comment ? '<div style="margin-top:10px;padding:8px 12px;background:#fffbf0;border-radius:6px;font-size:12px;color:#555;"><strong>মন্তব্য:</strong> ' + r.comment + '</div>' : '')
+      + '<div style="margin-top:12px;text-align:right;">'
+      + '<button class="btn-print-id" data-act="res-print" data-idx="' + DB.results.indexOf(r) + '" style="background:#1a3a5c;">মার্কশিট প্রিন্ট</button>'
+      + '</div>'
+      + '</div>';
+  }).join('');
+  output.innerHTML = cards;
+}
+
+function printResultMarksheet(idx) {
+  var r = DB.results[idx];
+  if (!r) return;
+  var student = DB.students.find(function(s){ return s.id === r.studentId; });
+  var gCls = getGrade(parseFloat(r.percent)).cls;
+  var gLabel = r.grade;
+  var photoHtml = (student && student.photo)
+    ? '<img src="' + student.photo + '" style="width:80px;height:100px;object-fit:cover;border:2px solid #c9a84c;border-radius:4px;">'
+    : '<div style="width:80px;height:100px;border:2px dashed #c9a84c;border-radius:4px;display:flex;align-items:center;justify-content:center;background:#fffbf0;font-size:10px;color:#aaa;">ছবি</div>';
+  var subjectRows = r.marks.map(function(m) {
+    var mpct = m.full > 0 ? (m.obtained / m.full * 100) : 0;
+    var mg = getGrade(mpct);
+    var color = mg.label === 'F' ? '#c0392b' : (mg.label === 'A+' ? '#1a6b4a' : '#333');
+    return '<tr>'
+      + '<td style="padding:8px 12px;border:1px solid #d0e8db;background:#f8fbf9;">' + m.subject + '</td>'
+      + '<td style="padding:8px 12px;border:1px solid #d0e8db;text-align:center;">' + m.full + '</td>'
+      + '<td style="padding:8px 12px;border:1px solid #d0e8db;text-align:center;font-weight:700;color:' + color + ';">' + m.obtained + '</td>'
+      + '<td style="padding:8px 12px;border:1px solid #d0e8db;text-align:center;">' + mpct.toFixed(1) + '%</td>'
+      + '<td style="padding:8px 12px;border:1px solid #d0e8db;text-align:center;font-weight:700;color:' + color + ';">' + mg.label + '</td>'
+      + '</tr>';
+  }).join('');
+  var html = madrasaHeader()
+    + '<div style="background:#0a3d2e;color:white;padding:9px 18px;display:flex;justify-content:space-between;align-items:center;">'
+    + '<div style="font-size:15px;font-weight:700;">পরীক্ষার মার্কশিট</div>'
+    + '<div style="font-size:11px;color:#e8c97a;">' + r.examName + (r.year ? ' | ' + r.year : '') + '</div>'
+    + '</div>'
+    + '<div style="padding:16px 18px;">'
+    + '<div style="display:flex;gap:16px;margin-bottom:16px;align-items:flex-start;">'
+    + '<div>' + photoHtml + '</div>'
+    + '<div style="flex:1;">'
+    + '<table style="width:100%;border-collapse:collapse;font-size:12.5px;">'
+    + '<tr><td style="background:#f0f7f3;padding:7px 10px;border:1px solid #d0e8db;font-size:12px;color:#555;width:30%;">শিক্ষার্থীর নাম</td><td style="padding:7px 10px;border:1px solid #d0e8db;font-weight:700;">' + r.studentName + '</td>'
+    + '<td style="background:#f0f7f3;padding:7px 10px;border:1px solid #d0e8db;font-size:12px;color:#555;width:20%;">আইডি</td><td style="padding:7px 10px;border:1px solid #d0e8db;font-weight:700;">' + r.studentId + '</td></tr>'
+    + '<tr><td style="background:#f0f7f3;padding:7px 10px;border:1px solid #d0e8db;font-size:12px;color:#555;">শ্রেণি</td><td style="padding:7px 10px;border:1px solid #d0e8db;font-weight:700;">' + r.cls + '</td>'
+    + '<td style="background:#f0f7f3;padding:7px 10px;border:1px solid #d0e8db;font-size:12px;color:#555;">তারিখ</td><td style="padding:7px 10px;border:1px solid #d0e8db;">' + (r.date || '—') + '</td></tr>'
+    + '</table>'
+    + '</div>'
+    + '<div style="text-align:center;min-width:90px;">'
+    + '<div style="font-size:36px;font-weight:900;background:' + (r.grade==='A+'?'#1a6b4a':r.grade==='F'?'#c0392b':'#1a3a5c') + ';color:white;width:80px;height:80px;line-height:80px;border-radius:50%;margin:0 auto;">' + gLabel + '</div>'
+    + '<div style="font-size:13px;font-weight:700;margin-top:6px;">' + r.status + '</div>'
+    + '</div>'
+    + '</div>'
+    + '<table style="width:100%;border-collapse:collapse;font-size:13px;">'
+    + '<thead><tr style="background:#0a3d2e;color:white;"><th style="padding:9px 12px;text-align:left;">বিষয়</th><th style="padding:9px;text-align:center;">পূর্ণমান</th><th style="padding:9px;text-align:center;">প্রাপ্ত নম্বর</th><th style="padding:9px;text-align:center;">শতাংশ</th><th style="padding:9px;text-align:center;">গ্রেড</th></tr></thead>'
+    + '<tbody>' + subjectRows + '</tbody>'
+    + '<tfoot><tr style="background:#e8f4ed;font-weight:700;font-size:14px;">'
+    + '<td style="padding:10px 12px;border:1px solid #d0e8db;">সর্বমোট</td>'
+    + '<td style="padding:10px;border:1px solid #d0e8db;text-align:center;">' + r.totalFull + '</td>'
+    + '<td style="padding:10px;border:1px solid #d0e8db;text-align:center;color:#0a3d2e;">' + r.totalObtained + '</td>'
+    + '<td style="padding:10px;border:1px solid #d0e8db;text-align:center;">' + r.percent + '%</td>'
+    + '<td style="padding:10px;border:1px solid #d0e8db;text-align:center;font-size:16px;">' + gLabel + '</td>'
+    + '</tr></tfoot>'
+    + '</table>'
+    + (r.comment ? '<div style="margin-top:12px;padding:9px 12px;background:#fffbf0;border:1px solid #e8c97a;border-radius:6px;font-size:12px;"><strong>শিক্ষকের মন্তব্য:</strong> ' + r.comment + '</div>' : '')
+    + '<div style="display:flex;justify-content:space-between;margin-top:36px;padding-top:12px;border-top:1px dashed #ccc;">'
+    + '<div style="text-align:center;"><div style="border-top:1.5px solid #555;width:120px;margin:0 auto 5px;"></div><div style="font-size:11px;">শিক্ষার্থীর স্বাক্ষর</div></div>'
+    + '<div style="text-align:center;"><div style="border-top:1.5px solid #555;width:120px;margin:0 auto 5px;"></div><div style="font-size:11px;">অভিভাবকের স্বাক্ষর</div></div>'
+    + '<div style="text-align:center;"><div style="border-top:1.5px solid #555;width:120px;margin:0 auto 5px;"></div><div style="font-size:11px;">প্রধান শিক্ষকের স্বাক্ষর ও সীল</div></div>'
+    + '</div>'
+    + '</div>';
+  openPrintWindow(html);
+}
+
+function printClassResult() {
+  var examFilter = document.getElementById('cls-exam-filter').value;
+  var classFilter = document.getElementById('cls-class-filter').value;
+  var filtered = DB.results.filter(function(r) {
+    return (!examFilter || r.examName === examFilter) && (!classFilter || r.cls === classFilter);
+  });
+  if (!filtered.length) { showToast('কোনো ফলাফল নেই'); return; }
+  filtered.sort(function(a, b){ return b.totalObtained - a.totalObtained; });
+  var subjects = filtered[0].marks.map(function(m){ return m.subject; });
+  var rows = filtered.map(function(r, i) {
+    var gCls = getGrade(parseFloat(r.percent)).cls;
+    var color = r.grade==='A+'?'#1a6b4a':r.grade==='F'?'#c0392b':'inherit';
+    return '<tr>'
+      + '<td style="padding:7px 10px;border:1px solid #e0e8db;font-weight:700;color:var(--gold-dark,'+'#b8860b);">' + (i+1) + '</td>'
+      + '<td style="padding:7px 10px;border:1px solid #e0e8db;font-weight:600;">' + r.studentName + '<br><span style="font-size:10px;color:#888;">' + r.studentId + '</span></td>'
+      + r.marks.map(function(m){ return '<td style="padding:7px 8px;border:1px solid #e0e8db;text-align:center;">' + m.obtained + '</td>'; }).join('')
+      + '<td style="padding:7px 10px;border:1px solid #e0e8db;text-align:center;font-weight:700;">' + r.totalObtained + '</td>'
+      + '<td style="padding:7px 10px;border:1px solid #e0e8db;text-align:center;">' + r.percent + '%</td>'
+      + '<td style="padding:7px 10px;border:1px solid #e0e8db;text-align:center;font-weight:700;color:' + color + ';">' + r.grade + '</td>'
+      + '<td style="padding:7px 10px;border:1px solid #e0e8db;text-align:center;">' + r.status + '</td>'
+      + '</tr>';
+  }).join('');
+  var subjectHeaders = subjects.map(function(s){ return '<th style="padding:7px 6px;font-size:11px;text-align:center;">' + s + '</th>'; }).join('');
+  var html = madrasaHeader()
+    + '<div style="background:#0a3d2e;color:white;padding:9px 18px;display:flex;justify-content:space-between;align-items:center;">'
+    + '<div style="font-size:15px;font-weight:700;">ক্লাস ভিত্তিক ফলাফল</div>'
+    + '<div style="font-size:11px;color:#e8c97a;">' + (examFilter||'সব পরীক্ষা') + ' | ' + (classFilter||'সব শ্রেণি') + ' | মোট: ' + filtered.length + ' জন</div>'
+    + '</div>'
+    + '<div style="padding:14px 18px;overflow-x:auto;">'
+    + '<table style="width:100%;border-collapse:collapse;font-size:12px;">'
+    + '<thead><tr style="background:#1a3a5c;color:white;">'
+    + '<th style="padding:8px 10px;text-align:center;">মেধা</th>'
+    + '<th style="padding:8px 10px;text-align:left;">নাম</th>'
+    + subjectHeaders
+    + '<th style="padding:8px 10px;text-align:center;">মোট</th>'
+    + '<th style="padding:8px 10px;text-align:center;">%</th>'
+    + '<th style="padding:8px 10px;text-align:center;">গ্রেড</th>'
+    + '<th style="padding:8px 10px;text-align:center;">ফলাফল</th>'
+    + '</tr></thead>'
+    + '<tbody>' + rows + '</tbody>'
+    + '</table>'
+    + '<div style="margin-top:40px;display:flex;justify-content:flex-end;">'
+    + '<div style="text-align:center;"><div style="border-top:1.5px solid #555;width:150px;margin:0 auto 5px;"></div><div style="font-size:11px;">প্রধান শিক্ষকের স্বাক্ষর ও সীল</div></div>'
+    + '</div>'
+    + '</div>';
+  openPrintWindow(html);
+}
+
+function printAllResults() {
+  if (!DB.results.length) { showToast('কোনো ফলাফল নেই'); return; }
+  DB.results.forEach(function(r, i){ printResultMarksheet(i); });
+}
+
+// ===== END RESULT FUNCTIONS =====
+
+// Enter key search
+document.getElementById('search-input').addEventListener('keydown', e => {
+  if (e.key === 'Enter') doSearch();
+});
+
+// Close modal on overlay click
+document.getElementById('print-modal').addEventListener('click', function(e) {
+  if (e.target === this) closeModal();
+});
+
+// Update attendance history headers to include ID column
+document.querySelectorAll('#teacher-att-history, #student-att-history').forEach(el => {
+  const thead = el.closest('table').querySelector('thead tr');
+  if (thead && thead.children.length === 4) {
+    thead.innerHTML = '<th>তারিখ</th><th>আইডি</th><th>নাম</th><th>বিভাগ/শ্রেণি</th><th>অবস্থা</th>';
+  }
+});
+
+// Init dates & IDs
+const today = new Date().toISOString().split('T')[0];
+['t-att-date','s-att-date','inc-date','exp-date'].forEach(id => {
+  const el = document.getElementById(id);
+  if (el) el.value = today;
+});
+
+// ===== PWA SETUP =====
+// Inject manifest dynamically
+(function() {
+  var manifest = {
+    name: "হিফজুল কুরআন রশিদিয়া মাদ্রাসা",
+    short_name: "মাদ্রাসা",
+    description: "মাদ্রাসা ম্যানেজমেন্ট সিস্টেম",
+    start_url: ".",
+    display: "standalone",
+    background_color: "#0d2137",
+    theme_color: "#0d2137",
+    orientation: "portrait",
+    icons: [
+      {
+        src: "data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 192 192'%3E%3Crect width='192' height='192' fill='%230d2137'/%3E%3Ctext x='96' y='130' font-size='110' text-anchor='middle'%3E%F0%9F%95%8C%3C/text%3E%3C/svg%3E",
+        sizes: "192x192",
+        type: "image/svg+xml"
+      }
+    ]
+  };
+  var blob = new Blob([JSON.stringify(manifest)], { type: 'application/json' });
+  var url = URL.createObjectURL(blob);
+  document.getElementById('manifest-placeholder').setAttribute('href', url);
+})();
+
+// Install prompt
+var deferredPrompt = null;
+window.addEventListener('beforeinstallprompt', function(e) {
+  e.preventDefault();
+  deferredPrompt = e;
+  // Show install button
+  var btn = document.getElementById('install-btn');
+  if (btn) btn.style.display = 'inline-block';
+});
+
+function installApp() {
+  if (deferredPrompt) {
+    deferredPrompt.prompt();
+    deferredPrompt.userChoice.then(function(result) {
+      deferredPrompt = null;
+      var btn = document.getElementById('install-btn');
+      if (btn) btn.style.display = 'none';
+      if (result.outcome === 'accepted') showToast('অ্যাপ ইনস্টল হচ্ছে...');
+    });
+  }
+}
+
+window.addEventListener('appinstalled', function() {
+  showToast('✅ অ্যাপ সফলভাবে ইনস্টল হয়েছে!');
+  var btn = document.getElementById('install-btn');
+  if (btn) btn.style.display = 'none';
+});
+
+// ===== PASSWORD SYSTEM =====
+var DEFAULT_PASS = 'madrasa123';
+
+function getSavedPassword() {
+  return localStorage.getItem('madrasa_password') || DEFAULT_PASS;
+}
+
+function checkPassword() {
+  var input = document.getElementById('lock-input').value;
+  var errEl = document.getElementById('lock-error');
+  if (input === getSavedPassword()) {
+    document.getElementById('lock-screen').classList.add('hidden');
+    document.getElementById('lock-input').value = '';
+    errEl.textContent = '';
+  } else {
+    errEl.textContent = '❌ পাসওয়ার্ড ভুল হয়েছে!';
+    var inp = document.getElementById('lock-input');
+    inp.classList.add('error');
+    inp.value = '';
+    setTimeout(function(){ inp.classList.remove('error'); }, 600);
+  }
+}
+
+function changePassword() {
+  var current  = document.getElementById('cp-current').value;
+  var newPass  = document.getElementById('cp-new').value;
+  var confirm  = document.getElementById('cp-confirm').value;
+
+  if (current !== getSavedPassword()) {
+    showToast('বর্তমান পাসওয়ার্ড ভুল!'); return;
+  }
+  if (newPass.length < 4) {
+    showToast('নতুন পাসওয়ার্ড কমপক্ষে ৪ অক্ষর হতে হবে!'); return;
+  }
+  if (newPass !== confirm) {
+    showToast('নতুন পাসওয়ার্ড মিলছে না!'); return;
+  }
+  localStorage.setItem('madrasa_password', newPass);
+  document.getElementById('cp-current').value = '';
+  document.getElementById('cp-new').value = '';
+  document.getElementById('cp-confirm').value = '';
+  document.getElementById('change-pass-modal').classList.remove('open');
+  showToast('✅ পাসওয়ার্ড পরিবর্তন সফল!');
+}
+
+// Close change-pass modal on overlay click
+document.getElementById('change-pass-modal').addEventListener('click', function(e) {
+  if (e.target === this) this.classList.remove('open');
+});
+
+// ===== APP INIT - load saved data =====
+loadDB();
+renderTeacherTable();
+renderStudentTable();
+renderIncomeTable();
+renderExpenseTable();
+renderResultList();
+updateStats();
+refreshNextIds();
+</script>
+
+<!-- RESULT SECTION -->
+<div id="result" class="section">
+  <button class="back-btn" onclick="showSection('home')">&#8592; হোমে ফিরুন</button>
+  <div class="section-header">
+    <div class="section-icon"><svg viewBox="0 0 24 24" fill="white" width="24" height="24"><path d="M19 3H5c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2zm-7 14l-5-5 1.41-1.41L12 14.17l7.59-7.59L21 8l-9 9z"/></svg></div>
+    <div class="section-title">পরীক্ষার ফলাফল</div>
+  </div>
+
+  <!-- Result Tabs -->
+  <div style="display:flex;gap:10px;margin-bottom:20px;flex-wrap:wrap;">
+    <button class="result-tab active" id="rtab-entry" onclick="setResultTab('entry',this)">
+      &#9997; নম্বর এন্ট্রি
+    </button>
+    <button class="result-tab" id="rtab-class" onclick="setResultTab('class',this)">
+      &#128203; ক্লাস ভিত্তিক ফলাফল
+    </button>
+    <button class="result-tab" id="rtab-personal" onclick="setResultTab('personal',this)">
+      &#128100; ব্যক্তিগত ফলাফল
+    </button>
+  </div>
+
+  <!-- ===== ENTRY TAB ===== -->
+  <div id="result-entry" class="result-tab-content">
+    <div class="form-card">
+      <div class="form-section-title">পরীক্ষার তথ্য</div>
+      <div class="form-grid">
+        <div class="form-group">
+          <label>পরীক্ষার নাম *</label>
+          <select id="res-exam-name">
+            <option value="">নির্বাচন করুন</option>
+            <option>প্রথম সাময়িক পরীক্ষা</option>
+            <option>দ্বিতীয় সাময়িক পরীক্ষা</option>
+            <option>বার্ষিক পরীক্ষা</option>
+            <option>মাসিক পরীক্ষা</option>
+          </select>
+        </div>
+        <div class="form-group">
+          <label>বিভাগ *</label>
+          <select id="res-dept" onchange="loadResultSubjects()">
+            <option value="">নির্বাচন করুন</option>
+            <option value="general">প্লে - তৃতীয় শ্রেণি (সাধারণ)</option>
+            <option value="hifz">হিফজ ও নাজেরা বিভাগ</option>
+          </select>
+        </div>
+        <div class="form-group">
+          <label>শ্রেণি / জামাত *</label>
+          <select id="res-class" onchange="loadStudentsForClass()">
+            <option value="">নির্বাচন করুন</option>
+            <option>প্লে</option>
+            <option>নার্সারি</option>
+            <option>প্রথম শ্রেণি</option>
+            <option>দ্বিতীয় শ্রেণি</option>
+            <option>তৃতীয় শ্রেণি</option>
+            <option>নাজেরা</option>
+            <option>হিফজ</option>
+          </select>
+        </div>
+        <div class="form-group">
+          <label>শিক্ষার্থী *</label>
+          <select id="res-student">
+            <option value="">আগে শ্রেণি নির্বাচন করুন</option>
+          </select>
+        </div>
+        <div class="form-group">
+          <label>পরীক্ষার তারিখ</label>
+          <input type="date" id="res-date">
+        </div>
+        <div class="form-group">
+          <label>শিক্ষাবর্ষ</label>
+          <input type="text" id="res-year" placeholder="যেমন: ২০২৬">
+        </div>
+      </div>
+
+      <!-- Subjects -->
+      <div id="res-subjects-container" style="margin-top:16px;display:none;">
+        <div class="form-section-title" style="color:#1a3a5c;border-color:#1a3a5c;">বিষয়ভিত্তিক নম্বর</div>
+        <div style="overflow-x:auto;margin-top:12px;">
+          <table id="res-marks-table" style="width:100%;border-collapse:collapse;font-size:13px;">
+            <thead>
+              <tr style="background:#0a3d2e;color:white;">
+                <th style="padding:10px 12px;text-align:left;">বিষয়</th>
+                <th style="padding:10px 12px;text-align:center;width:90px;">পূর্ণমান</th>
+                <th style="padding:10px 12px;text-align:center;width:90px;">প্রাপ্ত নম্বর</th>
+                <th style="padding:10px 12px;text-align:center;width:90px;">গ্রেড</th>
+              </tr>
+            </thead>
+            <tbody id="res-marks-body"></tbody>
+            <tfoot>
+              <tr style="background:#e8f4ed;font-weight:700;">
+                <td style="padding:10px 12px;">মোট</td>
+                <td style="padding:10px 12px;text-align:center;" id="res-total-full">—</td>
+                <td style="padding:10px 12px;text-align:center;" id="res-total-obtained">—</td>
+                <td style="padding:10px 12px;text-align:center;" id="res-final-grade">—</td>
+              </tr>
+            </tfoot>
+          </table>
+        </div>
+        <div style="margin-top:14px;display:flex;gap:10px;flex-wrap:wrap;align-items:center;">
+          <div style="flex:1;min-width:200px;">
+            <label style="font-size:12px;color:#888;display:block;margin-bottom:4px;">মন্তব্য</label>
+            <input type="text" id="res-comment" placeholder="শিক্ষকের মন্তব্য (ঐচ্ছিক)" style="width:100%;padding:10px 12px;border:1.5px solid #ddd;border-radius:8px;font-family:var(--bn-font);font-size:13px;">
+          </div>
+          <button class="btn-primary" onclick="saveResult()" style="margin-top:16px;">ফলাফল সংরক্ষণ করুন</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- Saved results list -->
+    <div class="table-container" style="margin-top:24px;">
+      <div class="table-title" style="display:flex;justify-content:space-between;align-items:center;">
+        <span>সংরক্ষিত ফলাফল</span>
+        <button onclick="printAllResults()" style="background:var(--gold);color:var(--green-dark);border:none;padding:6px 14px;border-radius:8px;font-family:var(--bn-font);font-size:13px;font-weight:600;cursor:pointer;">সব প্রিন্ট</button>
+      </div>
+      <div style="overflow-x:auto;">
+        <table>
+          <thead><tr><th>#</th><th>পরীক্ষা</th><th>শ্রেণি</th><th>শিক্ষার্থী</th><th>মোট নম্বর</th><th>গ্রেড</th><th>অ্যাকশন</th></tr></thead>
+          <tbody id="result-list-body">
+            <tr><td colspan="7" style="text-align:center;color:#aaa;padding:20px;">কোনো ফলাফল এন্ট্রি নেই</td></tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+
+  <!-- ===== CLASS RESULT TAB ===== -->
+  <div id="result-class" class="result-tab-content" style="display:none;">
+    <div class="form-card">
+      <div class="form-grid">
+        <div class="form-group">
+          <label>পরীক্ষার নাম</label>
+          <select id="cls-exam-filter">
+            <option value="">সব</option>
+            <option>প্রথম সাময়িক পরীক্ষা</option>
+            <option>দ্বিতীয় সাময়িক পরীক্ষা</option>
+            <option>বার্ষিক পরীক্ষা</option>
+            <option>মাসিক পরীক্ষা</option>
+          </select>
+        </div>
+        <div class="form-group">
+          <label>শ্রেণি</label>
+          <select id="cls-class-filter">
+            <option value="">সব শ্রেণি</option>
+            <option>প্লে</option><option>নার্সারি</option>
+            <option>প্রথম শ্রেণি</option><option>দ্বিতীয় শ্রেণি</option>
+            <option>তৃতীয় শ্রেণি</option><option>নাজেরা</option><option>হিফজ</option>
+          </select>
+        </div>
+        <div class="form-group" style="display:flex;align-items:flex-end;gap:8px;">
+          <button class="btn-primary" onclick="loadClassResult()" style="flex:1;">ফলাফল দেখুন</button>
+          <button onclick="printClassResult()" style="flex:1;background:var(--gold);color:var(--green-dark);border:none;padding:12px;border-radius:10px;font-family:var(--bn-font);font-size:14px;font-weight:600;cursor:pointer;">প্রিন্ট</button>
+        </div>
+      </div>
+    </div>
+    <div id="class-result-output" style="margin-top:20px;"></div>
+  </div>
+
+  <!-- ===== PERSONAL RESULT TAB ===== -->
+  <div id="result-personal" class="result-tab-content" style="display:none;">
+    <div class="form-card">
+      <div class="form-grid">
+        <div class="form-group">
+          <label>শিক্ষার্থী খুঁজুন</label>
+          <input type="text" id="personal-search" placeholder="নাম বা আইডি লিখুন..." oninput="filterPersonalStudents()">
+        </div>
+        <div class="form-group">
+          <label>শিক্ষার্থী নির্বাচন</label>
+          <select id="personal-student-select" onchange="loadPersonalResult()">
+            <option value="">নির্বাচন করুন</option>
+          </select>
+        </div>
+      </div>
+    </div>
+    <div id="personal-result-output" style="margin-top:20px;"></div>
+  </div>
+</div>
+
+<!-- Hidden print templates - Bengali text stays in HTML, no JS encoding needed -->
+<div id="tpl-madrasa-header" style="display:none">
+<div style="background:linear-gradient(135deg,#0d2137 0%,#1a3a5c 35%,#1a6b4a 70%,#c9a84c 100%)">
+  <div style="height:5px;background:#c9a84c;"></div>
+  <div style="padding:16px 24px 12px;text-align:center;color:white;">
+    <div style="font-size:12px;color:#e8c97a;letter-spacing:3px;margin-bottom:5px;font-family:serif;">بِسْمِ اللَّهِ الرَّحْمَنِ الرَّحِيم</div>
+    <div style="font-size:21px;font-weight:700;text-shadow:0 2px 6px rgba(0,0,0,0.3);">হিফজুল কুরআন রশিদিয়া হোসাইনিয়া নূরাণী মাদ্রাসা</div>
+    <div style="height:1px;background:linear-gradient(90deg,transparent,#e8c97a,transparent);margin:7px auto;width:60%;"></div>
+    <div style="font-size:11px;color:rgba(255,255,255,0.85);">কালুশাহ্ সড়ক, সৈয়দ রশিদিয়া মঞ্জিল, বরিশাল | 01711340205 | 01777211422</div>
+  </div>
+  <div style="height:4px;background:linear-gradient(90deg,#e8c97a,#c9a84c,#e8c97a);"></div>
+</div>
+</div>
+
+<div id="tpl-simple-header" style="display:none">
+<div style="text-align:center;margin-bottom:16px;border-bottom:2px solid #c9a84c;padding-bottom:12px;">
+  <div style="font-size:20px;font-weight:700;color:#0a3d2e;">হিফজুল কুরআন রশিদিয়া হোসাইনিয়া নূরাণী মাদ্রাসা</div>
+  <div style="font-size:12px;color:#555;margin-top:4px;">কালুশাহ্ সড়ক, বরিশাল | 01711340205</div>
+</div>
+</div>
+
+<div id="tpl-print-footer" style="display:none">
+<div style="text-align:center;padding:20px;background:#f0f4f0;border-top:3px solid #c9a84c;margin-top:20px;" class="no-print">
+  <p style="margin-bottom:12px;color:#444;font-size:13px;">PDF সেভ করতে: প্রিন্ট করুন → Destination: <strong>Save as PDF</strong> → Save</p>
+  <button onclick="window.print()" style="background:#0a3d2e;color:white;border:none;padding:12px 36px;border-radius:8px;font-size:15px;cursor:pointer;margin:8px;font-weight:600;">প্রিন্ট / PDF সেভ</button>
+  <button onclick="window.close()" style="background:#888;color:white;border:none;padding:12px 28px;border-radius:8px;font-size:15px;cursor:pointer;margin:8px;font-weight:600;">বন্ধ করুন</button>
+</div>
+</div>
+
+<!-- Developer watermark -->
+<div style="text-align:center;padding:18px 10px 28px;margin-top:4px;">
+  <span style="font-size:12px;color:#bbb;letter-spacing:0.5px;font-style:italic;">
+    Developed by Md. Ferdaus Hossain
+  </span>
+</div>
+
+</body>
+</html>
