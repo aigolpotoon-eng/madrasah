@@ -1620,13 +1620,30 @@
       <div style="display:flex;gap:12px;align-items:center;flex-wrap:wrap">
         <div class="form-group" style="flex:1;min-width:160px">
           <label>তারিখ নির্বাচন</label>
-          <input type="date" id="t-att-date">
+          <input type="date" id="t-att-date" onchange="loadAttForDate('teacher')">
         </div>
         <button class="btn-primary" style="margin-top:24px" onclick="saveAttendance('teacher')">হাজিরা সংরক্ষণ</button>
       </div>
     </div>
     <div class="attendance-grid" id="teacher-att-grid">
       <div style="color:#aaa;font-size:14px;grid-column:1/-1;padding:20px;text-align:center">প্রথমে শিক্ষক নিবন্ধন করুন</div>
+    </div>
+
+    <!-- শিক্ষক হাজিরা ইতিহাস -->
+    <div class="form-card" style="margin-top:16px;">
+      <strong style="color:#0a3d2e;font-size:14px;">📅 সাম্প্রতিক হাজিরা রেকর্ড</strong>
+      <div style="overflow-x:auto;margin-top:10px;">
+        <table style="width:100%;border-collapse:collapse;font-size:13px;">
+          <thead><tr style="background:#0a3d2e;color:white;">
+            <th style="padding:7px;">তারিখ</th>
+            <th style="padding:7px;">আইডি</th>
+            <th style="padding:7px;">নাম</th>
+            <th style="padding:7px;">বিভাগ</th>
+            <th style="padding:7px;">অবস্থা</th>
+          </tr></thead>
+          <tbody id="teacher-att-history"></tbody>
+        </table>
+      </div>
     </div>
 
   </div>
@@ -1642,7 +1659,7 @@
       <div style="display:flex;gap:12px;align-items:center;flex-wrap:wrap">
         <div class="form-group" style="flex:1;min-width:160px">
           <label>তারিখ নির্বাচন</label>
-          <input type="date" id="s-att-date">
+          <input type="date" id="s-att-date" onchange="loadAttForDate('student')">
         </div>
         <div class="form-group" style="flex:1;min-width:140px">
           <label>শ্রেণি ফিল্টার</label>
@@ -1659,6 +1676,23 @@
     </div>
     <div class="attendance-grid" id="student-att-grid">
       <div style="color:#aaa;font-size:14px;grid-column:1/-1;padding:20px;text-align:center">প্রথমে ছাত্র নিবন্ধন করুন</div>
+    </div>
+
+    <!-- হাজিরা ইতিহাস -->
+    <div class="form-card" style="margin-top:16px;">
+      <strong style="color:#0a3d2e;font-size:14px;">📅 সাম্প্রতিক হাজিরা রেকর্ড</strong>
+      <div style="overflow-x:auto;margin-top:10px;">
+        <table style="width:100%;border-collapse:collapse;font-size:13px;">
+          <thead><tr style="background:#0a3d2e;color:white;">
+            <th style="padding:7px;">তারিখ</th>
+            <th style="padding:7px;">আইডি</th>
+            <th style="padding:7px;">নাম</th>
+            <th style="padding:7px;">শ্রেণি</th>
+            <th style="padding:7px;">অবস্থা</th>
+          </tr></thead>
+          <tbody id="student-att-history"></tbody>
+        </table>
+      </div>
     </div>
 
   </div>
@@ -2216,6 +2250,7 @@ function renderAll() {
   renderExpenseTable(); renderResultList(); updateStats(); refreshNextIds();
   renderStudentListSection(); renderTeacherListSection();
   renderIncomeListSection(); renderExpenseListSection();
+  renderAttHistory('teacher'); renderAttHistory('student');
 }
 
 function exportDB() {
@@ -2441,8 +2476,8 @@ function showSection(id) {
   document.querySelectorAll('.nav-btn').forEach(b => b.classList.remove('active'));
   var el = document.getElementById(id);
   if (el) el.classList.add('active');
-  if (id === 'teacher-att') renderAttGrid('teacher');
-  if (id === 'student-att') renderAttGrid('student');
+  if (id === 'teacher-att') { renderAttGrid('teacher'); renderAttHistory('teacher'); }
+  if (id === 'student-att') { renderAttGrid('student'); renderAttHistory('student'); }
   if (id === 'home') updateStats();
   if (id === 'teacher-reg' || id === 'student-reg') { refreshNextIds(); renderStudentTable(); renderTeacherTable(); }
   if (id === 'income') renderIncomeTable();
@@ -2867,6 +2902,35 @@ function saveStudent() {
 }
 
 // ===== ATTENDANCE =====
+function loadAttForDate(type) {
+  var dateId = type === 'teacher' ? 't-att-date' : 's-att-date';
+  var date = document.getElementById(dateId).value;
+  renderAttGrid(type);
+  if (!date) return;
+  // Find records for this date
+  var records = DB.attendance.filter(function(a){ return a.type === type && a.date === date; });
+  if (!records.length) return;
+  var gridId = type === 'teacher' ? 'teacher-att-grid' : 'student-att-grid';
+  var cards = document.getElementById(gridId).querySelectorAll('.attendance-card');
+  cards.forEach(function(card) {
+    var idEl = card.querySelector('.att-id');
+    if (!idEl) return;
+    var idText = idEl.textContent.trim().split('|')[0].trim();
+    var rec = records.find(function(r){ return r.id === idText; });
+    if (!rec) return;
+    var toggle = card.querySelector('.att-toggle');
+    if (!toggle) return;
+    toggle.querySelectorAll('button').forEach(function(b){ b.classList.remove('selected'); });
+    if (rec.status === 'absent') {
+      var absentBtn = toggle.querySelector('.absent-btn');
+      if (absentBtn) absentBtn.classList.add('selected');
+    } else {
+      var presentBtn = toggle.querySelector('.present-btn');
+      if (presentBtn) presentBtn.classList.add('selected');
+    }
+  });
+}
+
 function renderAttGrid(type) {
   var list = type === 'teacher' ? DB.teachers : DB.students;
   var gridId = type === 'teacher' ? 'teacher-att-grid' : 'student-att-grid';
@@ -2931,6 +2995,7 @@ function renderAttHistory(type) {
   var records = DB.attendance.filter(function(a){ return a.type === type; }).slice(-20).reverse();
   var tbodyId = type === 'teacher' ? 'teacher-att-history' : 'student-att-history';
   var tbody = document.getElementById(tbodyId);
+  if (!tbody) return;
   if (!records.length) {
     tbody.innerHTML = '<tr><td colspan="5" style="text-align:center;color:#aaa;padding:20px">কোনো হাজিরা রেকর্ড নেই</td></tr>';
     return;
