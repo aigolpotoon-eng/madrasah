@@ -1853,9 +1853,6 @@ function showSyncStatus(msg, color) {
 }
 
 function saveDB() {
-  // localStorage backup
-  try { localStorage.setItem('madrasa_db_backup', JSON.stringify(DB)); } catch(e) {}
-
   // Debounce — wait 1.5s after last change before saving
   clearTimeout(saveTimer);
   showSyncStatus('সেভ হচ্ছে...', '#e67e22');
@@ -1899,18 +1896,8 @@ function saveToFirebase() {
 }
 
 function loadDB() {
-  // localStorage fallback
-  try {
-    var saved = localStorage.getItem('madrasa_db_backup');
-    if (saved) {
-      var p = JSON.parse(saved);
-      DB.teachers=p.teachers||[]; DB.students=p.students||[];
-      DB.attendance=p.attendance||[]; DB.income=p.income||[];
-      DB.expense=p.expense||[]; DB.results=p.results||[];
-    }
-  } catch(e) {}
-
   if (typeof rtdb === 'undefined') {
+    showSyncStatus('⚠ Firebase সংযোগ নেই', '#c0392b');
     renderAll(); return;
   }
 
@@ -1926,15 +1913,13 @@ function loadDB() {
         DB.income     = d.income     || [];
         DB.expense    = d.expense    || [];
         DB.results    = d.results    || [];
-        // Save to localStorage as backup
-        try { localStorage.setItem('madrasa_db_backup', JSON.stringify(DB)); } catch(e) {}
       }
       renderAll();
       showSyncStatus('✓ ডেটা লোড সম্পন্ন', '#1a6b4a');
       setTimeout(function(){ showSyncStatus('', ''); }, 3000);
     })
     .catch(function(err) {
-      showSyncStatus('⚠ লোড ব্যর্থ — local data দেখাচ্ছে', '#e67e22');
+      showSyncStatus('⚠ লোড ব্যর্থ: ' + err.message, '#c0392b');
       renderAll();
     });
 }
@@ -3477,8 +3462,31 @@ function selectRole(role) {
   document.getElementById('lock-input').focus();
 }
 
-function getAdminPass()    { return localStorage.getItem('madrasa_admin_pass')    || DEFAULT_ADMIN_PASS; }
-function getOperatorPass() { return localStorage.getItem('madrasa_operator_pass') || DEFAULT_OPERATOR_PASS; }
+function getAdminPass()    { return window._adminPass    || DEFAULT_ADMIN_PASS; }
+function getOperatorPass() { return window._operatorPass || DEFAULT_OPERATOR_PASS; }
+
+function loadPasswords() {
+  if (typeof rtdb === 'undefined') return;
+  rtdb.ref('madrasa_config/passwords').once('value').then(function(snap) {
+    var d = snap.val();
+    if (d) {
+      if (d.admin)    window._adminPass    = d.admin;
+      if (d.operator) window._operatorPass = d.operator;
+    }
+  }).catch(function(){});
+}
+
+function savePasswords(role, newPass) {
+  if (typeof rtdb === 'undefined') {
+    showToast('⚠️ Firebase সংযোগ নেই, পাসওয়ার্ড সেভ হয়নি'); return;
+  }
+  var update = {};
+  update[role] = newPass;
+  rtdb.ref('madrasa_config/passwords').update(update).then(function() {
+    if (role === 'admin')    window._adminPass    = newPass;
+    if (role === 'operator') window._operatorPass = newPass;
+  }).catch(function(){ showToast('⚠️ পাসওয়ার্ড সেভ ব্যর্থ'); });
+}
 
 function checkPassword() {
   var input = document.getElementById('lock-input').value;
@@ -3543,8 +3551,8 @@ function changePassword() {
   if (newPass.length < 4) { showToast('নতুন পাসওয়ার্ড কমপক্ষে ৪ অক্ষর হতে হবে!'); return; }
   if (newPass !== confirm) { showToast('নতুন পাসওয়ার্ড মিলছে না!'); return; }
 
-  if (matchRole === 'admin')    localStorage.setItem('madrasa_admin_pass', newPass);
-  if (matchRole === 'operator') localStorage.setItem('madrasa_operator_pass', newPass);
+  if (matchRole === 'admin')    savePasswords('admin', newPass);
+  if (matchRole === 'operator') savePasswords('operator', newPass);
 
   document.getElementById('cp-current').value = '';
   document.getElementById('cp-new').value = '';
@@ -3609,6 +3617,7 @@ function sendSMS(phone, message) {
 }
 
 // ===== APP INIT - load saved data =====
+loadPasswords();
 loadDB();
 </script>
 
