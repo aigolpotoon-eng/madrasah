@@ -1055,6 +1055,18 @@
   <button class="nav-btn" onclick="showSection('result')">
     <svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor" style="vertical-align:middle;margin-right:4px"><path d="M19 3H5c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2zm-7 14l-5-5 1.41-1.41L12 14.17l7.59-7.59L21 8l-9 9z"/></svg>ফলাফল
   </button>
+  <button class="nav-btn" onclick="showSection('student-list')" style="color:#2980b9;border-color:#2980b9;">
+    📋 ছাত্র তালিকা
+  </button>
+  <button class="nav-btn" onclick="showSection('teacher-list')" style="color:#0a3d2e;border-color:#0a3d2e;">
+    📋 শিক্ষক তালিকা
+  </button>
+  <button class="nav-btn" onclick="showSection('income-list')" style="color:#1a6b4a;border-color:#1a6b4a;">
+    💰 আয় তালিকা
+  </button>
+  <button class="nav-btn" onclick="showSection('expense-list')" style="color:#c0392b;border-color:#c0392b;">
+    💸 ব্যয় তালিকা
+  </button>
   <button class="nav-btn" onclick="document.getElementById('change-pass-modal').classList.add('open')" style="color:#c9a84c;border-color:#c9a84c;">
     <svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor" style="vertical-align:middle;margin-right:4px"><path d="M18 8h-1V6c0-2.76-2.24-5-5-5S7 3.24 7 6v2H6c-1.1 0-2 .9-2 2v10c0 1.1.9 2 2 2h12c1.1 0 2-.9 2-2V10c0-1.1-.9-2-2-2zm-6 9c-1.1 0-2-.9-2-2s.9-2 2-2 2 .9 2 2-.9 2-2 2zm3.1-9H8.9V6c0-1.71 1.39-3.1 3.1-3.1 1.71 0 3.1 1.39 3.1 3.1v2z"/></svg>পাসওয়ার্ড
   </button>
@@ -1336,6 +1348,26 @@
       <button class="btn-primary" onclick="saveTeacher()" style="margin-top:24px">শিক্ষক নিবন্ধন করুন</button>
     </div>
 
+    <!-- শিক্ষক তালিকা -->
+    <div class="form-card" style="margin-top:16px;">
+      <strong style="color:#0a3d2e;font-size:15px;">📋 শিক্ষক তালিকা</strong>
+      <div style="overflow-x:auto;margin-top:12px;">
+        <table style="width:100%;border-collapse:collapse;font-size:13px;">
+          <thead><tr style="background:#0a3d2e;color:white;">
+            <th style="padding:8px;">ছবি</th>
+            <th style="padding:8px;">আইডি</th>
+            <th style="padding:8px;">নাম</th>
+            <th style="padding:8px;">বিভাগ</th>
+            <th style="padding:8px;">মোবাইল</th>
+            <th style="padding:8px;">অভিজ্ঞতা</th>
+            <th style="padding:8px;">যোগদান</th>
+            <th style="padding:8px;">অ্যাকশন</th>
+          </tr></thead>
+          <tbody id="teacher-table-body"></tbody>
+        </table>
+      </div>
+    </div>
+
   </div>
 
   <!-- STUDENT REGISTRATION -->
@@ -1544,6 +1576,37 @@
       <button class="btn-primary" onclick="saveStudent()" style="margin-top:24px">শিক্ষার্থী নিবন্ধন করুন</button>
     </div>
 
+    <!-- শ্রেণি ভিত্তিক ছাত্র তালিকা -->
+    <div class="form-card" style="margin-top:16px;">
+      <div style="display:flex;gap:10px;align-items:center;flex-wrap:wrap;margin-bottom:12px;">
+        <strong style="color:#0a3d2e;font-size:15px;">📋 ছাত্র/ছাত্রী তালিকা</strong>
+        <select id="student-class-filter" onchange="renderStudentTable()" style="padding:7px 10px;border:1.5px solid #1a6b4a;border-radius:8px;font-family:var(--bn-font);font-size:13px;background:white;">
+          <option value="">সব শ্রেণি</option>
+          <option>নাযেরা</option><option>হিফজ</option>
+          <option>১ম</option><option>২য়</option><option>৩য়</option>
+          <option>৪র্থ</option><option>৫ম</option><option>৬ষ্ঠ</option>
+          <option>৭ম</option><option>৮ম</option><option>৯ম</option><option>১০ম</option>
+        </select>
+        <button onclick="printClassList()" style="padding:7px 14px;background:#1a3a5c;color:white;border:none;border-radius:8px;font-family:var(--bn-font);font-size:13px;cursor:pointer;">🖨️ তালিকা প্রিন্ট</button>
+      </div>
+      <div style="overflow-x:auto;">
+        <table style="width:100%;border-collapse:collapse;font-size:13px;">
+          <thead><tr style="background:#0a3d2e;color:white;">
+            <th style="padding:8px;">ছবি</th>
+            <th style="padding:8px;">আইডি</th>
+            <th style="padding:8px;">নাম</th>
+            <th style="padding:8px;">পিতার নাম</th>
+            <th style="padding:8px;">শ্রেণি</th>
+            <th style="padding:8px;">ধরন</th>
+            <th style="padding:8px;">মোবাইল</th>
+            <th style="padding:8px;">ভর্তি</th>
+            <th style="padding:8px;">অ্যাকশন</th>
+          </tr></thead>
+          <tbody id="student-table-body"></tbody>
+        </table>
+      </div>
+    </div>
+
   </div>
 
   <!-- TEACHER ATTENDANCE -->
@@ -1580,6 +1643,16 @@
         <div class="form-group" style="flex:1;min-width:160px">
           <label>তারিখ নির্বাচন</label>
           <input type="date" id="s-att-date">
+        </div>
+        <div class="form-group" style="flex:1;min-width:140px">
+          <label>শ্রেণি ফিল্টার</label>
+          <select id="s-att-class-filter" onchange="renderAttGrid('student')" style="width:100%;padding:10px;border:1.5px solid #ddd;border-radius:10px;font-family:var(--bn-font);font-size:14px;">
+            <option value="">সব শ্রেণি</option>
+            <option>নাযেরা</option><option>হিফজ</option>
+            <option>১ম</option><option>২য়</option><option>৩য়</option>
+            <option>৪র্থ</option><option>৫ম</option><option>৬ষ্ঠ</option>
+            <option>৭ম</option><option>৮ম</option><option>৯ম</option><option>১০ম</option>
+          </select>
         </div>
         <button class="btn-primary" style="margin-top:24px" onclick="saveAttendance('student')">হাজিরা সংরক্ষণ</button>
       </div>
@@ -1686,6 +1759,35 @@
       </div>
     </div>
 
+    <!-- আয় তালিকা -->
+    <div class="form-card" style="margin-top:16px;">
+      <div style="display:flex;gap:10px;align-items:center;flex-wrap:wrap;margin-bottom:12px;">
+        <strong style="color:#0a3d2e;font-size:15px;">💰 সংরক্ষিত আয়</strong>
+        <select id="inc-month-filter" onchange="renderIncomeTable()" style="padding:7px 10px;border:1.5px solid #c9a84c;border-radius:8px;font-family:var(--bn-font);font-size:13px;background:white;">
+          <option value="">সব মাস</option>
+          <option>January</option><option>February</option><option>March</option>
+          <option>April</option><option>May</option><option>June</option>
+          <option>July</option><option>August</option><option>September</option>
+          <option>October</option><option>November</option><option>December</option>
+        </select>
+        <input type="text" id="inc-filter" oninput="renderIncomeTable()" placeholder="সার্চ..." style="padding:7px 10px;border:1.5px solid #ddd;border-radius:8px;font-family:var(--bn-font);font-size:13px;flex:1;min-width:120px;">
+      </div>
+      <div style="overflow-x:auto;">
+        <table style="width:100%;border-collapse:collapse;font-size:13px;">
+          <thead><tr style="background:#0a3d2e;color:white;">
+            <th style="padding:8px;">#</th>
+            <th style="padding:8px;">তারিখ</th>
+            <th style="padding:8px;">উৎস</th>
+            <th style="padding:8px;">নাম</th>
+            <th style="padding:8px;">মাস</th>
+            <th style="padding:8px;">পরিমাণ</th>
+            <th style="padding:8px;">অ্যাকশন</th>
+          </tr></thead>
+          <tbody id="income-table-body"></tbody>
+        </table>
+      </div>
+    </div>
+
   </div>
 
   <!-- EXPENSE -->
@@ -1719,6 +1821,16 @@
           <input type="number" id="exp-amount" placeholder="টাকার পরিমাণ">
         </div>
         <div class="form-group">
+          <label>মাসের নাম</label>
+          <select id="exp-month">
+            <option value="">মাস নির্বাচন করুন</option>
+            <option>January</option><option>February</option><option>March</option>
+            <option>April</option><option>May</option><option>June</option>
+            <option>July</option><option>August</option><option>September</option>
+            <option>October</option><option>November</option><option>December</option>
+          </select>
+        </div>
+        <div class="form-group">
           <label>প্রাপক</label>
           <input type="text" id="exp-to" placeholder="নাম / প্রতিষ্ঠান">
         </div>
@@ -1730,6 +1842,172 @@
       <button class="btn-primary" style="background:linear-gradient(135deg,#c0392b,#8e2b22)" onclick="saveExpense()">ব্যয় সংরক্ষণ করুন</button>
     </div>
 
+    <!-- ব্যয় তালিকা -->
+    <div class="form-card" style="margin-top:16px;">
+      <div style="display:flex;gap:10px;align-items:center;flex-wrap:wrap;margin-bottom:12px;">
+        <strong style="color:#c0392b;font-size:15px;">💸 সংরক্ষিত ব্যয়</strong>
+        <select id="exp-month-filter" onchange="renderExpenseTable()" style="padding:7px 10px;border:1.5px solid #c0392b;border-radius:8px;font-family:var(--bn-font);font-size:13px;background:white;">
+          <option value="">সব মাস</option>
+          <option>January</option><option>February</option><option>March</option>
+          <option>April</option><option>May</option><option>June</option>
+          <option>July</option><option>August</option><option>September</option>
+          <option>October</option><option>November</option><option>December</option>
+        </select>
+      </div>
+      <div style="overflow-x:auto;">
+        <table style="width:100%;border-collapse:collapse;font-size:13px;">
+          <thead><tr style="background:#8e2b22;color:white;">
+            <th style="padding:8px;">#</th>
+            <th style="padding:8px;">তারিখ</th>
+            <th style="padding:8px;">ধরন</th>
+            <th style="padding:8px;">মাস</th>
+            <th style="padding:8px;">প্রাপক</th>
+            <th style="padding:8px;">পরিমাণ</th>
+            <th style="padding:8px;">অ্যাকশন</th>
+          </tr></thead>
+          <tbody id="expense-table-body"></tbody>
+        </table>
+      </div>
+    </div>
+
+  </div>
+
+  <!-- STUDENT LIST SECTION -->
+  <div id="student-list" class="section">
+    <button class="back-btn" onclick="showSection('home')">&#8592; হোমে ফিরুন</button>
+    <div class="section-header">
+      <div class="section-icon">📋</div>
+      <div class="section-title">ছাত্র/ছাত্রী তালিকা</div>
+    </div>
+    <div class="form-card">
+      <div style="display:flex;gap:10px;align-items:center;flex-wrap:wrap;margin-bottom:12px;">
+        <select id="sl-class-filter" onchange="renderStudentListSection()" style="padding:8px 12px;border:1.5px solid #1a6b4a;border-radius:8px;font-family:var(--bn-font);font-size:14px;background:white;">
+          <option value="">সব শ্রেণি</option>
+          <option>নাযেরা</option><option>হিফজ</option>
+          <option>১ম</option><option>২য়</option><option>৩য়</option>
+          <option>৪র্থ</option><option>৫ম</option><option>৬ষ্ঠ</option>
+          <option>৭ম</option><option>৮ম</option><option>৯ম</option><option>১০ম</option>
+        </select>
+        <button onclick="printStudentListSection()" style="padding:8px 16px;background:#1a3a5c;color:white;border:none;border-radius:8px;font-family:var(--bn-font);font-size:14px;cursor:pointer;">🖨️ প্রিন্ট</button>
+        <span id="sl-count" style="font-size:13px;color:#888;"></span>
+      </div>
+      <div style="overflow-x:auto;">
+        <table style="width:100%;border-collapse:collapse;font-size:13px;">
+          <thead><tr style="background:#0a3d2e;color:white;">
+            <th style="padding:8px;">#</th>
+            <th style="padding:8px;">ছবি</th>
+            <th style="padding:8px;">আইডি</th>
+            <th style="padding:8px;">নাম</th>
+            <th style="padding:8px;">পিতার নাম</th>
+            <th style="padding:8px;">শ্রেণি</th>
+            <th style="padding:8px;">মোবাইল</th>
+            <th style="padding:8px;">অ্যাকশন</th>
+          </tr></thead>
+          <tbody id="student-list-body"></tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+
+  <!-- TEACHER LIST SECTION -->
+  <div id="teacher-list" class="section">
+    <button class="back-btn" onclick="showSection('home')">&#8592; হোমে ফিরুন</button>
+    <div class="section-header">
+      <div class="section-icon">📋</div>
+      <div class="section-title">শিক্ষক তালিকা</div>
+    </div>
+    <div class="form-card">
+      <div style="display:flex;gap:10px;align-items:center;margin-bottom:12px;">
+        <button onclick="printTeacherListSection()" style="padding:8px 16px;background:#1a3a5c;color:white;border:none;border-radius:8px;font-family:var(--bn-font);font-size:14px;cursor:pointer;">🖨️ প্রিন্ট</button>
+        <span id="tl-count" style="font-size:13px;color:#888;"></span>
+      </div>
+      <div style="overflow-x:auto;">
+        <table style="width:100%;border-collapse:collapse;font-size:13px;">
+          <thead><tr style="background:#0a3d2e;color:white;">
+            <th style="padding:8px;">#</th>
+            <th style="padding:8px;">ছবি</th>
+            <th style="padding:8px;">আইডি</th>
+            <th style="padding:8px;">নাম</th>
+            <th style="padding:8px;">বিভাগ</th>
+            <th style="padding:8px;">মোবাইল</th>
+            <th style="padding:8px;">অ্যাকশন</th>
+          </tr></thead>
+          <tbody id="teacher-list-body"></tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+
+  <!-- INCOME LIST SECTION -->
+  <div id="income-list" class="section">
+    <button class="back-btn" onclick="showSection('home')">&#8592; হোমে ফিরুন</button>
+    <div class="section-header">
+      <div class="section-icon">💰</div>
+      <div class="section-title">আয় তালিকা</div>
+    </div>
+    <div class="form-card">
+      <div style="display:flex;gap:10px;align-items:center;flex-wrap:wrap;margin-bottom:12px;">
+        <select id="il-month-filter" onchange="renderIncomeListSection()" style="padding:8px 12px;border:1.5px solid #1a6b4a;border-radius:8px;font-family:var(--bn-font);font-size:14px;background:white;">
+          <option value="">সব মাস</option>
+          <option>January</option><option>February</option><option>March</option>
+          <option>April</option><option>May</option><option>June</option>
+          <option>July</option><option>August</option><option>September</option>
+          <option>October</option><option>November</option><option>December</option>
+        </select>
+        <button onclick="printIncomeListSection()" style="padding:8px 16px;background:#1a6b4a;color:white;border:none;border-radius:8px;font-family:var(--bn-font);font-size:14px;cursor:pointer;">🖨️ প্রিন্ট</button>
+        <span id="il-total" style="font-size:14px;font-weight:700;color:#1a6b4a;"></span>
+      </div>
+      <div style="overflow-x:auto;">
+        <table style="width:100%;border-collapse:collapse;font-size:13px;">
+          <thead><tr style="background:#0a3d2e;color:white;">
+            <th style="padding:8px;">#</th>
+            <th style="padding:8px;">তারিখ</th>
+            <th style="padding:8px;">উৎস</th>
+            <th style="padding:8px;">নাম</th>
+            <th style="padding:8px;">মাস</th>
+            <th style="padding:8px;">পরিমাণ</th>
+            <th style="padding:8px;">অ্যাকশন</th>
+          </tr></thead>
+          <tbody id="income-list-body"></tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+
+  <!-- EXPENSE LIST SECTION -->
+  <div id="expense-list" class="section">
+    <button class="back-btn" onclick="showSection('home')">&#8592; হোমে ফিরুন</button>
+    <div class="section-header">
+      <div class="section-icon">💸</div>
+      <div class="section-title">ব্যয় তালিকা</div>
+    </div>
+    <div class="form-card">
+      <div style="display:flex;gap:10px;align-items:center;flex-wrap:wrap;margin-bottom:12px;">
+        <select id="el-month-filter" onchange="renderExpenseListSection()" style="padding:8px 12px;border:1.5px solid #c0392b;border-radius:8px;font-family:var(--bn-font);font-size:14px;background:white;">
+          <option value="">সব মাস</option>
+          <option>January</option><option>February</option><option>March</option>
+          <option>April</option><option>May</option><option>June</option>
+          <option>July</option><option>August</option><option>September</option>
+          <option>October</option><option>November</option><option>December</option>
+        </select>
+        <button onclick="printExpenseListSection()" style="padding:8px 16px;background:#c0392b;color:white;border:none;border-radius:8px;font-family:var(--bn-font);font-size:14px;cursor:pointer;">🖨️ প্রিন্ট</button>
+        <span id="el-total" style="font-size:14px;font-weight:700;color:#c0392b;"></span>
+      </div>
+      <div style="overflow-x:auto;">
+        <table style="width:100%;border-collapse:collapse;font-size:13px;">
+          <thead><tr style="background:#8e2b22;color:white;">
+            <th style="padding:8px;">#</th>
+            <th style="padding:8px;">তারিখ</th>
+            <th style="padding:8px;">ধরন</th>
+            <th style="padding:8px;">মাস</th>
+            <th style="padding:8px;">প্রাপক</th>
+            <th style="padding:8px;">পরিমাণ</th>
+            <th style="padding:8px;">অ্যাকশন</th>
+          </tr></thead>
+          <tbody id="expense-list-body"></tbody>
+        </table>
+      </div>
+    </div>
   </div>
 
   <!-- SEARCH -->
@@ -1798,6 +2076,11 @@ document.addEventListener('click', function(e) {
   } else if (act === 'tform') {
     var t = DB.teachers[idx];
     if (t) { var s={teachers:[t],students:DB.students}; var bk=DB.teachers; DB.teachers=[t]; printAdmissionForm('teacher'); DB.teachers=bk; }
+  } else if (act === 'tdel') {
+    var t = DB.teachers[idx];
+    if (t && confirm('⚠️ "' + t.name + '" কে মুছে ফেলবেন?')) {
+      DB.teachers.splice(idx, 1); saveDB(); renderTeacherTable(); updateStats(); showToast('✅ শিক্ষক মুছে ফেলা হয়েছে');
+    }
   } else if (act === 'sid') {
     var s = DB.students[idx];
     if (s) openPrintModal('student', s.id, s.name, (s.cls||'')+' | '+s.phone, s.photo||'');
@@ -1820,6 +2103,10 @@ document.addEventListener('click', function(e) {
     }
   } else if (act === 'ereceipt') {
     printSingleReceipt('expense', idx);
+  } else if (act === 'edel') {
+    if (confirm('এই ব্যয় এন্ট্রি মুছে ফেলবেন?')) {
+      DB.expense.splice(idx, 1); saveDB(); renderExpenseTable(); updateStats(); showToast('মুছে ফেলা হয়েছে');
+    }
   } else if (act === 'res-print') {
     printResultMarksheet(idx);
   } else if (act === 'res-del') {
@@ -1927,6 +2214,8 @@ function loadDB() {
 function renderAll() {
   renderTeacherTable(); renderStudentTable(); renderIncomeTable();
   renderExpenseTable(); renderResultList(); updateStats(); refreshNextIds();
+  renderStudentListSection(); renderTeacherListSection();
+  renderIncomeListSection(); renderExpenseListSection();
 }
 
 function exportDB() {
@@ -2150,11 +2439,18 @@ function showToast(msg) {
 function showSection(id) {
   document.querySelectorAll('.section').forEach(s => s.classList.remove('active'));
   document.querySelectorAll('.nav-btn').forEach(b => b.classList.remove('active'));
-  document.getElementById(id).classList.add('active');
+  var el = document.getElementById(id);
+  if (el) el.classList.add('active');
   if (id === 'teacher-att') renderAttGrid('teacher');
   if (id === 'student-att') renderAttGrid('student');
   if (id === 'home') updateStats();
-  if (id === 'teacher-reg' || id === 'student-reg') refreshNextIds();
+  if (id === 'teacher-reg' || id === 'student-reg') { refreshNextIds(); renderStudentTable(); renderTeacherTable(); }
+  if (id === 'income') renderIncomeTable();
+  if (id === 'expense') renderExpenseTable();
+  if (id === 'student-list') renderStudentListSection();
+  if (id === 'teacher-list') renderTeacherListSection();
+  if (id === 'income-list') renderIncomeListSection();
+  if (id === 'expense-list') renderExpenseListSection();
   window.scrollTo(0, 0);
 }
 
@@ -2236,7 +2532,8 @@ function renderTeacherTable() {
       + '<td>' + (t.experience ? t.experience+' বছর' : '-') + '</td>'
       + '<td>' + (t.join||'-') + '</td>'
       + '<td><button class="btn-print-id" data-act="tid" data-idx="' + i + '">আইডি</button> '
-      + '<button class="btn-print-id" style="background:#1a3a5c" data-act="tform" data-idx="' + i + '">ফরম</button></td>'
+      + '<button class="btn-print-id" style="background:#1a3a5c" data-act="tform" data-idx="' + i + '">ফরম</button> '
+      + '<button class="btn-print-id" style="background:#c0392b" data-act="tdel" data-idx="' + i + '">মুছুন</button></td>'
       + '</tr>';
   }
   tbody.innerHTML = html;
@@ -2244,13 +2541,17 @@ function renderTeacherTable() {
 
 function renderStudentTable() {
   var tbody = document.getElementById('student-table-body');
-  if (!DB.students.length) {
+  if (!tbody) return;
+  var classFilter = (document.getElementById('student-class-filter')||{}).value || '';
+  var list = classFilter ? DB.students.filter(function(s){ return s.cls === classFilter; }) : DB.students;
+  if (!list.length) {
     tbody.innerHTML = '<tr><td colspan="9" style="text-align:center;color:#aaa;padding:20px">কোনো ছাত্র নিবন্ধিত হয়নি</td></tr>';
     return;
   }
   var html = '';
-  for (var i = 0; i < DB.students.length; i++) {
-    var s = DB.students[i];
+  for (var i = 0; i < list.length; i++) {
+    var s = list[i];
+    var realIdx = DB.students.indexOf(s);
     var ph = s.photo
       ? '<img src="' + s.photo + '" style="width:32px;height:40px;object-fit:cover;border-radius:4px;border:1px solid #ddd">'
       : '<div style="width:32px;height:40px;background:#f0f0f0;border-radius:4px;display:inline-flex;align-items:center;justify-content:center;">&#128100;</div>';
@@ -2266,13 +2567,224 @@ function renderStudentTable() {
       + '<td>' + s.phone + '</td>'
       + '<td>' + (s.admit||'-') + '</td>'
       + '<td style="white-space:nowrap">'
-      + '<button class="btn-print-id" data-act="sid" data-idx="' + i + '">আইডি</button> '
-      + '<button class="btn-print-id" style="background:#b8860b" data-act="scopy" data-idx="' + i + '">কপি</button> '
-      + '<button class="btn-print-id" style="background:#1a3a5c" data-act="sform" data-idx="' + i + '">ফরম</button> '
-      + '<button class="btn-print-id" style="background:#c0392b" data-act="sdel" data-idx="' + i + '">মুছুন</button>'
+      + '<button class="btn-print-id" data-act="sid" data-idx="' + realIdx + '">আইডি</button> '
+      + '<button class="btn-print-id" style="background:#b8860b" data-act="scopy" data-idx="' + realIdx + '">কপি</button> '
+      + '<button class="btn-print-id" style="background:#1a3a5c" data-act="sform" data-idx="' + realIdx + '">ফরম</button> '
+      + '<button class="btn-print-id" style="background:#c0392b" data-act="sdel" data-idx="' + realIdx + '">মুছুন</button>'
       + '</td></tr>';
   }
   tbody.innerHTML = html;
+}
+
+function printClassList() {
+  var classFilter = (document.getElementById('student-class-filter')||{}).value || '';
+  var list = classFilter ? DB.students.filter(function(s){ return s.cls === classFilter; }) : DB.students;
+  if (!list.length) { showToast('কোনো ছাত্র নেই'); return; }
+  var title = classFilter ? classFilter + ' শ্রেণির ছাত্র তালিকা' : 'সকল ছাত্র তালিকা';
+  openPrintWindow(buildStudentListHtml(list, title));
+}
+
+// ===== STUDENT LIST SECTION =====
+function renderStudentListSection() {
+  var classFilter = (document.getElementById('sl-class-filter')||{}).value || '';
+  var list = classFilter ? DB.students.filter(function(s){ return s.cls === classFilter; }) : DB.students;
+  var countEl = document.getElementById('sl-count');
+  if (countEl) countEl.textContent = 'মোট: ' + list.length + ' জন';
+  var tbody = document.getElementById('student-list-body');
+  if (!tbody) return;
+  if (!list.length) { tbody.innerHTML = '<tr><td colspan="8" style="text-align:center;color:#aaa;padding:20px">কোনো ছাত্র নেই</td></tr>'; return; }
+  tbody.innerHTML = list.map(function(s, i) {
+    var realIdx = DB.students.indexOf(s);
+    var ph = s.photo ? '<img src="' + s.photo + '" style="width:28px;height:35px;object-fit:cover;border-radius:3px;">' : '👤';
+    return '<tr><td style="padding:7px;text-align:center;">' + (i+1) + '</td>'
+      + '<td style="padding:7px;text-align:center;">' + ph + '</td>'
+      + '<td style="padding:7px;"><strong style="color:#1a6b4a">' + s.id + '</strong></td>'
+      + '<td style="padding:7px;font-weight:600;">' + (s.name||'') + '</td>'
+      + '<td style="padding:7px;">' + (s.father||'-') + '</td>'
+      + '<td style="padding:7px;">' + (s.cls||'-') + '</td>'
+      + '<td style="padding:7px;">' + (s.phone||'-') + '</td>'
+      + '<td style="padding:7px;white-space:nowrap;">'
+      + '<button class="btn-print-id" data-act="sid" data-idx="'+realIdx+'">আইডি</button> '
+      + '<button class="btn-print-id" style="background:#1a3a5c" data-act="sform" data-idx="'+realIdx+'">ফরম</button> '
+      + '<button class="btn-print-id" style="background:#c0392b" data-act="sdel" data-idx="'+realIdx+'">মুছুন</button>'
+      + '</td></tr>';
+  }).join('');
+}
+
+function buildStudentListHtml(list, title) {
+  var rows = list.map(function(s, i) {
+    return '<tr><td style="padding:7px 10px;border:1px solid #ddd;text-align:center;">' + (i+1) + '</td>'
+      + '<td style="padding:7px 10px;border:1px solid #ddd;"><strong style="color:#0a3d2e">' + s.id + '</strong></td>'
+      + '<td style="padding:7px 10px;border:1px solid #ddd;font-weight:600;">' + (s.name||'') + '</td>'
+      + '<td style="padding:7px 10px;border:1px solid #ddd;">' + (s.father||'-') + '</td>'
+      + '<td style="padding:7px 10px;border:1px solid #ddd;text-align:center;">' + (s.cls||'-') + '</td>'
+      + '<td style="padding:7px 10px;border:1px solid #ddd;">' + (s.phone||'-') + '</td>'
+      + '</tr>';
+  }).join('');
+  return madrasaHeader()
+    + '<div style="text-align:center;padding:10px 0 4px;font-size:16px;font-weight:700;color:#0a3d2e;">' + title + '</div>'
+    + '<div style="text-align:right;font-size:11px;color:#888;padding:0 0 8px;">মোট: ' + list.length + ' জন</div>'
+    + '<table style="width:100%;border-collapse:collapse;font-size:13px;">'
+    + '<thead><tr style="background:#0a3d2e;color:white;">'
+    + '<th style="padding:8px;">#</th><th style="padding:8px;">আইডি</th><th style="padding:8px;">নাম</th>'
+    + '<th style="padding:8px;">পিতার নাম</th><th style="padding:8px;">শ্রেণি</th><th style="padding:8px;">মোবাইল</th>'
+    + '</tr></thead><tbody>' + rows + '</tbody></table>';
+}
+
+function printStudentListSection() {
+  var classFilter = (document.getElementById('sl-class-filter')||{}).value || '';
+  var list = classFilter ? DB.students.filter(function(s){ return s.cls === classFilter; }) : DB.students;
+  if (!list.length) { showToast('কোনো ছাত্র নেই'); return; }
+  var title = classFilter ? classFilter + ' শ্রেণির ছাত্র তালিকা' : 'সকল ছাত্র তালিকা';
+  openPrintWindow(buildStudentListHtml(list, title));
+}
+
+// ===== TEACHER LIST SECTION =====
+function renderTeacherListSection() {
+  var countEl = document.getElementById('tl-count');
+  if (countEl) countEl.textContent = 'মোট: ' + DB.teachers.length + ' জন';
+  var tbody = document.getElementById('teacher-list-body');
+  if (!tbody) return;
+  if (!DB.teachers.length) { tbody.innerHTML = '<tr><td colspan="7" style="text-align:center;color:#aaa;padding:20px">কোনো শিক্ষক নেই</td></tr>'; return; }
+  tbody.innerHTML = DB.teachers.map(function(t, i) {
+    var ph = t.photo ? '<img src="' + t.photo + '" style="width:28px;height:35px;object-fit:cover;border-radius:3px;">' : '👤';
+    return '<tr><td style="padding:7px;text-align:center;">' + (i+1) + '</td>'
+      + '<td style="padding:7px;text-align:center;">' + ph + '</td>'
+      + '<td style="padding:7px;"><strong style="color:#1a6b4a">' + t.id + '</strong></td>'
+      + '<td style="padding:7px;font-weight:600;">' + (t.name||'') + '</td>'
+      + '<td style="padding:7px;">' + (t.dept||'-') + '</td>'
+      + '<td style="padding:7px;">' + (t.phone||'-') + '</td>'
+      + '<td style="padding:7px;white-space:nowrap;">'
+      + '<button class="btn-print-id" data-act="tid" data-idx="'+i+'">আইডি</button> '
+      + '<button class="btn-print-id" style="background:#1a3a5c" data-act="tform" data-idx="'+i+'">ফরম</button> '
+      + '<button class="btn-print-id" style="background:#c0392b" data-act="tdel" data-idx="'+i+'">মুছুন</button>'
+      + '</td></tr>';
+  }).join('');
+}
+
+function printTeacherListSection() {
+  if (!DB.teachers.length) { showToast('কোনো শিক্ষক নেই'); return; }
+  var rows = DB.teachers.map(function(t, i) {
+    return '<tr><td style="padding:7px 10px;border:1px solid #ddd;text-align:center;">' + (i+1) + '</td>'
+      + '<td style="padding:7px 10px;border:1px solid #ddd;"><strong style="color:#0a3d2e">' + t.id + '</strong></td>'
+      + '<td style="padding:7px 10px;border:1px solid #ddd;font-weight:600;">' + (t.name||'') + '</td>'
+      + '<td style="padding:7px 10px;border:1px solid #ddd;">' + (t.dept||'-') + '</td>'
+      + '<td style="padding:7px 10px;border:1px solid #ddd;">' + (t.phone||'-') + '</td>'
+      + '</tr>';
+  }).join('');
+  openPrintWindow(madrasaHeader()
+    + '<div style="text-align:center;padding:10px 0 4px;font-size:16px;font-weight:700;color:#0a3d2e;">শিক্ষক তালিকা</div>'
+    + '<table style="width:100%;border-collapse:collapse;font-size:13px;">'
+    + '<thead><tr style="background:#0a3d2e;color:white;"><th style="padding:8px;">#</th>'
+    + '<th style="padding:8px;">আইডি</th><th style="padding:8px;">নাম</th>'
+    + '<th style="padding:8px;">বিভাগ</th><th style="padding:8px;">মোবাইল</th>'
+    + '</tr></thead><tbody>' + rows + '</tbody></table>');
+}
+
+// ===== INCOME LIST SECTION =====
+function renderIncomeListSection() {
+  var monthFilter = (document.getElementById('il-month-filter')||{}).value || '';
+  var list = monthFilter ? DB.income.filter(function(i){ return (i.month||'') === monthFilter; }) : DB.income;
+  var total = list.reduce(function(s,i){ return s+(i.amount||0); }, 0);
+  var totalEl = document.getElementById('il-total');
+  if (totalEl) totalEl.textContent = 'মোট: ৳' + total.toLocaleString();
+  var tbody = document.getElementById('income-list-body');
+  if (!tbody) return;
+  if (!list.length) { tbody.innerHTML = '<tr><td colspan="7" style="text-align:center;color:#aaa;padding:20px">কোনো আয় এন্ট্রি নেই</td></tr>'; return; }
+  var reversed = list.slice().reverse();
+  tbody.innerHTML = reversed.map(function(inc, i) {
+    var realIdx = DB.income.indexOf(inc);
+    return '<tr><td style="padding:7px;">' + (i+1) + '</td>'
+      + '<td style="padding:7px;">' + inc.date + '</td>'
+      + '<td style="padding:7px;"><span class="badge badge-income">' + inc.source + '</span></td>'
+      + '<td style="padding:7px;">' + (inc.from||'-') + '</td>'
+      + '<td style="padding:7px;">' + (inc.month||'-') + '</td>'
+      + '<td style="padding:7px;"><strong style="color:#1a6b4a">৳' + inc.amount.toLocaleString() + '</strong></td>'
+      + '<td style="padding:7px;white-space:nowrap;">'
+      + '<button class="btn-print-id" data-act="ireceipt" data-idx="'+realIdx+'">রিসিট</button> '
+      + '<button class="btn-print-id" data-act="idel-inc" data-idx="'+realIdx+'" style="background:#fde8e8;color:#c0392b;">মুছুন</button>'
+      + '</td></tr>';
+  }).join('');
+}
+
+function printIncomeListSection() {
+  var monthFilter = (document.getElementById('il-month-filter')||{}).value || '';
+  var list = monthFilter ? DB.income.filter(function(i){ return (i.month||'') === monthFilter; }) : DB.income;
+  if (!list.length) { showToast('কোনো আয় নেই'); return; }
+  var total = list.reduce(function(s,i){ return s+(i.amount||0); }, 0);
+  var title = monthFilter ? monthFilter + ' মাসের আয় তালিকা' : 'সকল আয় তালিকা';
+  var rows = list.map(function(inc, i) {
+    return '<tr><td style="padding:7px 10px;border:1px solid #ddd;">' + (i+1) + '</td>'
+      + '<td style="padding:7px 10px;border:1px solid #ddd;">' + inc.date + '</td>'
+      + '<td style="padding:7px 10px;border:1px solid #ddd;">' + inc.source + '</td>'
+      + '<td style="padding:7px 10px;border:1px solid #ddd;">' + (inc.from||'-') + '</td>'
+      + '<td style="padding:7px 10px;border:1px solid #ddd;">' + (inc.month||'-') + '</td>'
+      + '<td style="padding:7px 10px;border:1px solid #ddd;font-weight:700;color:#1a6b4a;">৳' + inc.amount.toLocaleString() + '</td>'
+      + '</tr>';
+  }).join('');
+  openPrintWindow(madrasaHeader()
+    + '<div style="text-align:center;padding:10px 0 4px;font-size:16px;font-weight:700;color:#0a3d2e;">' + title + '</div>'
+    + '<table style="width:100%;border-collapse:collapse;font-size:13px;">'
+    + '<thead><tr style="background:#0a3d2e;color:white;"><th style="padding:8px;">#</th>'
+    + '<th style="padding:8px;">তারিখ</th><th style="padding:8px;">উৎস</th>'
+    + '<th style="padding:8px;">নাম</th><th style="padding:8px;">মাস</th><th style="padding:8px;">পরিমাণ</th>'
+    + '</tr></thead><tbody>' + rows
+    + '<tr style="background:#e8f4ed;"><td colspan="5" style="padding:8px;font-weight:700;">মোট</td>'
+    + '<td style="padding:8px;font-weight:700;color:#1a6b4a;">৳' + total.toLocaleString() + '</td></tr>'
+    + '</tbody></table>');
+}
+
+// ===== EXPENSE LIST SECTION =====
+function renderExpenseListSection() {
+  var monthFilter = (document.getElementById('el-month-filter')||{}).value || '';
+  var list = monthFilter ? DB.expense.filter(function(e){ return (e.month||'') === monthFilter; }) : DB.expense;
+  var total = list.reduce(function(s,e){ return s+(e.amount||0); }, 0);
+  var totalEl = document.getElementById('el-total');
+  if (totalEl) totalEl.textContent = 'মোট: ৳' + total.toLocaleString();
+  var tbody = document.getElementById('expense-list-body');
+  if (!tbody) return;
+  if (!list.length) { tbody.innerHTML = '<tr><td colspan="7" style="text-align:center;color:#aaa;padding:20px">কোনো ব্যয় এন্ট্রি নেই</td></tr>'; return; }
+  var reversed = list.slice().reverse();
+  tbody.innerHTML = reversed.map(function(exp, i) {
+    var realIdx = DB.expense.indexOf(exp);
+    return '<tr><td style="padding:7px;">' + (i+1) + '</td>'
+      + '<td style="padding:7px;">' + exp.date + '</td>'
+      + '<td style="padding:7px;"><span class="badge badge-expense">' + exp.type + '</span></td>'
+      + '<td style="padding:7px;">' + (exp.month||'-') + '</td>'
+      + '<td style="padding:7px;">' + (exp.to||'-') + '</td>'
+      + '<td style="padding:7px;"><strong style="color:#c0392b">৳' + exp.amount.toLocaleString() + '</strong></td>'
+      + '<td style="padding:7px;white-space:nowrap;">'
+      + '<button class="btn-print-id" style="background:#c0392b" data-act="ereceipt" data-idx="'+realIdx+'">রিসিট</button> '
+      + '<button class="btn-print-id" data-act="edel" data-idx="'+realIdx+'" style="background:#fde8e8;color:#c0392b;">মুছুন</button>'
+      + '</td></tr>';
+  }).join('');
+}
+
+function printExpenseListSection() {
+  var monthFilter = (document.getElementById('el-month-filter')||{}).value || '';
+  var list = monthFilter ? DB.expense.filter(function(e){ return (e.month||'') === monthFilter; }) : DB.expense;
+  if (!list.length) { showToast('কোনো ব্যয় নেই'); return; }
+  var total = list.reduce(function(s,e){ return s+(e.amount||0); }, 0);
+  var title = monthFilter ? monthFilter + ' মাসের ব্যয় তালিকা' : 'সকল ব্যয় তালিকা';
+  var rows = list.map(function(exp, i) {
+    return '<tr><td style="padding:7px 10px;border:1px solid #ddd;">' + (i+1) + '</td>'
+      + '<td style="padding:7px 10px;border:1px solid #ddd;">' + exp.date + '</td>'
+      + '<td style="padding:7px 10px;border:1px solid #ddd;">' + exp.type + '</td>'
+      + '<td style="padding:7px 10px;border:1px solid #ddd;">' + (exp.month||'-') + '</td>'
+      + '<td style="padding:7px 10px;border:1px solid #ddd;">' + (exp.to||'-') + '</td>'
+      + '<td style="padding:7px 10px;border:1px solid #ddd;font-weight:700;color:#c0392b;">৳' + exp.amount.toLocaleString() + '</td>'
+      + '</tr>';
+  }).join('');
+  openPrintWindow(madrasaHeader()
+    + '<div style="text-align:center;padding:10px 0 4px;font-size:16px;font-weight:700;color:#c0392b;">' + title + '</div>'
+    + '<table style="width:100%;border-collapse:collapse;font-size:13px;">'
+    + '<thead><tr style="background:#8e2b22;color:white;"><th style="padding:8px;">#</th>'
+    + '<th style="padding:8px;">তারিখ</th><th style="padding:8px;">ধরন</th>'
+    + '<th style="padding:8px;">মাস</th><th style="padding:8px;">প্রাপক</th><th style="padding:8px;">পরিমাণ</th>'
+    + '</tr></thead><tbody>' + rows
+    + '<tr style="background:#fde8e8;"><td colspan="5" style="padding:8px;font-weight:700;">মোট</td>'
+    + '<td style="padding:8px;font-weight:700;color:#c0392b;">৳' + total.toLocaleString() + '</td></tr>'
+    + '</tbody></table>');
 }
 
 function copyText(text) {
@@ -2359,6 +2871,11 @@ function renderAttGrid(type) {
   var list = type === 'teacher' ? DB.teachers : DB.students;
   var gridId = type === 'teacher' ? 'teacher-att-grid' : 'student-att-grid';
   var grid = document.getElementById(gridId);
+  // Class filter for students
+  if (type === 'student') {
+    var classFilter = (document.getElementById('s-att-class-filter')||{}).value || '';
+    if (classFilter) list = list.filter(function(s){ return s.cls === classFilter; });
+  }
   if (!list.length) {
     grid.innerHTML = '<div style="color:#aaa;font-size:14px;grid-column:1/-1;padding:20px;text-align:center">প্রথমে ' + (type === 'teacher' ? 'শিক্ষক' : 'ছাত্র') + ' নিবন্ধন করুন</div>';
     return;
@@ -2387,20 +2904,27 @@ function saveAttendance(type) {
   const dateId = type === 'teacher' ? 't-att-date' : 's-att-date';
   const date = document.getElementById(dateId).value;
   if (!date) { showToast('⚠️ তারিখ নির্বাচন করুন'); return; }
-  const list = type === 'teacher' ? DB.teachers : DB.students;
   const gridId = type === 'teacher' ? 'teacher-att-grid' : 'student-att-grid';
   const cards = document.getElementById(gridId).querySelectorAll('.attendance-card');
+  if (!cards.length) { showToast('⚠️ কোনো ' + (type==='teacher'?'শিক্ষক':'ছাত্র') + ' নেই'); return; }
+  // Build filtered list same as renderAttGrid
+  var list = type === 'teacher' ? DB.teachers : DB.students;
+  if (type === 'student') {
+    var classFilter = (document.getElementById('s-att-class-filter')||{}).value || '';
+    if (classFilter) list = list.filter(function(s){ return s.cls === classFilter; });
+  }
   let saved = 0;
   cards.forEach((card, i) => {
     const person = list[i];
+    if (!person) return;
     const selectedBtn = card.querySelector('.att-toggle .selected');
     const status = selectedBtn ? (selectedBtn.classList.contains('present-btn') ? 'present' : 'absent') : 'present';
     DB.attendance.push({ date, type, id: person.id, name: person.name, extra: person.dept || person.cls || '', status });
-    saveDB();
     saved++;
   });
+  saveDB(); // একবারই save করো
   renderAttHistory(type);
-  showToast(`✅ ${toBn(saved)} জনের হাজিরা সংরক্ষিত হয়েছে`);
+  showToast('✅ ' + toBn(saved) + ' জনের হাজিরা সংরক্ষিত হয়েছে');
 }
 
 function renderAttHistory(type) {
@@ -2569,6 +3093,7 @@ function renderIncomeTable() {
   var tbody = document.getElementById('income-table-body');
   if (!tbody) return;
   var filter = (document.getElementById('inc-filter')||{}).value || '';
+  var monthFilter = (document.getElementById('inc-month-filter')||{}).value || '';
   var data = DB.income.slice().reverse();
   if (filter) {
     filter = filter.toLowerCase();
@@ -2579,10 +3104,14 @@ function renderIncomeTable() {
           || (inc.month||'').toLowerCase().includes(filter);
     });
   }
+  if (monthFilter) {
+    data = data.filter(function(inc){ return (inc.month||'') === monthFilter; });
+  }
   if (!data.length) {
     tbody.innerHTML = '<tr><td colspan="7" style="text-align:center;color:#aaa;padding:20px">কোনো আয় এন্ট্রি নেই</td></tr>';
     return;
   }
+  var total = data.reduce(function(s,i){ return s + (i.amount||0); }, 0);
   tbody.innerHTML = data.map(function(inc, i) {
     var realIdx = DB.income.indexOf(inc);
     if (realIdx < 0) realIdx = DB.income.length - 1 - i;
@@ -2597,7 +3126,9 @@ function renderIncomeTable() {
       + '<button class="btn-print-id" data-act="ireceipt" data-idx="'+realIdx+'">রিসিট</button>'
       + '<button class="btn-print-id" data-act="idel-inc" data-idx="'+realIdx+'" style="background:#fde8e8;color:#c0392b;">মুছুন</button>'
       + '</td></tr>';
-  }).join('');
+  }).join('')
+  + '<tr style="background:#e8f4ed;"><td colspan="5" style="font-weight:700;padding:8px;color:#0a3d2e;">মোট</td>'
+  + '<td style="font-weight:700;color:#1a6b4a;padding:8px;">৳' + total.toLocaleString() + '</td><td></td></tr>';
 }
 
 // ===== EXPENSE =====
@@ -2608,6 +3139,7 @@ function saveExpense() {
   if (!date || !type || !amount) { showToast('⚠️ তারিখ, ধরন ও পরিমাণ আবশ্যক'); return; }
   DB.expense.push({
     date, type, amount,
+    month: document.getElementById('exp-month').value,
     to: document.getElementById('exp-to').value,
     note: document.getElementById('exp-note').value
   });
@@ -2615,27 +3147,40 @@ function saveExpense() {
   renderExpenseTable();
   ['exp-date','exp-amount','exp-to','exp-note'].forEach(id => document.getElementById(id).value = '');
   document.getElementById('exp-type').value = '';
+  document.getElementById('exp-month').value = '';
   showToast('✅ ব্যয় সফলভাবে সংরক্ষিত হয়েছে');
 }
 
 function renderExpenseTable() {
   var tbody = document.getElementById('expense-table-body');
-  if (!DB.expense.length) {
-    tbody.innerHTML = '<tr><td colspan="6" style="text-align:center;color:#aaa;padding:20px">কোনো ব্যয় এন্ট্রি নেই</td></tr>';
+  if (!tbody) return;
+  var monthFilter = (document.getElementById('exp-month-filter')||{}).value || '';
+  var data = DB.expense.slice().reverse();
+  if (monthFilter) {
+    data = data.filter(function(exp){ return (exp.month||'') === monthFilter; });
+  }
+  if (!data.length) {
+    tbody.innerHTML = '<tr><td colspan="7" style="text-align:center;color:#aaa;padding:20px">কোনো ব্যয় এন্ট্রি নেই</td></tr>';
     return;
   }
-  var reversed = DB.expense.slice().reverse();
-  tbody.innerHTML = reversed.map(function(exp, i) {
-    var realIdx = DB.expense.length - 1 - i;
+  var total = data.reduce(function(s,e){ return s + (e.amount||0); }, 0);
+  tbody.innerHTML = data.map(function(exp, i) {
+    var realIdx = DB.expense.indexOf(exp);
+    if (realIdx < 0) realIdx = DB.expense.length - 1 - i;
     return '<tr>'
-      + '<td>' + toBn(DB.expense.length - i) + '</td>'
+      + '<td>' + toBn(i+1) + '</td>'
       + '<td>' + exp.date + '</td>'
       + '<td><span class="badge badge-expense">' + exp.type + '</span></td>'
+      + '<td>' + (exp.month||'-') + '</td>'
       + '<td>' + (exp.to||'-') + '</td>'
       + '<td><strong style="color:#c0392b">৳' + exp.amount.toLocaleString() + '</strong></td>'
-      + '<td><button class="btn-print-id" style="background:#c0392b" data-act="ereceipt" data-idx="' + realIdx + '">রিসিট</button></td>'
-      + '</tr>';
-  }).join('');
+      + '<td style="display:flex;gap:4px;">'
+      + '<button class="btn-print-id" style="background:#c0392b" data-act="ereceipt" data-idx="' + realIdx + '">রিসিট</button>'
+      + '<button class="btn-print-id" data-act="edel" data-idx="' + realIdx + '" style="background:#fde8e8;color:#c0392b;">মুছুন</button>'
+      + '</td></tr>';
+  }).join('')
+  + '<tr style="background:#fde8e8;"><td colspan="5" style="font-weight:700;padding:8px;color:#8e2b22;">মোট</td>'
+  + '<td style="font-weight:700;color:#c0392b;padding:8px;">৳' + total.toLocaleString() + '</td><td></td></tr>';
 }
 
 // ===== SEARCH =====
@@ -3788,7 +4333,7 @@ loadDB();
   <div style="height:5px;background:#c9a84c;"></div>
   <div style="padding:16px 24px 12px;text-align:center;color:white;">
     <div style="font-size:12px;color:#e8c97a;letter-spacing:3px;margin-bottom:5px;font-family:serif;">بِسْمِ اللَّهِ الرَّحْمَنِ الرَّحِيم</div>
-    <div style="font-size:21px;font-weight:700;text-shadow:0 2px 6px rgba(0,0,0,0.3);">হিফজুল কুরআন রশিদিয়া হোসাইনিয়া নূরাণী মাদ্রাসা</div>
+    <div style="font-size:21px;font-weight:700;color:#000000;text-shadow:none;">হিফজুল কুরআন রশিদিয়া হোসাইনিয়া নূরাণী মাদ্রাসা</div>
     <div style="height:1px;background:linear-gradient(90deg,transparent,#e8c97a,transparent);margin:7px auto;width:60%;"></div>
     <div style="font-size:11px;color:rgba(255,255,255,0.85);">কালুশাহ্ সড়ক, সৈয়দ রশিদিয়া মঞ্জিল, বরিশাল | 01711340205 | 01777211422</div>
   </div>
