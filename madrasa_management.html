@@ -1462,6 +1462,8 @@
             <label>পূর্বের বিভাগ / শ্রেণি</label>
             <select id="s-prev-class">
               <option value="">নির্বাচন করুন</option>
+				     <option>নূরাণী প্লে</option>
+              <option>নূরাণী নার্সারী/option>
               <option>নূরাণী ১ম</option>
               <option>নূরাণী ২য়</option>
               <option>নূরাণী ৩য়</option>
@@ -1858,10 +1860,10 @@
           <label>মাসের নাম</label>
           <select id="exp-month">
             <option value="">মাস নির্বাচন করুন</option>
-            <option>January</option><option>February</option><option>March</option>
-            <option>April</option><option>May</option><option>June</option>
-            <option>July</option><option>August</option><option>September</option>
-            <option>October</option><option>November</option><option>December</option>
+            <option>জানুয়ারী</option><option>ফেব্রুয়ারী</option><option>মার্চ</option>
+            <option>এপ্রিল</option><option>মে</option><option>জুন</option>
+            <option>জুলাই</option><option>আগস্ট</option><option>সেপ্টম্বর</option>
+            <option>অক্টোবর</option><option>নভেম্বর</option><option>ডিসেম্বর</option>
           </select>
         </div>
         <div class="form-group">
@@ -1882,10 +1884,10 @@
         <strong style="color:#c0392b;font-size:15px;">💸 সংরক্ষিত ব্যয়</strong>
         <select id="exp-month-filter" onchange="renderExpenseTable()" style="padding:7px 10px;border:1.5px solid #c0392b;border-radius:8px;font-family:var(--bn-font);font-size:13px;background:white;">
           <option value="">সব মাস</option>
-          <option>January</option><option>February</option><option>March</option>
-          <option>April</option><option>May</option><option>June</option>
-          <option>July</option><option>August</option><option>September</option>
-          <option>October</option><option>November</option><option>December</option>
+          <option>জানুয়ারী</option><option>ফেব্রুয়ারী</option><option>মার্চ</option>
+            <option>এপ্রিল</option><option>মে</option><option>জুন</option>
+            <option>জুলাই</option><option>আগস্ট</option><option>সেপ্টম্বর</option>
+            <option>অক্টোবর</option><option>নভেম্বর</option><option>ডিসেম্বর</option>
         </select>
       </div>
       <div style="overflow-x:auto;">
@@ -1917,7 +1919,7 @@
       <div style="display:flex;gap:10px;align-items:center;flex-wrap:wrap;margin-bottom:12px;">
         <select id="sl-class-filter" onchange="renderStudentListSection()" style="padding:8px 12px;border:1.5px solid #1a6b4a;border-radius:8px;font-family:var(--bn-font);font-size:14px;background:white;">
           <option value="">সব শ্রেণি</option>
-          <option>নাযেরা</option><option>হিফজ</option>
+          <option>নাযেরা</option><option>হিফজ</option><option>প্লে</option><option>নার্সারী</option>
           <option>১ম</option><option>২য়</option><option>৩য়</option>
           <option>৪র্থ</option><option>৫ম</option><option>৬ষ্ঠ</option>
           <option>৭ম</option><option>৮ম</option><option>৯ম</option><option>১০ম</option>
@@ -1983,10 +1985,10 @@
       <div style="display:flex;gap:10px;align-items:center;flex-wrap:wrap;margin-bottom:12px;">
         <select id="il-month-filter" onchange="renderIncomeListSection()" style="padding:8px 12px;border:1.5px solid #1a6b4a;border-radius:8px;font-family:var(--bn-font);font-size:14px;background:white;">
           <option value="">সব মাস</option>
-          <option>January</option><option>February</option><option>March</option>
-          <option>April</option><option>May</option><option>June</option>
-          <option>July</option><option>August</option><option>September</option>
-          <option>October</option><option>November</option><option>December</option>
+         <option>জানুয়ারী</option><option>ফেব্রুয়ারী</option><option>মার্চ</option>
+            <option>এপ্রিল</option><option>মে</option><option>জুন</option>
+            <option>জুলাই</option><option>আগস্ট</option><option>সেপ্টম্বর</option>
+            <option>অক্টোবর</option><option>নভেম্বর</option><option>ডিসেম্বর</option>
         </select>
         <button onclick="printIncomeListSection()" style="padding:8px 16px;background:#1a6b4a;color:white;border:none;border-radius:8px;font-family:var(--bn-font);font-size:14px;cursor:pointer;">🖨️ প্রিন্ট</button>
         <span id="il-total" style="font-size:14px;font-weight:700;color:#1a6b4a;"></span>
@@ -2019,10 +2021,10 @@
       <div style="display:flex;gap:10px;align-items:center;flex-wrap:wrap;margin-bottom:12px;">
         <select id="el-month-filter" onchange="renderExpenseListSection()" style="padding:8px 12px;border:1.5px solid #c0392b;border-radius:8px;font-family:var(--bn-font);font-size:14px;background:white;">
           <option value="">সব মাস</option>
-          <option>January</option><option>February</option><option>March</option>
-          <option>April</option><option>May</option><option>June</option>
-          <option>July</option><option>August</option><option>September</option>
-          <option>October</option><option>November</option><option>December</option>
+        <option>জানুয়ারী</option><option>ফেব্রুয়ারী</option><option>মার্চ</option>
+            <option>এপ্রিল</option><option>মে</option><option>জুন</option>
+            <option>জুলাই</option><option>আগস্ট</option><option>সেপ্টম্বর</option>
+            <option>অক্টোবর</option><option>নভেম্বর</option><option>ডিসেম্বর</option>
         </select>
         <button onclick="printExpenseListSection()" style="padding:8px 16px;background:#c0392b;color:white;border:none;border-radius:8px;font-family:var(--bn-font);font-size:14px;cursor:pointer;">🖨️ প্রিন্ট</button>
         <span id="el-total" style="font-size:14px;font-weight:700;color:#c0392b;"></span>
@@ -3121,7 +3123,7 @@ function printCompactReceipt(item, type) {
   var html = '<div style="font-family:\'Hind Siliguri\',sans-serif;max-width:340px;margin:0 auto;">'
     + '<div style="background:linear-gradient(135deg,#0d2137,#1a3a5c,#1a6b4a);padding:16px;text-align:center;border-radius:12px 12px 0 0;">'
     + '<div style="color:#c9a84c;font-size:14px;margin-bottom:3px;">بِسْمِ اللَّهِ الرَّحْمَنِ الرَّحِيم</div>'
-    + '<div style="color:white;font-weight:700;font-size:16px;">হিফজুল কুরআন রশিদিয়া মাদ্রাসা</div>'
+    + '<div style="color:white;font-weight:700;font-size:16px;">হিফজুল কুরআন রশিদিয়া হোসাইনিয়া নূরাণী মাদ্রাসা</div>'
     + '<div style="color:rgba(255,255,255,0.8);font-size:11px;margin-top:2px;">কালুশাহ্ সড়ক, সৈয়দ রশিদিয়া মঞ্জিল, বরিশাল</div>'
     + '</div>'
     + '<div style="border:2px solid '+color+';border-top:none;border-radius:0 0 12px 12px;padding:16px;">'
@@ -3373,7 +3375,7 @@ function printSingleReceipt(type, idx) {
     + (item.note ? '<div class="frow"><div class="fcell" style="flex:2"><label>বিবরণ</label><span>' + item.note + '</span></div></div>' : '')
     + '</div>'
     + '<div style="display:flex;justify-content:space-between;margin-top:50px;padding-top:12px;">'
-    + '<div style="text-align:center;"><div style="border-top:1.5px solid #333;width:120px;margin:0 auto;"></div><div style="font-size:11px;margin-top:4px;">গ্রহীতার স্বাক্ষর</div></div>'
+    + '<div style="text-align:center;"><div style="border-top:1.5px solid #333;width:120px;margin:0 auto;"></div><div style="font-size:11px;margin-top:4px;">আদায়কারী স্বাক্ষর</div></div>'
     + '<div style="text-align:center;"><div style="border-top:1.5px solid #333;width:120px;margin:0 auto;"></div><div style="font-size:11px;margin-top:4px;">প্রদানকারীর স্বাক্ষর</div></div>'
     + '<div style="text-align:center;"><div style="border-top:1.5px solid #333;width:120px;margin:0 auto;"></div><div style="font-size:11px;margin-top:4px;">অনুমোদনকারীর স্বাক্ষর</div></div>'
     + '</div>';
@@ -3999,7 +4001,7 @@ const today = new Date().toISOString().split('T')[0];
 // Inject manifest dynamically
 (function() {
   var manifest = {
-    name: "হিফজুল কুরআন রশিদিয়া মাদ্রাসা",
+    name: "হিফজুল কুরআন রশিদিয়া হোসাইনিয়া নূরাণী মাদ্রাসা",
     short_name: "মাদ্রাসা",
     description: "মাদ্রাসা ম্যানেজমেন্ট সিস্টেম",
     start_url: ".",
@@ -4409,7 +4411,7 @@ loadDB();
 <div id="tpl-simple-header" style="display:none">
 <div style="text-align:center;margin-bottom:16px;border-bottom:2px solid #c9a84c;padding-bottom:12px;">
   <div style="font-size:20px;font-weight:700;color:#0a3d2e;">হিফজুল কুরআন রশিদিয়া হোসাইনিয়া নূরাণী মাদ্রাসা</div>
-  <div style="font-size:12px;color:#555;margin-top:4px;">কালুশাহ্ সড়ক, বরিশাল | 01711340205</div>
+  <div style="font-size:12px;color:#555;margin-top:4px;">কালুশাহ্ সড়ক, বরিশাল | 01711340205, 01777211422</div>
 </div>
 </div>
 
