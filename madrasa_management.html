@@ -3596,11 +3596,15 @@ function loadResultSubjects() {
   // Update class options based on dept
   if (dept === 'general') {
     clsEl.innerHTML = '<option value="">নির্বাচন করুন</option>'
-      + '<option>প্লে</option><option>নার্সারি</option>'
-      + '<option>প্রথম শ্রেণি</option><option>দ্বিতীয় শ্রেণি</option><option>তৃতীয় শ্রেণি</option>';
+      + '<option value="নূরাণী প্লে">নূরাণী প্লে</option>'
+      + '<option value="নূরাণী রার্সারী">নূরাণী রার্সারী</option>'
+      + '<option value="নূরাণী ১ম">নূরাণী ১ম</option>'
+      + '<option value="নূরাণী ২য়">নূরাণী ২য়</option>'
+      + '<option value="নূরাণী ৩য়">নূরাণী ৩য়</option>';
   } else if (dept === 'hifz') {
     clsEl.innerHTML = '<option value="">নির্বাচন করুন</option>'
-      + '<option>নাজেরা</option><option>হিফজ</option>';
+      + '<option value="নাজেরা">নাজেরা</option>'
+      + '<option value="হিফজ">হিফজ</option>';
   } else {
     clsEl.innerHTML = '<option value="">নির্বাচন করুন</option>';
     container.style.display = 'none';
@@ -3638,8 +3642,15 @@ function loadStudentsForClass() {
   var cls = document.getElementById('res-class').value;
   var sel = document.getElementById('res-student');
   var matching = DB.students.filter(function(s){ 
-    var deptMatch = !dept || !s.dept || s.dept === dept;
-    var clsMatch = !cls || s.cls === cls;
+    // dept match — loose: যেকোনো ভাবে মিললেই হবে
+    var deptMatch = true;
+    if (dept === 'general') {
+      deptMatch = !s.dept || s.dept === 'নূরাণী বিভাগ' || s.dept === 'general';
+    } else if (dept === 'hifz') {
+      deptMatch = !s.dept || s.dept === 'হিফজ বিভাগ' || s.dept === 'hifz';
+    }
+    // cls match — loose: ছাত্রের cls-এ search text থাকলেই হবে
+    var clsMatch = !cls || !s.cls || s.cls === cls || s.cls.indexOf(cls) !== -1 || cls.indexOf(s.cls) !== -1;
     return deptMatch && clsMatch;
   });
   if (matching.length) {
