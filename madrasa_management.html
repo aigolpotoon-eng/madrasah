@@ -1462,8 +1462,6 @@
             <label>পূর্বের বিভাগ / শ্রেণি</label>
             <select id="s-prev-class">
               <option value="">নির্বাচন করুন</option>
-			   <option>নূরাণী প্লে</option>
-			   <option>নূরাণী নার্সারী</option>
               <option>নূরাণী ১ম</option>
               <option>নূরাণী ২য়</option>
               <option>নূরাণী ৩য়</option>
@@ -1486,11 +1484,20 @@
             </select>
           </div>
           <div class="form-group">
+            <label>বিভাগ *</label>
+            <select id="s-dept-old">
+              <option value="">নির্বাচন করুন</option>
+              <option>নূরাণী বিভাগ</option>
+              <option>হিফজ বিভাগ</option>
+              <option>কিতাব বিভাগ</option>
+            </select>
+          </div>
+          <div class="form-group">
             <label>বর্তমানে যে শ্রেণিতে ভর্তি হবে *</label>
             <select id="s-class-old">
               <option value="">নির্বাচন করুন</option>
-			  <option>নূরাণী প্লে</option>
-			  <option>নূরাণী রার্সারী</option>
+              <option>নূরাণী প্লে</option>
+              <option>নূরাণী রার্সারী</option>
               <option>নূরাণী ১ম</option>
               <option>নূরাণী ২য়</option>
               <option>নূরাণী ৩য়</option>
@@ -1523,11 +1530,20 @@
             <input type="number" id="s-exam-mark" placeholder="প্রাপ্ত নম্বর">
           </div>
           <div class="form-group">
+            <label>বিভাগ *</label>
+            <select id="s-dept">
+              <option value="">নির্বাচন করুন</option>
+              <option>নূরাণী বিভাগ</option>
+              <option>হিফজ বিভাগ</option>
+              <option>কিতাব বিভাগ</option>
+            </select>
+          </div>
+          <div class="form-group">
             <label>বর্তমানে যে শ্রেণিতে পড়তে ইচ্ছুক *</label>
             <select id="s-class">
               <option value="">নির্বাচন করুন</option>
               <option>নূরাণী প্লে</option>
-			  <option>নূরাণী রার্সারী</option>
+              <option>নূরাণী রার্সারী</option>
               <option>নূরাণী ১ম</option>
               <option>নূরাণী ২য়</option>
               <option>নূরাণী ৩য়</option>
@@ -2853,11 +2869,17 @@ function saveStudent() {
     : document.getElementById('s-class-old');
   var cls = clsEl ? clsEl.value : '';
 
+  var deptEl = currentStudentType === 'new'
+    ? document.getElementById('s-dept')
+    : document.getElementById('s-dept-old');
+  var dept = deptEl ? deptEl.value : '';
+
   var s = {
     id: autoId,
     type: currentStudentType === 'new' ? 'নতুন' : 'পুরাতন',
     photo: getPhotoData('s'),
     name: name,
+    dept: dept,
     father: document.getElementById('s-father').value,
     mother: document.getElementById('s-mother').value,
     dob: document.getElementById('s-dob').value,
@@ -3612,9 +3634,12 @@ function loadResultSubjects() {
 }
 
 function loadStudentsForClass() {
+  var dept = document.getElementById('res-dept').value;
   var cls = document.getElementById('res-class').value;
   var sel = document.getElementById('res-student');
-  var matching = DB.students.filter(function(s){ return !cls || s.cls === cls; });
+  var matching = DB.students.filter(function(s){ 
+    return (!dept || s.dept === dept) && (!cls || s.cls === cls); 
+  });
   if (matching.length) {
     sel.innerHTML = '<option value="">নির্বাচন করুন</option>'
       + matching.map(function(s){ return '<option value="' + s.id + '">' + s.name + ' (' + s.id + ')</option>'; }).join('');
@@ -4282,11 +4307,11 @@ loadDB();
           <label>শ্রেণি / জামাত *</label>
           <select id="res-class" onchange="loadStudentsForClass()">
             <option value="">নির্বাচন করুন</option>
-            <option>নূরাণী প্লে</option>
-            <option>নূরাণী নার্সারি</option>
-            <option>নূরাণী প্রথম শ্রেণি</option>
-            <option>নূরাণী দ্বিতীয় শ্রেণি</option>
-            <option>নূরাণী তৃতীয় শ্রেণি</option>
+            <option>প্লে</option>
+            <option>নার্সারি</option>
+            <option>প্রথম শ্রেণি</option>
+            <option>দ্বিতীয় শ্রেণি</option>
+            <option>তৃতীয় শ্রেণি</option>
             <option>নাজেরা</option>
             <option>হিফজ</option>
           </select>
