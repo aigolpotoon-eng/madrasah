@@ -3638,7 +3638,9 @@ function loadStudentsForClass() {
   var cls = document.getElementById('res-class').value;
   var sel = document.getElementById('res-student');
   var matching = DB.students.filter(function(s){ 
-    return (!dept || s.dept === dept) && (!cls || s.cls === cls); 
+    var deptMatch = !dept || !s.dept || s.dept === dept;
+    var clsMatch = !cls || s.cls === cls;
+    return deptMatch && clsMatch;
   });
   if (matching.length) {
     sel.innerHTML = '<option value="">নির্বাচন করুন</option>'
@@ -4299,13 +4301,8 @@ loadDB();
           <label>বিভাগ *</label>
           <select id="res-dept" onchange="loadResultSubjects()">
             <option value="">নির্বাচন করুন</option>
-            <option value="general">নূরাণী প্লে</option>
-              <option value="general">নূরাণী নার্সারী</option>
-              <option value="general">নূরাণী প্রথম</option>
-            <option value="general">নূরাণী দ্বিতীয়</option>
-            <option value="general">নূরাণী তৃতীয়</option>
-            <option value="hifz">নাজেরা বিভাগ</option>
-            <option value="hifz">হিফজ  বিভাগ</option>
+            <option value="general">প্লে - তৃতীয় শ্রেণি (সাধারণ)</option>
+            <option value="hifz">হিফজ ও নাজেরা বিভাগ</option>
           </select>
         </div>
         <div class="form-group">
