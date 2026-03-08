@@ -2122,7 +2122,17 @@ document.addEventListener('click', function(e) {
   if (!btn) return;
   var act = btn.getAttribute('data-act');
   var idx = parseInt(btn.getAttribute('data-idx'));
-  if (act === 'tid') {
+  if (act === 'tedit') {
+    openEditModal('teacher', idx);
+  } else if (act === 'sedit') {
+    openEditModal('student', idx);
+  } else if (act === 'iedit') {
+    openEditModal('income', idx);
+  } else if (act === 'eedit') {
+    openEditModal('expense', idx);
+  } else if (act === 'res-edit') {
+    openEditModal('result', idx);
+  } else if (act === 'tid') {
     var t = DB.teachers[idx];
     if (t) openPrintModal('teacher', t.id, t.name, (t.dept||'')+' | '+t.phone, t.photo||'');
   } else if (act === 'tform') {
@@ -2586,6 +2596,7 @@ function renderTeacherTable() {
       + '<td>' + (t.join||'-') + '</td>'
       + '<td><button class="btn-print-id" data-act="tid" data-idx="' + i + '">আইডি</button> '
       + '<button class="btn-print-id" style="background:#1a3a5c" data-act="tform" data-idx="' + i + '">ফরম</button> '
+      + '<button class="btn-print-id" style="background:#e67e22" data-act="tedit" data-idx="' + i + '">এডিট</button> '
       + '<button class="btn-print-id" style="background:#c0392b" data-act="tdel" data-idx="' + i + '">মুছুন</button></td>'
       + '</tr>';
   }
@@ -2623,6 +2634,7 @@ function renderStudentTable() {
       + '<button class="btn-print-id" data-act="sid" data-idx="' + realIdx + '">আইডি</button> '
       + '<button class="btn-print-id" style="background:#b8860b" data-act="scopy" data-idx="' + realIdx + '">কপি</button> '
       + '<button class="btn-print-id" style="background:#1a3a5c" data-act="sform" data-idx="' + realIdx + '">ফরম</button> '
+      + '<button class="btn-print-id" style="background:#e67e22" data-act="sedit" data-idx="' + realIdx + '">এডিট</button> '
       + '<button class="btn-print-id" style="background:#c0392b" data-act="sdel" data-idx="' + realIdx + '">মুছুন</button>'
       + '</td></tr>';
   }
@@ -2755,6 +2767,7 @@ function renderIncomeListSection() {
       + '<td style="padding:7px;"><strong style="color:#1a6b4a">৳' + inc.amount.toLocaleString() + '</strong></td>'
       + '<td style="padding:7px;white-space:nowrap;">'
       + '<button class="btn-print-id" data-act="ireceipt" data-idx="'+realIdx+'">রিসিট</button> '
+      + '<button class="btn-print-id" style="background:#e67e22" data-act="iedit" data-idx="'+realIdx+'">এডিট</button> '
       + '<button class="btn-print-id" data-act="idel-inc" data-idx="'+realIdx+'" style="background:#fde8e8;color:#c0392b;">মুছুন</button>'
       + '</td></tr>';
   }).join('');
@@ -2808,6 +2821,7 @@ function renderExpenseListSection() {
       + '<td style="padding:7px;"><strong style="color:#c0392b">৳' + exp.amount.toLocaleString() + '</strong></td>'
       + '<td style="padding:7px;white-space:nowrap;">'
       + '<button class="btn-print-id" style="background:#c0392b" data-act="ereceipt" data-idx="'+realIdx+'">রিসিট</button> '
+      + '<button class="btn-print-id" style="background:#e67e22" data-act="eedit" data-idx="'+realIdx+'">এডিট</button> '
       + '<button class="btn-print-id" data-act="edel" data-idx="'+realIdx+'" style="background:#fde8e8;color:#c0392b;">মুছুন</button>'
       + '</td></tr>';
   }).join('');
@@ -3762,6 +3776,7 @@ function renderResultList() {
       + '<td style="text-align:center;">' + r.totalObtained + '/' + r.totalFull + '<br><small style="color:#888">' + r.percent + '%</small></td>'
       + '<td style="text-align:center;"><span class="' + gCls + '">' + r.grade + '</span><br><small>' + r.status + '</small></td>'
       + '<td><button class="btn-print-id" data-act="res-print" data-idx="' + i + '">প্রিন্ট</button>'
+      + ' <button class="btn-print-id" style="background:#e67e22" data-act="res-edit" data-idx="' + i + '">এডিট</button>'
       + ' <button class="btn-print-id" style="background:#c0392b" data-act="res-del" data-idx="' + i + '">মুছুন</button></td>'
       + '</tr>';
   }).join('');
@@ -4469,5 +4484,152 @@ loadDB();
   </span>
 </div>
 
+<!-- ===== EDIT MODALS ===== -->
+<div id="edit-modal" style="display:none;position:fixed;top:0;left:0;width:100%;height:100%;background:rgba(0,0,0,0.6);z-index:9999;justify-content:center;align-items:center;overflow-y:auto;">
+  <div style="background:white;border-radius:16px;padding:24px;width:90%;max-width:500px;max-height:90vh;overflow-y:auto;margin:20px auto;position:relative;">
+    <h3 id="edit-modal-title" style="margin:0 0 18px;color:#0a3d2e;font-size:18px;border-bottom:2px solid #0a3d2e;padding-bottom:10px;"></h3>
+    <div id="edit-modal-body"></div>
+    <div style="display:flex;gap:10px;margin-top:18px;justify-content:flex-end;">
+      <button onclick="saveEdit()" style="background:#1a6b4a;color:white;border:none;padding:10px 24px;border-radius:8px;font-family:inherit;font-size:15px;font-weight:bold;cursor:pointer;">সংরক্ষণ করুন</button>
+      <button onclick="document.getElementById('edit-modal').style.display='none'" style="background:#eee;color:#333;border:none;padding:10px 20px;border-radius:8px;font-family:inherit;font-size:15px;cursor:pointer;">বাতিল</button>
+    </div>
+  </div>
+</div>
+
+<script>
+var _editType = '';
+var _editIdx = -1;
+
+function openEditModal(type, idx) {
+  _editType = type;
+  _editIdx = idx;
+  var modal = document.getElementById('edit-modal');
+  var title = document.getElementById('edit-modal-title');
+  var body = document.getElementById('edit-modal-body');
+
+  function field(label, id, val, type) {
+    type = type || 'text';
+    return '<div style="margin-bottom:12px;"><label style="display:block;font-size:13px;color:#555;margin-bottom:4px;">'+label+'</label>'
+      + '<input id="ef-'+id+'" type="'+type+'" value="'+escH(val||'')+'" style="width:100%;padding:9px 12px;border:1.5px solid #ddd;border-radius:8px;font-family:inherit;font-size:14px;box-sizing:border-box;"></div>';
+  }
+  function selField(label, id, val, opts) {
+    var optsHtml = opts.map(function(o){ return '<option value="'+o+'"'+(o===val?' selected':'')+'>'+o+'</option>'; }).join('');
+    return '<div style="margin-bottom:12px;"><label style="display:block;font-size:13px;color:#555;margin-bottom:4px;">'+label+'</label>'
+      + '<select id="ef-'+id+'" style="width:100%;padding:9px 12px;border:1.5px solid #ddd;border-radius:8px;font-family:inherit;font-size:14px;box-sizing:border-box;"><option value="">নির্বাচন করুন</option>'+optsHtml+'</select></div>';
+  }
+
+  if (type === 'teacher') {
+    var t = DB.teachers[idx];
+    title.textContent = 'শিক্ষক তথ্য সম্পাদনা';
+    body.innerHTML = field('পূর্ণ নাম','name',t.name)
+      + field('মোবাইল','phone',t.phone,'tel')
+      + selField('বিভাগ','dept',t.dept,['নূরাণী বিভাগ','হিফজ বিভাগ','কিতাব বিভাগ','অফিস'])
+      + field('পদবী','designation',t.designation)
+      + field('যোগদান তারিখ','join',t.join,'date')
+      + field('অভিজ্ঞতা (বছর)','experience',t.experience,'number')
+      + selField('লিঙ্গ','gender',t.gender,['পুরুষ','মহিলা'])
+      + field('ঠিকানা','address',t.address)
+      + field('জাতীয় পরিচয়পত্র নং','nid',t.nid)
+      + field('মাসিক বেতন','salary',t.salary,'number');
+
+  } else if (type === 'student') {
+    var s = DB.students[idx];
+    title.textContent = 'ছাত্র তথ্য সম্পাদনা';
+    body.innerHTML = field('পূর্ণ নাম','name',s.name)
+      + field('পিতার নাম','father',s.father)
+      + field('মাতার নাম','mother',s.mother)
+      + selField('বিভাগ','dept',s.dept,['নূরাণী বিভাগ','হিফজ বিভাগ','কিতাব বিভাগ'])
+      + selField('শ্রেণী','cls',s.cls,['নূরাণী প্লে','নূরাণী রার্সারী','নূরাণী ১ম','নূরাণী ২য়','নূরাণী ৩য়','নাজেরা','হিফজ','কিতাব বিভাগ'])
+      + field('মোবাইল','phone',s.phone,'tel')
+      + field('জন্ম তারিখ','dob',s.dob,'date')
+      + field('ভর্তি তারিখ','admit',s.admit,'date')
+      + field('মাসিক বেতন','fee',s.fee,'number')
+      + field('ঠিকানা','address',s.address)
+      + field('অভিভাবকের নাম','guardianName',s.guardianName)
+      + field('অভিভাবকের মোবাইল','guardianPhone',s.guardianPhone,'tel');
+
+  } else if (type === 'income') {
+    var inc = DB.income[idx];
+    title.textContent = 'আয় এন্ট্রি সম্পাদনা';
+    body.innerHTML = field('তারিখ','date',inc.date,'date')
+      + selField('উৎস','source',inc.source,['ছাত্র বেতন','ডোনেশন','সরকারি অনুদান','অন্যান্য'])
+      + field('কার কাছ থেকে','from',inc.from)
+      + field('মাস','month',inc.month)
+      + field('পরিমাণ (টাকা)','amount',inc.amount,'number')
+      + field('নোট','note',inc.note);
+
+  } else if (type === 'expense') {
+    var exp = DB.expense[idx];
+    title.textContent = 'ব্যয় এন্ট্রি সম্পাদনা';
+    body.innerHTML = field('তারিখ','date',exp.date,'date')
+      + selField('ধরন','type',exp.type,['শিক্ষক বেতন','বিদ্যুৎ','পানি','মেরামত','কেনাকাটা','অন্যান্য'])
+      + field('মাস','month',exp.month)
+      + field('প্রদানকারী','to',exp.to)
+      + field('পরিমাণ (টাকা)','amount',exp.amount,'number')
+      + field('নোট','note',exp.note);
+
+  } else if (type === 'result') {
+    var r = DB.results[idx];
+    title.textContent = 'ফলাফল সম্পাদনা';
+    body.innerHTML = field('পরীক্ষার নাম','examName',r.examName)
+      + field('ছাত্রের নাম','studentName',r.studentName)
+      + field('ছাত্র আইডি','studentId',r.studentId)
+      + field('শ্রেণী','cls',r.cls)
+      + field('মোট পূর্ণমান','totalFull',r.totalFull,'number')
+      + field('প্রাপ্ত নম্বর','totalObtained',r.totalObtained,'number')
+      + field('শতাংশ','percent',r.percent,'number')
+      + field('গ্রেড','grade',r.grade)
+      + selField('ফলাফল','status',r.status,['পাস','ফেল']);
+  }
+
+  modal.style.display = 'flex';
+}
+
+function saveEdit() {
+  function gv(id) { var el=document.getElementById('ef-'+id); return el ? el.value.trim() : ''; }
+  function gn(id) { var v=parseFloat(gv(id)); return isNaN(v)?0:v; }
+
+  if (_editType === 'teacher') {
+    var t = DB.teachers[_editIdx];
+    t.name = gv('name'); t.phone = gv('phone'); t.dept = gv('dept');
+    t.designation = gv('designation'); t.join = gv('join');
+    t.experience = gv('experience'); t.gender = gv('gender');
+    t.address = gv('address'); t.nid = gv('nid'); t.salary = gn('salary');
+    saveDB(); renderTeacherTable(); showToast('✅ শিক্ষক তথ্য আপডেট হয়েছে');
+
+  } else if (_editType === 'student') {
+    var s = DB.students[_editIdx];
+    s.name = gv('name'); s.father = gv('father'); s.mother = gv('mother');
+    s.dept = gv('dept'); s.cls = gv('cls'); s.phone = gv('phone');
+    s.dob = gv('dob'); s.admit = gv('admit'); s.fee = gn('fee');
+    s.address = gv('address'); s.guardianName = gv('guardianName');
+    s.guardianPhone = gv('guardianPhone');
+    saveDB(); renderStudentTable(); updateStats(); showToast('✅ ছাত্র তথ্য আপডেট হয়েছে');
+
+  } else if (_editType === 'income') {
+    var inc = DB.income[_editIdx];
+    inc.date = gv('date'); inc.source = gv('source'); inc.from = gv('from');
+    inc.month = gv('month'); inc.amount = gn('amount'); inc.note = gv('note');
+    saveDB(); renderIncomeTable(); updateStats(); showToast('✅ আয় এন্ট্রি আপডেট হয়েছে');
+
+  } else if (_editType === 'expense') {
+    var exp = DB.expense[_editIdx];
+    exp.date = gv('date'); exp.type = gv('type'); exp.month = gv('month');
+    exp.to = gv('to'); exp.amount = gn('amount'); exp.note = gv('note');
+    saveDB(); renderExpenseTable(); updateStats(); showToast('✅ ব্যয় এন্ট্রি আপডেট হয়েছে');
+
+  } else if (_editType === 'result') {
+    var r = DB.results[_editIdx];
+    r.examName = gv('examName'); r.studentName = gv('studentName');
+    r.studentId = gv('studentId'); r.cls = gv('cls');
+    r.totalFull = gn('totalFull'); r.totalObtained = gn('totalObtained');
+    r.percent = gn('percent'); r.grade = gv('grade'); r.status = gv('status');
+    saveDB(); renderResultList(); showToast('✅ ফলাফল আপডেট হয়েছে');
+  }
+
+  document.getElementById('edit-modal').style.display = 'none';
+}
+</script>
+-e 
 </body>
 </html>
