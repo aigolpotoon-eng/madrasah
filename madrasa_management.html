@@ -3584,14 +3584,13 @@ var SUBJECTS = {
 function getGrade(percent) {
   if (percent >= 80) return { label: 'A+', cls: 'grade-ap', points: 5.0 };
   if (percent >= 70) return { label: 'A',  cls: 'grade-a',  points: 4.0 };
-  if (percent >= 60) return { label: 'B',  cls: 'grade-b',  points: 3.5 };
-  if (percent >= 50) return { label: 'C',  cls: 'grade-c',  points: 3.0 };
-  if (percent >= 33) return { label: 'D',  cls: 'grade-d',  points: 2.0 };
+  if (percent >= 60) return { label: 'A-', cls: 'grade-b',  points: 3.5 };
+  if (percent >= 50) return { label: 'B',  cls: 'grade-c',  points: 3.0 };
   return { label: 'F', cls: 'grade-f', points: 0.0 };
 }
 
 function getResultStatus(percent) {
-  return percent >= 33 ? 'পাস' : 'ফেল';
+  return percent >= 50 ? 'পাস' : 'ফেল';
 }
 
 function setResultTab(tab, btn) {
@@ -3774,7 +3773,7 @@ function renderResultList() {
       + '<td>' + r.cls + '</td>'
       + '<td><strong>' + r.studentName + '</strong><br><small style="color:#888">' + r.studentId + '</small></td>'
       + '<td style="text-align:center;">' + r.totalObtained + '/' + r.totalFull + '<br><small style="color:#888">' + r.percent + '%</small></td>'
-      + '<td style="text-align:center;"><span class="' + gCls + '">' + r.grade + '</span><br><small>' + r.status + '</small></td>'
+      + '<td style="text-align:center;"><span class="' + gCls + '">' + r.grade + '</span><br><small style="color:#555;font-weight:600;">GP: ' + getGrade(parseFloat(r.percent)).points.toFixed(2) + '</small><br><small>' + r.status + '</small></td>'
       + '<td><button class="btn-print-id" data-act="res-print" data-idx="' + i + '">প্রিন্ট</button>'
       + ' <button class="btn-print-id" style="background:#e67e22" data-act="res-edit" data-idx="' + i + '">এডিট</button>'
       + ' <button class="btn-print-id" style="background:#c0392b" data-act="res-del" data-idx="' + i + '">মুছুন</button></td>'
@@ -3807,6 +3806,7 @@ function loadClassResult() {
       + '<td style="text-align:center;font-weight:700;">' + r.totalObtained + '/' + r.totalFull + '</td>'
       + '<td style="text-align:center;">' + r.percent + '%</td>'
       + '<td style="text-align:center;"><span class="' + gCls + '">' + r.grade + '</span></td>'
+      + '<td style="text-align:center;font-weight:700;color:#1a6b4a;">' + getGrade(parseFloat(r.percent)).points.toFixed(2) + '</td>'
       + '<td style="text-align:center;">' + r.status + '</td>'
       + '</tr>';
   });
@@ -3829,6 +3829,7 @@ function loadClassResult() {
     + '<th style="padding:8px 10px;">মোট</th>'
     + '<th style="padding:8px 10px;">%</th>'
     + '<th style="padding:8px 10px;">গ্রেড</th>'
+    + '<th style="padding:8px 10px;">পয়েন্ট</th>'
     + '<th style="padding:8px 10px;">ফলাফল</th>'
     + '</tr></thead>'
     + '<tbody>' + rows.join('') + '</tbody>'
@@ -3876,6 +3877,7 @@ function loadPersonalResult() {
         + '<td style="padding:8px 12px;border-bottom:1px solid #eee;text-align:center;">' + m.full + '</td>'
         + '<td style="padding:8px 12px;border-bottom:1px solid #eee;text-align:center;font-weight:700;">' + m.obtained + '</td>'
         + '<td style="padding:8px 12px;border-bottom:1px solid #eee;text-align:center;"><span class="' + mg.cls + '">' + mg.label + '</span></td>'
+        + '<td style="padding:8px 12px;border-bottom:1px solid #eee;text-align:center;font-weight:700;color:#1a6b4a;">' + mg.points.toFixed(2) + '</td>'
         + '</tr>';
     }).join('');
     return '<div class="result-marksheet">'
@@ -3890,13 +3892,14 @@ function loadPersonalResult() {
       + '</div>'
       + '</div>'
       + '<table style="width:100%;border-collapse:collapse;font-size:13px;">'
-      + '<thead><tr style="background:#f0f7f3;"><th style="padding:8px 12px;text-align:left;">বিষয়</th><th style="padding:8px 12px;text-align:center;">পূর্ণমান</th><th style="padding:8px 12px;text-align:center;">প্রাপ্ত</th><th style="padding:8px 12px;text-align:center;">গ্রেড</th></tr></thead>'
+      + '<thead><tr style="background:#f0f7f3;"><th style="padding:8px 12px;text-align:left;">বিষয়</th><th style="padding:8px 12px;text-align:center;">পূর্ণমান</th><th style="padding:8px 12px;text-align:center;">প্রাপ্ত</th><th style="padding:8px 12px;text-align:center;">গ্রেড</th><th style="padding:8px 12px;text-align:center;">পয়েন্ট</th></tr></thead>'
       + '<tbody>' + rows + '</tbody>'
       + '<tfoot><tr style="background:#e8f4ed;font-weight:700;">'
       + '<td style="padding:10px 12px;">মোট</td>'
       + '<td style="padding:10px 12px;text-align:center;">' + r.totalFull + '</td>'
       + '<td style="padding:10px 12px;text-align:center;">' + r.totalObtained + ' (' + r.percent + '%)</td>'
       + '<td style="padding:10px 12px;text-align:center;"><span class="' + gCls + '">' + r.grade + '</span></td>'
+      + '<td style="padding:10px 12px;text-align:center;font-weight:700;color:#1a6b4a;">' + getGrade(parseFloat(r.percent)).points.toFixed(2) + '</td>'
       + '</tr></tfoot>'
       + '</table>'
       + (r.comment ? '<div style="margin-top:10px;padding:8px 12px;background:#fffbf0;border-radius:6px;font-size:12px;color:#555;"><strong>মন্তব্য:</strong> ' + r.comment + '</div>' : '')
@@ -3927,6 +3930,7 @@ function printResultMarksheet(idx) {
       + '<td style="padding:8px 12px;border:1px solid #d0e8db;text-align:center;font-weight:700;color:' + color + ';">' + m.obtained + '</td>'
       + '<td style="padding:8px 12px;border:1px solid #d0e8db;text-align:center;">' + mpct.toFixed(1) + '%</td>'
       + '<td style="padding:8px 12px;border:1px solid #d0e8db;text-align:center;font-weight:700;color:' + color + ';">' + mg.label + '</td>'
+      + '<td style="padding:8px 12px;border:1px solid #d0e8db;text-align:center;font-weight:700;color:#1a6b4a;">' + mg.points.toFixed(2) + '</td>'
       + '</tr>';
   }).join('');
   var html = madrasaHeader()
@@ -3951,7 +3955,7 @@ function printResultMarksheet(idx) {
     + '</div>'
     + '</div>'
     + '<table style="width:100%;border-collapse:collapse;font-size:13px;">'
-    + '<thead><tr style="background:#0a3d2e;color:white;"><th style="padding:9px 12px;text-align:left;">বিষয়</th><th style="padding:9px;text-align:center;">পূর্ণমান</th><th style="padding:9px;text-align:center;">প্রাপ্ত নম্বর</th><th style="padding:9px;text-align:center;">শতাংশ</th><th style="padding:9px;text-align:center;">গ্রেড</th></tr></thead>'
+    + '<thead><tr style="background:#0a3d2e;color:white;"><th style="padding:9px 12px;text-align:left;">বিষয়</th><th style="padding:9px;text-align:center;">পূর্ণমান</th><th style="padding:9px;text-align:center;">প্রাপ্ত নম্বর</th><th style="padding:9px;text-align:center;">শতাংশ</th><th style="padding:9px;text-align:center;">গ্রেড</th><th style="padding:9px;text-align:center;">পয়েন্ট</th></tr></thead>'
     + '<tbody>' + subjectRows + '</tbody>'
     + '<tfoot><tr style="background:#e8f4ed;font-weight:700;font-size:14px;">'
     + '<td style="padding:10px 12px;border:1px solid #d0e8db;">সর্বমোট</td>'
@@ -3959,6 +3963,7 @@ function printResultMarksheet(idx) {
     + '<td style="padding:10px;border:1px solid #d0e8db;text-align:center;color:#0a3d2e;">' + r.totalObtained + '</td>'
     + '<td style="padding:10px;border:1px solid #d0e8db;text-align:center;">' + r.percent + '%</td>'
     + '<td style="padding:10px;border:1px solid #d0e8db;text-align:center;font-size:16px;">' + gLabel + '</td>'
+    + '<td style="padding:10px;border:1px solid #d0e8db;text-align:center;font-size:16px;font-weight:700;color:#1a6b4a;">' + getGrade(parseFloat(r.percent)).points.toFixed(2) + '</td>'
     + '</tr></tfoot>'
     + '</table>'
     + (r.comment ? '<div style="margin-top:12px;padding:9px 12px;background:#fffbf0;border:1px solid #e8c97a;border-radius:6px;font-size:12px;"><strong>শিক্ষকের মন্তব্য:</strong> ' + r.comment + '</div>' : '')
@@ -3990,6 +3995,7 @@ function printClassResult() {
       + '<td style="padding:7px 10px;border:1px solid #e0e8db;text-align:center;font-weight:700;">' + r.totalObtained + '</td>'
       + '<td style="padding:7px 10px;border:1px solid #e0e8db;text-align:center;">' + r.percent + '%</td>'
       + '<td style="padding:7px 10px;border:1px solid #e0e8db;text-align:center;font-weight:700;color:' + color + ';">' + r.grade + '</td>'
+      + '<td style="padding:7px 10px;border:1px solid #e0e8db;text-align:center;font-weight:700;color:#1a6b4a;">' + getGrade(parseFloat(r.percent)).points.toFixed(2) + '</td>'
       + '<td style="padding:7px 10px;border:1px solid #e0e8db;text-align:center;">' + r.status + '</td>'
       + '</tr>';
   }).join('');
@@ -4008,6 +4014,7 @@ function printClassResult() {
     + '<th style="padding:8px 10px;text-align:center;">মোট</th>'
     + '<th style="padding:8px 10px;text-align:center;">%</th>'
     + '<th style="padding:8px 10px;text-align:center;">গ্রেড</th>'
+    + '<th style="padding:8px 10px;text-align:center;">পয়েন্ট</th>'
     + '<th style="padding:8px 10px;text-align:center;">ফলাফল</th>'
     + '</tr></thead>'
     + '<tbody>' + rows + '</tbody>'
