@@ -3570,7 +3570,8 @@ var SUBJECTS = {
     { name: 'ইংরেজি', full: 100 },
     { name: 'হাদিস ও দোয়া', full: 100 },
     { name: 'মাসয়ালা', full: 100 },
-    { name: 'সাধারণ জ্ঞান ও ইলমী আমলী', full: 100 }
+    { name: 'সাধারণ জ্ঞান ও ইলমী আমলী', full: 100 },
+    { name: 'ICT', full: 100 }
   ],
   hifz: [
     { name: 'মাসয়ালা', full: 100 },
@@ -3598,17 +3599,30 @@ function setResultTab(tab, btn) {
   document.querySelectorAll('.result-tab-content').forEach(function(el){ el.style.display = 'none'; });
   document.getElementById('result-' + tab).style.display = 'block';
   if (tab === 'personal') populatePersonalStudentList();
-  if (tab === 'class') populateClassExamFilter();
+  if (tab === 'class') populateClassFilters();
 }
 
-function populateClassExamFilter() {
-  var sel = document.getElementById('cls-exam-filter');
-  var current = sel.value;
+function populateClassFilters() {
+  // পরীক্ষার নাম DB থেকে
+  var examSel = document.getElementById('cls-exam-filter');
+  var curExam = examSel.value;
   var exams = [];
   DB.results.forEach(function(r){ if (r.examName && exams.indexOf(r.examName) === -1) exams.push(r.examName); });
-  sel.innerHTML = '<option value="">সব পরীক্ষা</option>'
-    + exams.map(function(e){ return '<option value="' + e + '"' + (e===current?' selected':'') + '>' + e + '</option>'; }).join('');
+  examSel.innerHTML = '<option value="">সব পরীক্ষা</option>'
+    + exams.map(function(e){ return '<option value="' + e + '"' + (e === curExam ? ' selected' : '') + '>' + e + '</option>'; }).join('');
+
+  // শ্রেণির নাম DB থেকে
+  var clsSel = document.getElementById('cls-class-filter');
+  var curCls = clsSel.value;
+  var classes = [];
+  DB.results.forEach(function(r){ if (r.cls && classes.indexOf(r.cls) === -1) classes.push(r.cls); });
+  clsSel.innerHTML = '<option value="">সব শ্রেণি</option>'
+    + classes.map(function(c){ return '<option value="' + c + '"' + (c === curCls ? ' selected' : '') + '>' + c + '</option>'; }).join('');
 }
+
+// ===== DYNAMIC SUBJECT LIST for result entry =====
+var _currentSubjects = [];  // [{name, full}] — editable at runtime
+var _editSubjectIdx = -1;
 
 function loadResultSubjects() {
   var dept = document.getElementById('res-dept').value;
@@ -3633,30 +3647,161 @@ function loadResultSubjects() {
     return;
   }
 
-  var subjects = SUBJECTS[dept] || [];
+  // Copy default subjects into editable list
+  _currentSubjects = (SUBJECTS[dept] || []).map(function(s){ return { name: s.name, full: s.full }; });
+
+  renderSubjectRows();
+  container.style.display = 'block';
+  loadStudentsForClass();
+}
+
+function renderSubjectRows() {
   var tbody = document.getElementById('res-marks-body');
-  tbody.innerHTML = subjects.map(function(s, i) {
-    return '<tr>'
-      + '<td style="padding:8px 12px;border-bottom:1px solid #eee;">' + s.name + '</td>'
-      + '<td style="padding:8px 12px;border-bottom:1px solid #eee;text-align:center;">' + s.full + '</td>'
-      + '<td style="padding:8px 12px;border-bottom:1px solid #eee;text-align:center;">'
+  if (!tbody) return;
+  tbody.innerHTML = _currentSubjects.map(function(s, i) {
+    return '<tr id="subj-row-' + i + '">'
+      + '<td style="padding:8px 10px;border-bottom:1px solid #eee;text-align:center;color:#888;font-size:12px;">' + (i+1) + '</td>'
+      + '<td style="padding:8px 10px;border-bottom:1px solid #eee;font-weight:600;color:#0a3d2e;">' + s.name + '</td>'
+      + '<td style="padding:8px 10px;border-bottom:1px solid #eee;text-align:center;">' + s.full + '</td>'
+      + '<td style="padding:8px 10px;border-bottom:1px solid #eee;text-align:center;">'
       + '<input type="number" id="mark-' + i + '" min="0" max="' + s.full + '" placeholder="০"'
-      + ' style="width:70px;padding:6px;text-align:center;border:1.5px solid #ddd;border-radius:6px;font-family:var(--bn-font);font-size:14px;"'
+      + ' style="width:72px;padding:6px 4px;text-align:center;border:1.5px solid #dde;border-radius:6px;font-family:var(--bn-font);font-size:14px;font-weight:700;"'
       + ' oninput="calcResultTotal()">'
       + '</td>'
-      + '<td style="padding:8px 12px;border-bottom:1px solid #eee;text-align:center;" id="grade-' + i + '">—</td>'
+      + '<td style="padding:8px 10px;border-bottom:1px solid #eee;text-align:center;" id="grade-' + i + '">—</td>'
+      + '<td style="padding:8px 10px;border-bottom:1px solid #eee;text-align:center;" id="gpa-' + i + '">—</td>'
+      + '<td style="padding:8px 10px;border-bottom:1px solid #eee;text-align:center;white-space:nowrap;">'
+      + '<button onclick="openEditSubjectModal(' + i + ')" title="এডিট" style="padding:4px 9px;background:#e67e22;color:white;border:none;border-radius:5px;font-size:11px;cursor:pointer;margin:1px;font-family:var(--bn-font);">✏️ এডিট</button>'
+      + '<button onclick="deleteSubjectRow(' + i + ')" title="ডিলেট" style="padding:4px 9px;background:#c0392b;color:white;border:none;border-radius:5px;font-size:11px;cursor:pointer;margin:1px;font-family:var(--bn-font);">🗑️ ডিলেট</button>'
+      + '</td>'
       + '</tr>';
   }).join('');
 
-  // Calc total full marks
-  var totalFull = subjects.reduce(function(a, b){ return a + b.full; }, 0);
-  document.getElementById('res-total-full').textContent = totalFull;
-  document.getElementById('res-total-obtained').textContent = '০';
-  document.getElementById('res-final-grade').textContent = '—';
-  container.style.display = 'block';
+  calcResultTotal();
+}
 
-  // Load students for this class
-  loadStudentsForClass();
+function openAddSubjectModal() {
+  _editSubjectIdx = -1; _msEditRIdx = -1; _msMode = 'entry';
+  document.getElementById('subject-modal-title').textContent = 'নতুন বিষয় যোগ করুন';
+  document.getElementById('sm-subject-name').value = '';
+  document.getElementById('sm-full-marks').value = '100';
+  document.getElementById('sm-obtained-wrap').style.display = 'none';
+  document.getElementById('subject-modal').style.display = 'flex';
+}
+
+function openEditSubjectModal(i) {
+  _editSubjectIdx = i; _msEditRIdx = -1; _msMode = 'entry';
+  var s = _currentSubjects[i];
+  document.getElementById('subject-modal-title').textContent = 'বিষয় সম্পাদনা';
+  document.getElementById('sm-subject-name').value = s.name;
+  document.getElementById('sm-full-marks').value = s.full;
+  document.getElementById('sm-obtained-wrap').style.display = 'none';
+  document.getElementById('subject-modal').style.display = 'flex';
+}
+
+function saveSubjectFromModal() {
+  var name = (document.getElementById('sm-subject-name').value || '').trim();
+  var full = parseInt(document.getElementById('sm-full-marks').value) || 0;
+  var obtainedEl = document.getElementById('sm-obtained');
+  var obtained = obtainedEl ? (parseFloat(obtainedEl.value) || 0) : 0;
+  if (!name) { showToast('বিষয়ের নাম দিন'); return; }
+  if (full < 1) { showToast('পূর্ণমান সঠিক নয়'); return; }
+
+  // Marksheet view mode — edit or add an existing result's marks
+  if (_msMode === 'edit' || _msMode === 'add') {
+    var r = DB.results[_msEditRIdx];
+    if (!r) { closeSubjectModal(); return; }
+    if (_msMode === 'edit' && _msEditMIdx >= 0) {
+      r.marks[_msEditMIdx] = { subject: name, full: full, obtained: Math.min(obtained, full) };
+      showToast('বিষয় আপডেট হয়েছে');
+    } else {
+      r.marks.push({ subject: name, full: full, obtained: Math.min(obtained, full) });
+      showToast('নতুন বিষয় যোগ হয়েছে');
+    }
+    recalcResult(r);
+    saveDB();
+    closeSubjectModal();
+    loadPersonalResult();
+    return;
+  }
+
+  // Entry form mode (_msMode === 'entry')
+  if (_editSubjectIdx === -1) {
+    _currentSubjects.push({ name: name, full: full });
+    showToast('বিষয় যোগ হয়েছে');
+  } else {
+    _currentSubjects[_editSubjectIdx] = { name: name, full: full };
+    showToast('বিষয় আপডেট হয়েছে');
+  }
+  closeSubjectModal();
+  renderSubjectRows();
+}
+
+function deleteSubjectRow(i) {
+  if (!confirm('⚠️ "' + _currentSubjects[i].name + '" বিষয়টি মুছে ফেলবেন?')) return;
+  _currentSubjects.splice(i, 1);
+  renderSubjectRows();
+  showToast('✅ বিষয় মুছে ফেলা হয়েছে');
+}
+
+// ===== MARKSHEET VIEW: inline edit/delete/add =====
+var _msEditRIdx = -1, _msEditMIdx = -1, _msMode = 'entry';
+
+function closeSubjectModal() {
+  document.getElementById('subject-modal').style.display = 'none';
+  document.getElementById('sm-obtained-wrap').style.display = 'none';
+  _msEditRIdx = -1; _msEditMIdx = -1; _msMode = 'entry';
+}
+
+function openMarkEdit(rIdx, mIdx) {
+  _msEditRIdx = rIdx;
+  _msEditMIdx = mIdx;
+  _msMode = 'edit';
+  var r = DB.results[rIdx];
+  if (!r || !r.marks || !r.marks[mIdx]) { showToast('তথ্য পাওয়া যায়নি'); return; }
+  var m = r.marks[mIdx];
+  document.getElementById('subject-modal-title').textContent = 'বিষয় সম্পাদনা';
+  document.getElementById('sm-subject-name').value = m.subject || '';
+  document.getElementById('sm-full-marks').value = m.full || 100;
+  document.getElementById('sm-obtained').value = m.obtained !== undefined ? m.obtained : 0;
+  document.getElementById('sm-obtained-wrap').style.display = 'block';
+  document.getElementById('subject-modal').style.display = 'flex';
+}
+
+function openAddMarkRow(rIdx) {
+  _msEditRIdx = rIdx;
+  _msEditMIdx = -1;
+  _msMode = 'add';
+  document.getElementById('subject-modal-title').textContent = 'নতুন বিষয় যোগ করুন';
+  document.getElementById('sm-subject-name').value = '';
+  document.getElementById('sm-full-marks').value = '100';
+  document.getElementById('sm-obtained').value = '0';
+  document.getElementById('sm-obtained-wrap').style.display = 'block';
+  document.getElementById('subject-modal').style.display = 'flex';
+}
+
+function deleteMarkRow(rIdx, mIdx) {
+  var r = DB.results[rIdx];
+  if (!r) return;
+  if (!confirm('⚠️ "' + r.marks[mIdx].subject + '" বিষয়টি মুছে ফেলবেন?')) return;
+  r.marks.splice(mIdx, 1);
+  recalcResult(r);
+  saveDB();
+  loadPersonalResult();
+  showToast('✅ বিষয় মুছে ফেলা হয়েছে');
+}
+
+function recalcResult(r) {
+  var totalFull = r.marks.reduce(function(a,m){ return a+m.full; }, 0);
+  var totalObtained = r.marks.reduce(function(a,m){ return a+m.obtained; }, 0);
+  var pct = totalFull > 0 ? (totalObtained/totalFull*100).toFixed(1) : 0;
+  var anyFail = r.marks.some(function(m){ return m.full>0 && (m.obtained/m.full*100) < 33; });
+  var finalG = anyFail ? { label:'F', cls:'grade-f', points:0 } : getGrade(parseFloat(pct));
+  r.totalFull = totalFull;
+  r.totalObtained = totalObtained;
+  r.percent = pct;
+  r.grade = finalG.label;
+  r.status = parseFloat(pct)>=33 && !anyFail ? 'পাস' : 'ফেল';
 }
 
 function loadStudentsForClass() {
@@ -3684,26 +3829,36 @@ function loadStudentsForClass() {
 }
 
 function calcResultTotal() {
-  var dept = document.getElementById('res-dept').value;
-  var subjects = SUBJECTS[dept] || [];
+  var subjects = _currentSubjects;
+  if (!subjects || !subjects.length) return;
   var totalFull = subjects.reduce(function(a, b){ return a + b.full; }, 0);
   var totalObtained = 0;
   var failed = false;
   subjects.forEach(function(s, i) {
     var inp = document.getElementById('mark-' + i);
     var val = inp ? (parseFloat(inp.value) || 0) : 0;
-    if (val > s.full) { inp.value = s.full; val = s.full; }
+    if (val > s.full) { if(inp) inp.value = s.full; val = s.full; }
     var pct = s.full > 0 ? (val / s.full) * 100 : 0;
     var g = getGrade(pct);
     var cell = document.getElementById('grade-' + i);
+    var gpaCell = document.getElementById('gpa-' + i);
     if (cell) cell.innerHTML = '<span class="' + g.cls + '">' + g.label + '</span>';
+    if (gpaCell) gpaCell.innerHTML = '<span style="font-weight:700;color:#1a6b4a;">' + g.points.toFixed(2) + '</span>';
     if (g.label === 'F') failed = true;
     totalObtained += val;
   });
-  document.getElementById('res-total-obtained').textContent = totalObtained;
   var overallPct = totalFull > 0 ? (totalObtained / totalFull) * 100 : 0;
-  var finalG = failed ? { label: 'F', cls: 'grade-f' } : getGrade(overallPct);
+  var finalG = failed ? { label: 'F', cls: 'grade-f', points: 0 } : getGrade(overallPct);
+  document.getElementById('res-total-full').textContent = totalFull;
+  document.getElementById('res-total-obtained').textContent = totalObtained;
   document.getElementById('res-final-grade').innerHTML = '<span class="' + finalG.cls + '">' + finalG.label + '</span>';
+  var gpaEl = document.getElementById('res-final-gpa');
+  var statusEl = document.getElementById('res-final-status');
+  if (gpaEl) gpaEl.innerHTML = '<strong style="color:#1a6b4a;">' + finalG.points.toFixed(2) + '</strong>';
+  if (statusEl) {
+    var st = overallPct >= 33 && !failed ? 'পাস' : 'ফেল';
+    statusEl.innerHTML = '<span style="font-weight:700;color:' + (st==='পাস'?'#1a6b4a':'#c0392b') + ';">' + st + '</span>';
+  }
 }
 
 function saveResult() {
@@ -3720,7 +3875,7 @@ function saveResult() {
   if (!cls) { showToast('শ্রেণি নির্বাচন করুন'); return; }
   if (!studentId) { showToast('শিক্ষার্থী নির্বাচন করুন'); return; }
 
-  var subjects = SUBJECTS[dept] || [];
+  var subjects = _currentSubjects.length ? _currentSubjects : (SUBJECTS[dept] || []);
   var marks = subjects.map(function(s, i) {
     var inp = document.getElementById('mark-' + i);
     return { subject: s.name, full: s.full, obtained: inp ? (parseFloat(inp.value) || 0) : 0 };
@@ -3757,7 +3912,7 @@ function saveResult() {
   saveDB();
   renderResultList();
   // Clear marks
-  marks.forEach(function(m, i) {
+  _currentSubjects.forEach(function(m, i) {
     var inp = document.getElementById('mark-' + i);
     if (inp) inp.value = '';
   });
@@ -3877,43 +4032,59 @@ function loadPersonalResult() {
     return;
   }
   var cards = studentResults.map(function(r) {
+    var rIdx = DB.results.indexOf(r);
     var gCls = getGrade(parseFloat(r.percent)).cls;
-    var rows = r.marks.map(function(m) {
+    var rows = r.marks.map(function(m, mi) {
       var mpct = m.full > 0 ? (m.obtained / m.full * 100) : 0;
       var mg = getGrade(mpct);
-      return '<tr>'
-        + '<td style="padding:8px 12px;border-bottom:1px solid #eee;">' + m.subject + '</td>'
-        + '<td style="padding:8px 12px;border-bottom:1px solid #eee;text-align:center;">' + m.full + '</td>'
-        + '<td style="padding:8px 12px;border-bottom:1px solid #eee;text-align:center;font-weight:700;">' + m.obtained + '</td>'
-        + '<td style="padding:8px 12px;border-bottom:1px solid #eee;text-align:center;"><span class="' + mg.cls + '">' + mg.label + '</span></td>'
-        + '<td style="padding:8px 12px;border-bottom:1px solid #eee;text-align:center;font-weight:700;color:#1a6b4a;">' + mg.points.toFixed(2) + '</td>'
+      return '<tr id="ms-row-' + rIdx + '-' + mi + '">'
+        + '<td style="padding:7px 10px;border-bottom:1px solid #eee;font-weight:600;color:#0a3d2e;">' + m.subject + '</td>'
+        + '<td style="padding:7px 10px;border-bottom:1px solid #eee;text-align:center;">' + m.full + '</td>'
+        + '<td style="padding:7px 10px;border-bottom:1px solid #eee;text-align:center;font-weight:700;">' + m.obtained + '</td>'
+        + '<td style="padding:7px 10px;border-bottom:1px solid #eee;text-align:center;"><span class="' + mg.cls + '">' + mg.label + '</span></td>'
+        + '<td style="padding:7px 10px;border-bottom:1px solid #eee;text-align:center;font-weight:700;color:#1a6b4a;">' + mg.points.toFixed(2) + '</td>'
+        + '<td style="padding:7px 8px;border-bottom:1px solid #eee;text-align:center;white-space:nowrap;">'
+        + '<button onclick="openMarkEdit(' + rIdx + ',' + mi + ')" style="padding:3px 8px;background:#e67e22;color:white;border:none;border-radius:5px;font-size:11px;cursor:pointer;margin:1px;font-family:var(--bn-font);">✏️ এডিট</button>'
+        + '<button onclick="deleteMarkRow(' + rIdx + ',' + mi + ')" style="padding:3px 8px;background:#c0392b;color:white;border:none;border-radius:5px;font-size:11px;cursor:pointer;margin:1px;font-family:var(--bn-font);">🗑️ ডিলেট</button>'
+        + '</td>'
         + '</tr>';
     }).join('');
-    return '<div class="result-marksheet">'
+    return '<div class="result-marksheet" id="ms-card-' + rIdx + '">'
       + '<div class="result-marksheet-header">'
       + '<div>'
         + '<div style="font-size:15px;font-weight:700;color:#0a3d2e;">' + r.examName + '</div>'
         + '<div style="font-size:12px;color:#888;margin-top:2px;">' + r.cls + (r.year ? ' | ' + r.year : '') + (r.date ? ' | ' + r.date : '') + '</div>'
       + '</div>'
       + '<div style="text-align:right;">'
-        + '<span class="' + gCls + '" style="font-size:20px;padding:6px 16px;">' + r.grade + '</span>'
-        + '<div style="font-size:12px;margin-top:4px;font-weight:700;">' + r.status + '</div>'
+        + '<span class="' + gCls + '" style="font-size:20px;padding:6px 16px;" id="ms-grade-badge-' + rIdx + '">' + r.grade + '</span>'
+        + '<div style="font-size:12px;margin-top:4px;font-weight:700;" id="ms-status-' + rIdx + '">' + r.status + '</div>'
       + '</div>'
       + '</div>'
+      + '<div style="overflow-x:auto;">'
       + '<table style="width:100%;border-collapse:collapse;font-size:13px;">'
-      + '<thead><tr style="background:#f0f7f3;"><th style="padding:8px 12px;text-align:left;">বিষয়</th><th style="padding:8px 12px;text-align:center;">পূর্ণমান</th><th style="padding:8px 12px;text-align:center;">প্রাপ্ত</th><th style="padding:8px 12px;text-align:center;">গ্রেড</th><th style="padding:8px 12px;text-align:center;">পয়েন্ট</th></tr></thead>'
-      + '<tbody>' + rows + '</tbody>'
+      + '<thead><tr style="background:#f0f7f3;">'
+      + '<th style="padding:8px 10px;text-align:left;">বিষয়</th>'
+      + '<th style="padding:8px 10px;text-align:center;">পূর্ণমান</th>'
+      + '<th style="padding:8px 10px;text-align:center;">প্রাপ্ত</th>'
+      + '<th style="padding:8px 10px;text-align:center;">গ্রেড</th>'
+      + '<th style="padding:8px 10px;text-align:center;">পয়েন্ট</th>'
+      + '<th style="padding:8px 10px;text-align:center;">অ্যাকশন</th>'
+      + '</tr></thead>'
+      + '<tbody id="ms-tbody-' + rIdx + '">' + rows + '</tbody>'
       + '<tfoot><tr style="background:#e8f4ed;font-weight:700;">'
       + '<td style="padding:10px 12px;">মোট</td>'
-      + '<td style="padding:10px 12px;text-align:center;">' + r.totalFull + '</td>'
-      + '<td style="padding:10px 12px;text-align:center;">' + r.totalObtained + ' (' + r.percent + '%)</td>'
-      + '<td style="padding:10px 12px;text-align:center;"><span class="' + gCls + '">' + r.grade + '</span></td>'
-      + '<td style="padding:10px 12px;text-align:center;font-weight:700;color:#1a6b4a;">' + getGrade(parseFloat(r.percent)).points.toFixed(2) + '</td>'
+      + '<td style="padding:10px 12px;text-align:center;" id="ms-total-full-' + rIdx + '">' + r.totalFull + '</td>'
+      + '<td style="padding:10px 12px;text-align:center;" id="ms-total-obt-' + rIdx + '">' + r.totalObtained + ' (' + r.percent + '%)</td>'
+      + '<td style="padding:10px 12px;text-align:center;" id="ms-final-grade-' + rIdx + '"><span class="' + gCls + '">' + r.grade + '</span></td>'
+      + '<td style="padding:10px 12px;text-align:center;font-weight:700;color:#1a6b4a;" id="ms-final-gpa-' + rIdx + '">' + getGrade(parseFloat(r.percent)).points.toFixed(2) + '</td>'
+      + '<td style="padding:10px 12px;text-align:center;">'
+      + '<button onclick="openAddMarkRow(' + rIdx + ')" style="padding:4px 10px;background:#1a6b4a;color:white;border:none;border-radius:5px;font-size:11px;cursor:pointer;font-family:var(--bn-font);">➕ অ্যাড</button>'
+      + '</td>'
       + '</tr></tfoot>'
-      + '</table>'
+      + '</table></div>'
       + (r.comment ? '<div style="margin-top:10px;padding:8px 12px;background:#fffbf0;border-radius:6px;font-size:12px;color:#555;"><strong>মন্তব্য:</strong> ' + r.comment + '</div>' : '')
       + '<div style="margin-top:12px;text-align:right;">'
-      + '<button class="btn-print-id" data-act="res-print" data-idx="' + DB.results.indexOf(r) + '" style="background:#1a3a5c;">মার্কশিট প্রিন্ট</button>'
+      + '<button class="btn-print-id" data-act="res-print" data-idx="' + rIdx + '" style="background:#1a3a5c;">🖨️ মার্কশিট প্রিন্ট</button>'
       + '</div>'
       + '</div>';
   }).join('');
@@ -4378,24 +4549,34 @@ loadDB();
 
       <!-- Subjects -->
       <div id="res-subjects-container" style="margin-top:16px;display:none;">
-        <div class="form-section-title" style="color:#1a3a5c;border-color:#1a3a5c;">বিষয়ভিত্তিক নম্বর</div>
-        <div style="overflow-x:auto;margin-top:12px;">
+        <div style="display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:8px;margin-bottom:8px;">
+          <div class="form-section-title" style="color:#1a3a5c;border-color:#1a3a5c;margin:0;padding:0;border:none;font-size:15px;font-weight:700;">📚 বিষয়ভিত্তিক নম্বর</div>
+          <button onclick="openAddSubjectModal()" style="padding:8px 18px;background:linear-gradient(135deg,#1a6b4a,#0a3d2e);color:white;border:none;border-radius:8px;font-family:var(--bn-font);font-size:13px;font-weight:600;cursor:pointer;display:flex;align-items:center;gap:5px;">
+            ➕ নতুন বিষয় যোগ করুন
+          </button>
+        </div>
+        <div style="overflow-x:auto;margin-top:8px;">
           <table id="res-marks-table" style="width:100%;border-collapse:collapse;font-size:13px;">
             <thead>
               <tr style="background:#0a3d2e;color:white;">
+                <th style="padding:10px 12px;text-align:left;">#</th>
                 <th style="padding:10px 12px;text-align:left;">বিষয়</th>
                 <th style="padding:10px 12px;text-align:center;width:90px;">পূর্ণমান</th>
-                <th style="padding:10px 12px;text-align:center;width:90px;">প্রাপ্ত নম্বর</th>
-                <th style="padding:10px 12px;text-align:center;width:90px;">গ্রেড</th>
+                <th style="padding:10px 12px;text-align:center;width:100px;">প্রাপ্ত নম্বর</th>
+                <th style="padding:10px 12px;text-align:center;width:80px;">গ্রেড</th>
+                <th style="padding:10px 12px;text-align:center;width:80px;">পয়েন্ট</th>
+                <th style="padding:10px 12px;text-align:center;width:120px;">অ্যাকশন</th>
               </tr>
             </thead>
             <tbody id="res-marks-body"></tbody>
             <tfoot>
               <tr style="background:#e8f4ed;font-weight:700;">
-                <td style="padding:10px 12px;">মোট</td>
+                <td colspan="2" style="padding:10px 12px;">মোট</td>
                 <td style="padding:10px 12px;text-align:center;" id="res-total-full">—</td>
                 <td style="padding:10px 12px;text-align:center;" id="res-total-obtained">—</td>
                 <td style="padding:10px 12px;text-align:center;" id="res-final-grade">—</td>
+                <td style="padding:10px 12px;text-align:center;" id="res-final-gpa">—</td>
+                <td style="padding:10px 12px;text-align:center;" id="res-final-status">—</td>
               </tr>
             </tfoot>
           </table>
@@ -4405,7 +4586,7 @@ loadDB();
             <label style="font-size:12px;color:#888;display:block;margin-bottom:4px;">মন্তব্য</label>
             <input type="text" id="res-comment" placeholder="শিক্ষকের মন্তব্য (ঐচ্ছিক)" style="width:100%;padding:10px 12px;border:1.5px solid #ddd;border-radius:8px;font-family:var(--bn-font);font-size:13px;">
           </div>
-          <button class="btn-primary" onclick="saveResult()" style="margin-top:16px;">ফলাফল সংরক্ষণ করুন</button>
+          <button class="btn-primary" onclick="saveResult()" style="margin-top:16px;">💾 ফলাফল সংরক্ষণ করুন</button>
         </div>
       </div>
     </div>
@@ -4419,25 +4600,13 @@ loadDB();
         <div class="form-group">
           <label>পরীক্ষার নাম</label>
           <select id="cls-exam-filter">
-            <option value="">সব</option>
-            <option>প্রথম সাময়িক পরীক্ষা</option>
-            <option>দ্বিতীয় সাময়িক পরীক্ষা</option>
-            <option>বার্ষিক পরীক্ষা</option>
-            <option>মাসিক পরীক্ষা</option>
+            <option value="">সব পরীক্ষা</option>
           </select>
         </div>
         <div class="form-group">
           <label>শ্রেণি</label>
           <select id="cls-class-filter">
             <option value="">সব শ্রেণি</option>
-            <option>নূরাণী প্লে</option>
-            <option>নূরাণী রার্সারী</option>
-            <option>নূরাণী ১ম</option>
-            <option>নূরাণী ২য়</option>
-            <option>নূরাণী ৩য়</option>
-            <option>নাজেরা</option>
-            <option>হিফজ</option>
-            <option>কিতাব বিভাগ</option>
           </select>
         </div>
         <div class="form-group" style="display:flex;align-items:flex-end;gap:8px;">
@@ -4496,6 +4665,29 @@ loadDB();
   <button onclick="window.print()" style="background:#0a3d2e;color:white;border:none;padding:12px 36px;border-radius:8px;font-size:15px;cursor:pointer;margin:8px;font-weight:600;">প্রিন্ট / PDF সেভ</button>
   <button onclick="window.close()" style="background:#888;color:white;border:none;padding:12px 28px;border-radius:8px;font-size:15px;cursor:pointer;margin:8px;font-weight:600;">বন্ধ করুন</button>
 </div>
+</div>
+
+<!-- ===== SUBJECT ADD/EDIT MODAL (body-level, always accessible) ===== -->
+<div id="subject-modal" style="display:none;position:fixed;top:0;left:0;width:100%;height:100%;background:rgba(0,0,0,0.6);z-index:99999;justify-content:center;align-items:center;">
+  <div style="background:white;border-radius:16px;padding:24px;width:90%;max-width:420px;position:relative;box-shadow:0 10px 40px rgba(0,0,0,0.3);">
+    <h3 id="subject-modal-title" style="margin:0 0 18px;color:#0a3d2e;font-size:17px;border-bottom:2px solid #0a3d2e;padding-bottom:10px;font-family:var(--bn-font);">বিষয় যোগ করুন</h3>
+    <div style="margin-bottom:14px;">
+      <label style="display:block;font-size:13px;color:#555;margin-bottom:6px;font-family:var(--bn-font);">বিষয়ের নাম *</label>
+      <input type="text" id="sm-subject-name" placeholder="যেমন: আরবি, বাংলা, গণিত..." style="width:100%;padding:10px 12px;border:1.5px solid #ddd;border-radius:8px;font-family:var(--bn-font);font-size:14px;box-sizing:border-box;">
+    </div>
+    <div style="margin-bottom:14px;">
+      <label style="display:block;font-size:13px;color:#555;margin-bottom:6px;font-family:var(--bn-font);">পূর্ণমান *</label>
+      <input type="number" id="sm-full-marks" placeholder="যেমন: 100" min="1" max="500" style="width:100%;padding:10px 12px;border:1.5px solid #ddd;border-radius:8px;font-family:var(--bn-font);font-size:14px;box-sizing:border-box;">
+    </div>
+    <div id="sm-obtained-wrap" style="display:none;margin-bottom:14px;">
+      <label style="display:block;font-size:13px;color:#555;margin-bottom:6px;font-family:var(--bn-font);">প্রাপ্ত নম্বর *</label>
+      <input type="number" id="sm-obtained" value="0" min="0" placeholder="প্রাপ্ত নম্বর" style="width:100%;padding:10px 12px;border:1.5px solid #ddd;border-radius:8px;font-family:var(--bn-font);font-size:14px;box-sizing:border-box;">
+    </div>
+    <div style="display:flex;gap:10px;margin-top:18px;justify-content:flex-end;">
+      <button onclick="saveSubjectFromModal()" style="background:#1a6b4a;color:white;border:none;padding:10px 24px;border-radius:8px;font-family:var(--bn-font);font-size:15px;font-weight:bold;cursor:pointer;">✅ সংরক্ষণ</button>
+      <button onclick="closeSubjectModal()" style="background:#eee;color:#333;border:none;padding:10px 20px;border-radius:8px;font-family:var(--bn-font);font-size:15px;cursor:pointer;">বাতিল</button>
+    </div>
+  </div>
 </div>
 
 <!-- Developer watermark -->
@@ -4592,64 +4784,18 @@ function openEditModal(type, idx) {
   } else if (type === 'result') {
     var r = DB.results[idx];
     title.textContent = 'ফলাফল সম্পাদনা';
-
-    var marksHtml = '';
-    if (r.marks && r.marks.length) {
-      marksHtml = '<div style="margin-top:14px;border-top:2px solid #e0ede6;padding-top:12px;">'
-        + '<div style="font-size:13px;font-weight:700;color:#0a3d2e;margin-bottom:10px;">📝 বিষয়ভিত্তিক নম্বর সম্পাদনা</div>'
-        + '<table style="width:100%;border-collapse:collapse;font-size:13px;">'
-        + '<thead><tr style="background:#e8f4ed;">'
-        + '<th style="padding:8px 10px;text-align:left;">বিষয়</th>'
-        + '<th style="padding:8px 10px;text-align:center;">পূর্ণমান</th>'
-        + '<th style="padding:8px 10px;text-align:center;">প্রাপ্ত নম্বর</th>'
-        + '</tr></thead><tbody>'
-        + r.marks.map(function(m, mi) {
-            return '<tr>'
-              + '<td style="padding:7px 10px;border-bottom:1px solid #eee;">' + m.subject + '</td>'
-              + '<td style="padding:7px 10px;border-bottom:1px solid #eee;text-align:center;">' + m.full + '</td>'
-              + '<td style="padding:7px 10px;border-bottom:1px solid #eee;text-align:center;">'
-              + '<input type="number" id="ef-mark-' + mi + '" value="' + m.obtained + '" min="0" max="' + m.full + '"'
-              + ' style="width:75px;padding:5px 8px;text-align:center;border:1.5px solid #ddd;border-radius:6px;font-family:inherit;font-size:13px;"'
-              + ' oninput="recalcEditResult(' + idx + ')">'
-              + '</td></tr>';
-          }).join('')
-        + '</tbody></table>'
-        + '<div style="margin-top:10px;padding:10px 14px;background:#f0f7f3;border-radius:8px;font-size:13px;color:#0a3d2e;" id="ef-result-summary">'
-        + '<strong>মোট:</strong> <span id="ef-total-obt">' + r.totalObtained + '</span>/' + r.totalFull
-        + ' &nbsp;|&nbsp; <strong>%:</strong> <span id="ef-pct">' + r.percent + '</span>'
-        + ' &nbsp;|&nbsp; <strong>গ্রেড:</strong> <span id="ef-grade-disp" style="font-weight:700;">' + r.grade + '</span>'
-        + ' &nbsp;|&nbsp; <strong>ফলাফল:</strong> <span id="ef-status-disp" style="font-weight:700;color:' + (r.status==='পাস'?'#1a6b4a':'#c0392b') + ';">' + r.status + '</span>'
-        + '</div></div>';
-    }
-
     body.innerHTML = field('পরীক্ষার নাম','examName',r.examName)
       + field('ছাত্রের নাম','studentName',r.studentName)
+      + field('ছাত্র আইডি','studentId',r.studentId)
       + field('শ্রেণী','cls',r.cls)
-      + marksHtml;
+      + field('মোট পূর্ণমান','totalFull',r.totalFull,'number')
+      + field('প্রাপ্ত নম্বর','totalObtained',r.totalObtained,'number')
+      + field('শতাংশ','percent',r.percent,'number')
+      + field('গ্রেড','grade',r.grade)
+      + selField('ফলাফল','status',r.status,['পাস','ফেল']);
   }
 
   modal.style.display = 'flex';
-}
-
-function recalcEditResult(idx) {
-  var r = DB.results[idx];
-  if (!r || !r.marks) return;
-  var totalObt = 0;
-  r.marks.forEach(function(m, mi) {
-    var el = document.getElementById('ef-mark-' + mi);
-    totalObt += el ? (parseFloat(el.value) || 0) : m.obtained;
-  });
-  var pct = r.totalFull > 0 ? (totalObt / r.totalFull * 100).toFixed(2) : '0.00';
-  var g = getGrade(parseFloat(pct));
-  var status = getResultStatus(parseFloat(pct));
-  var oEl = document.getElementById('ef-total-obt');
-  var pEl = document.getElementById('ef-pct');
-  var gEl = document.getElementById('ef-grade-disp');
-  var sEl = document.getElementById('ef-status-disp');
-  if (oEl) oEl.textContent = totalObt;
-  if (pEl) pEl.textContent = pct;
-  if (gEl) gEl.textContent = g.label;
-  if (sEl) { sEl.textContent = status; sEl.style.color = status === 'পাস' ? '#1a6b4a' : '#c0392b'; }
 }
 
 function saveEdit() {
@@ -4687,20 +4833,10 @@ function saveEdit() {
 
   } else if (_editType === 'result') {
     var r = DB.results[_editIdx];
-    r.examName = gv('examName'); r.studentName = gv('studentName'); r.cls = gv('cls');
-    if (r.marks && r.marks.length) {
-      r.marks.forEach(function(m, mi) {
-        var el = document.getElementById('ef-mark-' + mi);
-        if (el) m.obtained = parseFloat(el.value) || 0;
-      });
-      var totalObt = r.marks.reduce(function(a, b){ return a + b.obtained; }, 0);
-      var pct = r.totalFull > 0 ? (totalObt / r.totalFull * 100).toFixed(2) : '0.00';
-      var finalG = getGrade(parseFloat(pct));
-      r.totalObtained = totalObt;
-      r.percent = pct;
-      r.grade = finalG.label;
-      r.status = getResultStatus(parseFloat(pct));
-    }
+    r.examName = gv('examName'); r.studentName = gv('studentName');
+    r.studentId = gv('studentId'); r.cls = gv('cls');
+    r.totalFull = gn('totalFull'); r.totalObtained = gn('totalObtained');
+    r.percent = gn('percent'); r.grade = gv('grade'); r.status = gv('status');
     saveDB(); renderResultList(); showToast('✅ ফলাফল আপডেট হয়েছে');
   }
 
