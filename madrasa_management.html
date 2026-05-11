@@ -3570,8 +3570,7 @@ var SUBJECTS = {
     { name: 'ইংরেজি', full: 100 },
     { name: 'হাদিস ও দোয়া', full: 100 },
     { name: 'মাসয়ালা', full: 100 },
-    { name: 'সাধারণ জ্ঞান ও ইলমী আমলী', full: 100 },
-    { name: 'ICT', full: 100 }
+    { name: 'সাধারণ জ্ঞান ও ইলমী আমলী', full: 100 }
   ],
   hifz: [
     { name: 'মাসয়ালা', full: 100 },
@@ -4578,18 +4577,62 @@ function openEditModal(type, idx) {
   } else if (type === 'result') {
     var r = DB.results[idx];
     title.textContent = 'ফলাফল সম্পাদনা';
+
+    // Basic fields
+    var marksHtml = '';
+    if (r.marks && r.marks.length) {
+      marksHtml = '<div style="margin-top:14px;border-top:2px solid #e0ede6;padding-top:12px;">'
+        + '<div style="font-size:13px;font-weight:700;color:#0a3d2e;margin-bottom:10px;">📝 বিষয়ভিত্তিক নম্বর সম্পাদনা</div>'
+        + '<table style="width:100%;border-collapse:collapse;font-size:13px;">'
+        + '<thead><tr style="background:#e8f4ed;"><th style="padding:8px 10px;text-align:left;">বিষয়</th><th style="padding:8px 10px;text-align:center;">পূর্ণমান</th><th style="padding:8px 10px;text-align:center;">প্রাপ্ত নম্বর</th></tr></thead>'
+        + '<tbody>'
+        + r.marks.map(function(m, mi) {
+            return '<tr>'
+              + '<td style="padding:7px 10px;border-bottom:1px solid #eee;">' + m.subject + '</td>'
+              + '<td style="padding:7px 10px;border-bottom:1px solid #eee;text-align:center;">' + m.full + '</td>'
+              + '<td style="padding:7px 10px;border-bottom:1px solid #eee;text-align:center;">'
+              + '<input type="number" id="ef-mark-' + mi + '" value="' + m.obtained + '" min="0" max="' + m.full + '"'
+              + ' style="width:70px;padding:5px;text-align:center;border:1.5px solid #ddd;border-radius:6px;font-family:inherit;font-size:13px;"'
+              + ' oninput="recalcEditResult(' + idx + ')">'
+              + '</td></tr>';
+          }).join('')
+        + '</tbody></table>'
+        + '<div style="margin-top:10px;padding:8px 12px;background:#f0f7f3;border-radius:8px;font-size:13px;font-weight:600;color:#0a3d2e;" id="ef-result-summary">'
+        + 'মোট: <span id="ef-total-obt">' + r.totalObtained + '</span>/' + r.totalFull
+        + ' | শতাংশ: <span id="ef-pct">' + r.percent + '</span>%'
+        + ' | গ্রেড: <span id="ef-grade-disp">' + r.grade + '</span>'
+        + ' | ফলাফল: <span id="ef-status-disp">' + r.status + '</span>'
+        + '</div></div>';
+    }
+
     body.innerHTML = field('পরীক্ষার নাম','examName',r.examName)
       + field('ছাত্রের নাম','studentName',r.studentName)
-      + field('ছাত্র আইডি','studentId',r.studentId)
       + field('শ্রেণী','cls',r.cls)
-      + field('মোট পূর্ণমান','totalFull',r.totalFull,'number')
-      + field('প্রাপ্ত নম্বর','totalObtained',r.totalObtained,'number')
-      + field('শতাংশ','percent',r.percent,'number')
-      + field('গ্রেড','grade',r.grade)
-      + selField('ফলাফল','status',r.status,['পাস','ফেল']);
+      + marksHtml;
   }
 
   modal.style.display = 'flex';
+}
+
+function recalcEditResult(idx) {
+  var r = DB.results[idx];
+  if (!r || !r.marks) return;
+  var totalObt = 0;
+  r.marks.forEach(function(m, mi) {
+    var el = document.getElementById('ef-mark-' + mi);
+    totalObt += el ? (parseFloat(el.value) || 0) : m.obtained;
+  });
+  var pct = r.totalFull > 0 ? (totalObt / r.totalFull * 100).toFixed(2) : '0.00';
+  var g = getGrade(parseFloat(pct));
+  var status = getResultStatus(parseFloat(pct));
+  var oEl = document.getElementById('ef-total-obt');
+  var pEl = document.getElementById('ef-pct');
+  var gEl = document.getElementById('ef-grade-disp');
+  var sEl = document.getElementById('ef-status-disp');
+  if (oEl) oEl.textContent = totalObt;
+  if (pEl) pEl.textContent = pct;
+  if (gEl) gEl.textContent = g.label;
+  if (sEl) { sEl.textContent = status; sEl.style.color = status === 'পাস' ? '#1a6b4a' : '#c0392b'; }
 }
 
 function saveEdit() {
@@ -4627,10 +4670,23 @@ function saveEdit() {
 
   } else if (_editType === 'result') {
     var r = DB.results[_editIdx];
-    r.examName = gv('examName'); r.studentName = gv('studentName');
-    r.studentId = gv('studentId'); r.cls = gv('cls');
-    r.totalFull = gn('totalFull'); r.totalObtained = gn('totalObtained');
-    r.percent = gn('percent'); r.grade = gv('grade'); r.status = gv('status');
+    r.examName = gv('examName'); r.studentName = gv('studentName'); r.cls = gv('cls');
+
+    // Update marks from inputs if available
+    if (r.marks && r.marks.length) {
+      r.marks.forEach(function(m, mi) {
+        var el = document.getElementById('ef-mark-' + mi);
+        if (el) m.obtained = parseFloat(el.value) || 0;
+      });
+      var totalObt = r.marks.reduce(function(a, b){ return a + b.obtained; }, 0);
+      var pct = r.totalFull > 0 ? (totalObt / r.totalFull * 100).toFixed(2) : '0.00';
+      var finalG = getGrade(parseFloat(pct));
+      r.totalObtained = totalObt;
+      r.percent = pct;
+      r.grade = finalG.label;
+      r.status = getResultStatus(parseFloat(pct));
+    }
+
     saveDB(); renderResultList(); showToast('✅ ফলাফল আপডেট হয়েছে');
   }
 
