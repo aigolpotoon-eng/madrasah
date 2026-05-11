@@ -3888,7 +3888,7 @@ function saveResult() {
   var finalGrade = anyFail ? { label: 'F', cls: 'grade-f' } : getGrade(parseFloat(pct));
 
   // Find student name
-  var student = DB.students.find(function(s){ return s.id === studentId; });
+  var student = DB.students.find(function(s){ return String(s.id) === String(studentId); });
   var studentName = student ? student.name : studentId;
 
   DB.results.push({
@@ -3946,10 +3946,11 @@ function renderResultList() {
 }
 
 function loadClassResult() {
+  populateClassFilters();
   var examFilter = document.getElementById('cls-exam-filter').value;
   var classFilter = document.getElementById('cls-class-filter').value;
   var filtered = DB.results.filter(function(r) {
-    return (!examFilter || r.examName === examFilter) && (!classFilter || r.cls === classFilter);
+    return (!examFilter || r.examName === examFilter) && (!classFilter || r.cls === classFilter) && r.marks && r.marks.length;
   });
   var output = document.getElementById('class-result-output');
   if (!filtered.length) {
@@ -4007,13 +4008,16 @@ function populatePersonalStudentList() {
     + DB.students.map(function(s){
       return '<option value="' + s.id + '">' + s.name + ' (' + s.id + ')</option>';
     }).join('');
+  // Auto-select if only one student or keep previous selection
 }
 
 function filterPersonalStudents() {
   var q = document.getElementById('personal-search').value.toLowerCase();
   var sel = document.getElementById('personal-student-select');
   var filtered = DB.students.filter(function(s){
-    return s.name.toLowerCase().includes(q) || s.id.toLowerCase().includes(q);
+    var nameMatch = s.name && s.name.toLowerCase().indexOf(q) !== -1;
+    var idMatch = s.id !== undefined && s.id !== null && String(s.id).toLowerCase().indexOf(q) !== -1;
+    return nameMatch || idMatch;
   });
   sel.innerHTML = '<option value="">নির্বাচন করুন</option>'
     + filtered.map(function(s){
@@ -4026,7 +4030,7 @@ function loadPersonalResult() {
   var output = document.getElementById('personal-result-output');
   if (!sid) { output.innerHTML = ''; return; }
   var student = DB.students.find(function(s){ return s.id === sid; });
-  var studentResults = DB.results.filter(function(r){ return r.studentId === sid; });
+  var studentResults = DB.results.filter(function(r){ return String(r.studentId) === String(sid); });
   if (!studentResults.length) {
     output.innerHTML = '<div style="text-align:center;color:#aaa;padding:30px;background:white;border-radius:12px;">এই শিক্ষার্থীর কোনো ফলাফল নেই</div>';
     return;
@@ -4094,7 +4098,7 @@ function loadPersonalResult() {
 function printResultMarksheet(idx) {
   var r = DB.results[idx];
   if (!r) return;
-  var student = DB.students.find(function(s){ return s.id === r.studentId; });
+  var student = DB.students.find(function(s){ return String(s.id) === String(r.studentId); });
   var gCls = getGrade(parseFloat(r.percent)).cls;
   var gLabel = r.grade;
   var photoHtml = (student && student.photo)
