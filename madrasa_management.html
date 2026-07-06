@@ -966,7 +966,7 @@
 <div id="lock-screen">
   <div class="lock-box">
     <div class="lock-logo">🔐</div>
-    <div class="lock-title">হিফজুল কুরআন রশিদিয়া মাদ্রাসা</div>
+    <div class="lock-title">দারুস সালিম ইন্টারন্যাশনাল মাদ্রাসা</div>
     <div class="lock-subtitle">অ্যাপে প্রবেশ করতে পাসওয়ার্ড দিন</div>
     <!-- Role selection -->
     <div style="display:flex;gap:10px;margin-bottom:14px;justify-content:center;">
@@ -2097,7 +2097,7 @@
 <div class="modal-overlay" id="print-modal">
   <div class="modal-box">
     <div class="id-card-preview" id="modal-card-content">
-      <div class="card-madrasa">হিফজুল কুরআন রশিদিয়া হোসাইনিয়া নূরাণী মাদ্রাসা</div>
+      <div class="card-madrasa">দারুস সালিম ইন্টারন্যাশনাল মাদ্রাসা</div>
       <div class="card-type" id="modal-card-type">শিক্ষার্থী পরিচয়পত্র</div>
       <div class="card-id" id="modal-card-id"></div>
       <div class="card-name" id="modal-card-name"></div>
@@ -3130,7 +3130,7 @@ function saveIncome() {
 
   // SMS পাঠানো
   if (incSelectedPerson && incSelectedPerson.phone) {
-    var smsMsg = 'হিফজুল কুরআন রশিদিয়া মাদ্রাসা\n'
+    var smsMsg = 'দারুস সালিম ইন্টারন্যাশনাল মাদ্রাসা\n'
       + 'নাম: ' + incSelectedPerson.name + '\n'
       + 'শ্রেণি: ' + (incSelectedPerson.cls || '') + '\n'
       + (month ? 'মাস: ' + month + '\n' : '')
@@ -3162,7 +3162,7 @@ function printCompactReceipt(item, type) {
   var html = '<div style="font-family:\'Hind Siliguri\',sans-serif;max-width:340px;margin:0 auto;">'
     + '<div style="background:linear-gradient(135deg,#0d2137,#1a3a5c,#1a6b4a);padding:16px;text-align:center;border-radius:12px 12px 0 0;">'
     + '<div style="color:#c9a84c;font-size:14px;margin-bottom:3px;">بِسْمِ اللَّهِ الرَّحْمَنِ الرَّحِيم</div>'
-    + '<div style="color:white;font-weight:700;font-size:16px;">হিফজুল কুরআন রশিদিয়া মাদ্রাসা</div>'
+    + '<div style="color:white;font-weight:700;font-size:16px;">দারুস সালিম ইন্টারন্যাশনাল মাদ্রাসা</div>'
     + '<div style="color:rgba(255,255,255,0.8);font-size:11px;margin-top:2px;">কালুশাহ্ সড়ক, সৈয়দ রশিদিয়া মঞ্জিল, বরিশাল</div>'
     + '</div>'
     + '<div style="border:2px solid '+color+';border-top:none;border-radius:0 0 12px 12px;padding:16px;">'
@@ -3546,7 +3546,7 @@ function buildAdmissionPage(type, p, idx, total) {
     + '</div>'
     + '</div>'
     + '<div style="position:absolute;bottom:0;left:0;right:0;border-top:2px solid #c9a84c;padding:6px 18px;display:flex;justify-content:space-between;background:#f9fcfa;">'
-    + '<div style="font-size:10px;color:#888;">হিফজুল কুরআন রশিদিয়া হোসাইনিয়া নূরাণী মাদ্রাসা, বরিশাল</div>'
+    + '<div style="font-size:10px;color:#888;">দারুস সালিম ইন্টারন্যাশনাল মাদ্রাসা, বরিশাল</div>'
     + '<div style="font-size:10px;color:#888;">পৃষ্ঠা ' + (idx+1) + ' / ' + total + '</div>'
     + '</div>'
     + '</div>';
@@ -4249,7 +4249,7 @@ const today = new Date().toISOString().split('T')[0];
 // Inject manifest dynamically
 (function() {
   var manifest = {
-    name: "হিফজুল কুরআন রশিদিয়া মাদ্রাসা",
+    name: "দারুস সালিম ইন্টারন্যাশনাল মাদ্রাসা",
     short_name: "মাদ্রাসা",
     description: "মাদ্রাসা ম্যানেজমেন্ট সিস্টেম",
     start_url: ".",
