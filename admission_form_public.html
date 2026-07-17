@@ -1,0 +1,482 @@
+<!DOCTYPE html>
+<html lang="bn">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>ভর্তি আবেদন ফরম — দারুস সালিম ইন্টারন্যাশনাল মাদ্রাসা</title>
+<link href="https://fonts.googleapis.com/css2?family=Hind+Siliguri:wght@300;400;500;600;700&family=Noto+Serif+Bengali:wght@600;700&display=swap" rel="stylesheet">
+
+<!-- Firebase SDK - Realtime Database -->
+<script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-database-compat.js"></script>
+<script>
+  var rtdb;
+  try {
+    var firebaseConfig = {
+      apiKey: "AIzaSyCy0yym1cpVYHFYZsuc6K-JLJoorcpgPQE",
+      authDomain: "madrasa-management-1dd9d.firebaseapp.com",
+      projectId: "madrasa-management-1dd9d",
+      databaseURL: "https://madrasa-management-1dd9d-default-rtdb.firebaseio.com",
+      storageBucket: "madrasa-management-1dd9d.firebasestorage.app",
+      messagingSenderId: "1069978654222",
+      appId: "1:1069978654222:web:8d57826e40ebf8cbe44e5f"
+    };
+    firebase.initializeApp(firebaseConfig);
+    rtdb = firebase.database();
+  } catch(e) {
+    console.warn('Firebase load failed:', e.message);
+    rtdb = undefined;
+  }
+</script>
+
+<style>
+  :root {
+    --green-dark:#0a3d2e; --green-mid:#1a6b4a; --green-light:#2d9e6e;
+    --gold:#c9a84c; --gold-light:#e8c97a;
+    --cream:#fdf8ef; --cream-dark:#f0e6d2;
+    --white:#ffffff; --text-dark:#2a2a2a;
+    --bn-font:'Hind Siliguri', sans-serif;
+    --bn-serif:'Noto Serif Bengali', serif;
+    --shadow:0 4px 20px rgba(10,61,46,0.08);
+  }
+  * { margin:0; padding:0; box-sizing:border-box; }
+  body {
+    font-family: var(--bn-font);
+    background: linear-gradient(180deg, var(--cream) 0%, #f5f0e0 100%);
+    color: var(--text-dark);
+    padding-bottom: 60px;
+  }
+  .header {
+    background: linear-gradient(135deg, #0d2137 0%, #1a3a5c 40%, #1a6b4a 100%);
+    padding: 28px 16px 24px;
+    text-align: center;
+    color: white;
+  }
+  .header .mosque { font-size: 34px; margin-bottom: 6px; }
+  .header .madrasa-name { font-family: var(--bn-serif); font-size: 21px; font-weight: 700; }
+  .header .madrasa-sub { font-size: 13px; opacity: 0.85; margin-top: 4px; }
+  .header .form-title { margin-top: 14px; display:inline-block; background: rgba(255,255,255,0.12); padding: 8px 20px; border-radius: 30px; font-size: 15px; font-weight:600; border:1px solid rgba(255,255,255,0.3); }
+
+  .wrap { max-width: 760px; margin: -18px auto 0; padding: 0 14px; }
+
+  .form-card {
+    background: var(--white);
+    border-radius: 16px;
+    padding: 22px;
+    box-shadow: var(--shadow);
+    border: 1px solid var(--cream-dark);
+    margin-bottom: 18px;
+  }
+
+  .student-type-toggle { display:flex; gap:12px; margin-bottom:18px; flex-wrap:wrap; }
+  .type-btn {
+    flex:1; min-width:150px; padding:14px 20px; border-radius:14px;
+    border:2px solid var(--cream-dark); background:var(--white); color:#888;
+    font-family:var(--bn-serif); font-size:15px; font-weight:600; cursor:pointer;
+    display:flex; align-items:center; justify-content:center; gap:8px;
+    transition:all 0.25s ease; box-shadow: var(--shadow);
+  }
+  .type-btn span { font-size:20px; }
+  .type-btn:hover { border-color: var(--green-light); color: var(--green-mid); }
+  .type-btn.active {
+    border-color: var(--green-mid);
+    background: linear-gradient(135deg, var(--green-mid), var(--green-dark));
+    color: white;
+    box-shadow: 0 4px 16px rgba(26,107,74,0.3);
+  }
+
+  .form-section-title {
+    font-family: var(--bn-serif); font-size: 14px; font-weight: 700; color: var(--green-dark);
+    padding: 8px 12px; background: linear-gradient(90deg, #e8f4ed, transparent);
+    border-left: 4px solid var(--green-mid); border-radius: 0 8px 8px 0; margin: 18px 0 14px;
+  }
+  .form-section-title:first-of-type { margin-top: 0; }
+
+  .form-grid { display:grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap:16px; }
+  .form-group { display:flex; flex-direction:column; gap:6px; }
+  .form-group label { font-size:13px; font-weight:600; color: var(--green-dark); }
+  .form-group input, .form-group select, .form-group textarea {
+    padding:10px 14px; border:1.5px solid #dde8e3; border-radius:10px;
+    font-family: var(--bn-font); font-size:14px; color: var(--text-dark);
+    background:#f9fcfa; transition:border-color 0.2s, box-shadow 0.2s; outline:none;
+  }
+  .form-group input:focus, .form-group select:focus, .form-group textarea:focus {
+    border-color: var(--green-light); box-shadow: 0 0 0 3px rgba(45,158,110,0.1); background: var(--white);
+  }
+  .form-full { grid-column: 1 / -1; }
+
+  .photo-upload-wrap { display:flex; flex-direction:column; align-items:center; gap:10px; margin-bottom:18px; }
+  .photo-frame {
+    width:113px; height:142px; border:2px dashed var(--gold); border-radius:10px;
+    background: linear-gradient(135deg, #fffbf0, #fdf6e3);
+    display:flex; flex-direction:column; align-items:center; justify-content:center;
+    cursor:pointer; overflow:hidden; position:relative; transition:border-color 0.2s, box-shadow 0.2s;
+  }
+  .photo-frame:hover { border-color: var(--green-mid); box-shadow: 0 0 0 3px rgba(45,158,110,0.1); }
+  .photo-frame img { width:100%; height:100%; object-fit:cover; display:none; }
+  .photo-frame .photo-placeholder { text-align:center; color:#aaa; font-size:12px; padding:8px; }
+  .photo-frame .photo-placeholder span { font-size:28px; display:block; margin-bottom:6px; }
+  .photo-size-label { font-size:11px; color:#999; font-weight:500; text-align:center; }
+  .btn-photo-clear { font-size:11px; padding:4px 12px; border-radius:8px; border:1px solid #dde8e3; background:#fff; color:#c0392b; cursor:pointer; display:none; transition:all 0.2s; }
+  .btn-photo-clear:hover { background:#fde8e8; }
+
+  .btn-primary {
+    width:100%; margin-top:22px; padding:15px 32px;
+    background: linear-gradient(135deg, var(--green-mid), var(--green-dark));
+    color: var(--white); border:none; border-radius:12px;
+    font-family: var(--bn-serif); font-size:16px; font-weight:700; cursor:pointer;
+    box-shadow: 0 4px 14px rgba(26,107,74,0.35); transition: all 0.2s;
+  }
+  .btn-primary:hover { transform: translateY(-2px); box-shadow: 0 6px 20px rgba(26,107,74,0.4); }
+  .btn-primary:disabled { opacity:0.6; cursor:not-allowed; transform:none; }
+
+  .note-box {
+    background:#fff3e0; border:1px solid #e8c97a; border-radius:10px;
+    padding:12px 14px; font-size:12.5px; color:#5d3a00; margin-bottom:18px; line-height:1.6;
+  }
+
+  .toast {
+    position:fixed; bottom:24px; left:50%; transform:translateX(-50%);
+    background: var(--green-dark); color:white; padding:12px 22px; border-radius:30px;
+    font-size:14px; box-shadow:0 6px 20px rgba(0,0,0,0.25); z-index:999;
+    opacity:0; pointer-events:none; transition: opacity 0.3s, bottom 0.3s;
+  }
+  .toast.show { opacity:1; bottom:34px; }
+
+  /* SUCCESS SCREEN */
+  .success-screen {
+    display:none; text-align:center; padding: 40px 20px;
+  }
+  .success-screen .icon { font-size:56px; margin-bottom:14px; }
+  .success-screen h2 { font-family: var(--bn-serif); color: var(--green-dark); margin-bottom:10px; }
+  .success-screen p { color:#555; font-size:14.5px; line-height:1.7; margin-bottom:6px; }
+  .success-screen .ref { display:inline-block; margin-top:14px; padding:10px 20px; background:linear-gradient(90deg,#fffbf0,#fdf6e3); border:1.5px solid var(--gold); border-radius:10px; font-family:var(--bn-serif); font-weight:700; color:var(--green-dark); letter-spacing:1px; }
+
+  @media (max-width:480px){
+    .header .madrasa-name { font-size:17px; }
+    .form-card { padding:16px; border-radius:12px; }
+  }
+</style>
+</head>
+<body>
+
+<div class="header">
+  <div class="mosque">🕌</div>
+  <div class="madrasa-name">দারুস সালিম ইন্টারন্যাশনাল মাদ্রাসা</div>
+  <div class="madrasa-sub">অনলাইন ভর্তি আবেদন</div>
+  <div class="form-title">📝 ছাত্র-ছাত্রী ভর্তি আবেদন ফরম</div>
+</div>
+
+<div class="wrap">
+
+  <div class="form-card" id="form-card">
+    <div class="note-box">
+      নিচের ফরমটি সঠিকভাবে পূরণ করে জমা দিন। আপনার আবেদনটি মাদ্রাসা কর্তৃপক্ষ পর্যালোচনা করে অনুমোদন দিলে আপনি মোবাইলে যোগাযোগের মাধ্যমে জানতে পারবেন। <b>(*)</b> চিহ্নিত ঘরগুলো অবশ্যই পূরণ করতে হবে।
+    </div>
+
+    <div class="student-type-toggle">
+      <button type="button" class="type-btn active" id="btn-new-student" onclick="setStudentType('new')"><span>🆕</span> নতুন শিক্ষার্থী</button>
+      <button type="button" class="type-btn" id="btn-old-student" onclick="setStudentType('old')"><span>🔁</span> পুরাতন শিক্ষার্থী</button>
+    </div>
+
+    <div class="photo-upload-wrap">
+      <label style="font-size:13px;font-weight:600;color:var(--green-dark)">পাসপোর্ট সাইজ ছবি (ঐচ্ছিক)</label>
+      <div class="photo-frame" id="s-photo-frame" onclick="document.getElementById('s-photo-input').click()">
+        <img id="s-photo-preview" src="" alt="">
+        <div class="photo-placeholder" id="s-photo-placeholder"><span>📷</span>ছবি আপলোড করুন</div>
+      </div>
+      <div class="photo-size-label">৪ সে.মি. × ৫ সে.মি.</div>
+      <button type="button" class="btn-photo-clear" id="s-photo-clear" onclick="clearPhoto()">মুছুন</button>
+      <input type="file" id="s-photo-input" accept="image/*" style="display:none" onchange="previewPhoto(this)">
+    </div>
+
+    <div class="form-section-title">শিক্ষার্থীর ব্যক্তিগত তথ্য</div>
+    <div class="form-grid">
+      <div class="form-group">
+        <label>শিক্ষার্থীর নাম *</label>
+        <input type="text" id="s-name" placeholder="পূর্ণ নাম বাংলায় লিখুন">
+      </div>
+      <div class="form-group">
+        <label>পিতার নাম *</label>
+        <input type="text" id="s-father" placeholder="পিতার নাম">
+      </div>
+      <div class="form-group">
+        <label>মাতার নাম</label>
+        <input type="text" id="s-mother" placeholder="মাতার নাম">
+      </div>
+      <div class="form-group">
+        <label>জন্ম তারিখ</label>
+        <input type="date" id="s-dob">
+      </div>
+      <div class="form-group">
+        <label>জন্ম নিবন্ধন নম্বর</label>
+        <input type="text" id="s-birth-reg" placeholder="জন্ম নিবন্ধন নম্বর">
+      </div>
+      <div class="form-group form-full">
+        <label>বর্তমান ঠিকানা</label>
+        <textarea id="s-curr-address" rows="2" placeholder="গ্রাম, ডাকঘর, উপজেলা, জেলা"></textarea>
+      </div>
+      <div class="form-group form-full">
+        <label>স্থায়ী ঠিকানা</label>
+        <textarea id="s-address" rows="2" placeholder="স্থায়ী ঠিকানা (বর্তমানের মতো হলে খালি রাখুন)"></textarea>
+      </div>
+    </div>
+
+    <!-- OLD STUDENT SECTION -->
+    <div id="old-student-section" style="display:none;">
+      <div class="form-section-title" style="background:linear-gradient(90deg,#fff3e0,transparent); border-left-color:#e67e22;">পুরাতন শিক্ষার্থীর তথ্য</div>
+      <div class="form-grid">
+        <div class="form-group">
+          <label>পূর্বের বিভাগ / শ্রেণি</label>
+          <select id="s-prev-class">
+            <option value="">নির্বাচন করুন</option>
+            <option>নূরাণী ১ম</option><option>নূরাণী ২য়</option><option>নূরাণী ৩য়</option>
+            <option>হিফজ ১ম বর্ষ</option><option>হিফজ ২য় বর্ষ</option><option>হিফজ ৩য় বর্ষ</option>
+            <option>কিতাব বিভাগ</option>
+          </select>
+        </div>
+        <div class="form-group">
+          <label>গত বছরের ফলাফল</label>
+          <select id="s-prev-result">
+            <option value="">নির্বাচন করুন</option>
+            <option>মুমতাজ (A+)</option><option>জায়্যিদ জিদ্দান (A)</option>
+            <option>জায়্যিদ (B)</option><option>মাকবুল (C)</option><option>পাস</option><option>ফেল</option>
+          </select>
+        </div>
+        <div class="form-group">
+          <label>বিভাগ *</label>
+          <select id="s-dept-old">
+            <option value="">নির্বাচন করুন</option>
+            <option>নূরাণী বিভাগ</option><option>হিফজ বিভাগ</option><option>কিতাব বিভাগ</option>
+          </select>
+        </div>
+        <div class="form-group">
+          <label>বর্তমানে যে শ্রেণিতে ভর্তি হবে *</label>
+          <select id="s-class-old">
+            <option value="">নির্বাচন করুন</option>
+            <option>নূরাণী প্লে</option><option>নূরাণী নার্সারি</option>
+            <option>নূরাণী ১ম</option><option>নূরাণী ২য়</option><option>নূরাণী ৩য়</option>
+            <option>নাজেরা</option><option>হিফজ</option><option>কিতাব বিভাগ</option>
+          </select>
+        </div>
+      </div>
+    </div>
+
+    <!-- NEW STUDENT SECTION -->
+    <div id="new-student-section">
+      <div class="form-section-title" style="background:linear-gradient(90deg,#e8f4f8,transparent); border-left-color:#2980b9;">নতুন শিক্ষার্থীর তথ্য</div>
+      <div class="form-grid">
+        <div class="form-group">
+          <label>পূর্বের শিক্ষা প্রতিষ্ঠানের নাম</label>
+          <input type="text" id="s-prev-school" placeholder="প্রতিষ্ঠানের নাম">
+        </div>
+        <div class="form-group">
+          <label>পূর্বে যে শ্রেণিতে পড়েছে</label>
+          <input type="text" id="s-prev-class-new" placeholder="যেমন: ৩য় শ্রেণি">
+        </div>
+        <div class="form-group">
+          <label>পূর্বের ফলাফল</label>
+          <input type="text" id="s-prev-result-new" placeholder="যেমন: A+, ৮৫%">
+        </div>
+        <div class="form-group">
+          <label>বিভাগ *</label>
+          <select id="s-dept">
+            <option value="">নির্বাচন করুন</option>
+            <option>নূরাণী বিভাগ</option><option>হিফজ বিভাগ</option><option>কিতাব বিভাগ</option>
+          </select>
+        </div>
+        <div class="form-group">
+          <label>বর্তমানে যে শ্রেণিতে পড়তে ইচ্ছুক *</label>
+          <select id="s-class">
+            <option value="">নির্বাচন করুন</option>
+            <option>নূরাণী প্লে</option><option>নূরাণী নার্সারি</option>
+            <option>নূরাণী ১ম</option><option>নূরাণী ২য়</option><option>নূরাণী ৩য়</option>
+            <option>নাজেরা</option><option>হিফজ</option><option>কিতাব বিভাগ</option>
+          </select>
+        </div>
+      </div>
+    </div>
+
+    <div class="form-section-title">অভিভাবকের তথ্য</div>
+    <div class="form-grid">
+      <div class="form-group">
+        <label>অভিভাবকের নাম *</label>
+        <input type="text" id="s-guardian-name" placeholder="অভিভাবকের পূর্ণ নাম">
+      </div>
+      <div class="form-group">
+        <label>সম্পর্ক</label>
+        <select id="s-guardian-rel">
+          <option value="">নির্বাচন করুন</option>
+          <option>পিতা</option><option>মাতা</option><option>ভাই</option><option>বোন</option>
+          <option>চাচা</option><option>মামা</option><option>নানা</option><option>দাদা</option><option>অন্যান্য</option>
+        </select>
+      </div>
+      <div class="form-group">
+        <label>মোবাইল নম্বর *</label>
+        <input type="tel" id="s-phone" placeholder="০১XXXXXXXXX">
+      </div>
+      <div class="form-group">
+        <label>অভিভাবকের NID নম্বর</label>
+        <input type="text" id="s-guardian-nid" placeholder="জাতীয় পরিচয়পত্র নম্বর">
+      </div>
+      <div class="form-group form-full">
+        <label>অভিভাবকের ঠিকানা</label>
+        <textarea id="s-guardian-address" rows="2" placeholder="অভিভাবকের বর্তমান ঠিকানা"></textarea>
+      </div>
+    </div>
+
+    <button class="btn-primary" id="submit-btn" onclick="submitAdmission()">আবেদন জমা দিন</button>
+  </div>
+
+  <div class="form-card success-screen" id="success-screen">
+    <div class="icon">✅</div>
+    <h2>আবেদন সফলভাবে জমা হয়েছে</h2>
+    <p>আপনার ভর্তি আবেদনটি মাদ্রাসা কর্তৃপক্ষের কাছে পাঠানো হয়েছে।</p>
+    <p>অনুমোদনের পর আপনার দেওয়া মোবাইল নম্বরে যোগাযোগ করা হবে।</p>
+    <div class="ref" id="ref-no"></div>
+  </div>
+
+</div>
+
+<div class="toast" id="toast"></div>
+
+<script>
+var currentStudentType = 'new';
+
+function setStudentType(type) {
+  currentStudentType = type;
+  document.getElementById('btn-new-student').classList.toggle('active', type === 'new');
+  document.getElementById('btn-old-student').classList.toggle('active', type === 'old');
+  document.getElementById('new-student-section').style.display = type === 'new' ? 'block' : 'none';
+  document.getElementById('old-student-section').style.display = type === 'old' ? 'block' : 'none';
+}
+
+// ===== PHOTO (compressed, matches admin app's compression settings) =====
+function compressImage(file, maxW, maxH, quality, callback) {
+  var reader = new FileReader();
+  reader.onload = function(e) {
+    var image = new Image();
+    image.onload = function() {
+      var canvas = document.createElement('canvas');
+      var w = image.width, h = image.height;
+      if (w > maxW || h > maxH) {
+        var ratio = Math.min(maxW / w, maxH / h);
+        w = Math.round(w * ratio);
+        h = Math.round(h * ratio);
+      }
+      canvas.width = w; canvas.height = h;
+      var ctx = canvas.getContext('2d');
+      ctx.drawImage(image, 0, 0, w, h);
+      callback(canvas.toDataURL('image/jpeg', quality));
+    };
+    image.src = e.target.result;
+  };
+  reader.readAsDataURL(file);
+}
+
+function previewPhoto(input) {
+  var file = input.files[0];
+  if (!file) return;
+  compressImage(file, 400, 500, 0.75, function(compressed) {
+    var img = document.getElementById('s-photo-preview');
+    var placeholder = document.getElementById('s-photo-placeholder');
+    var clearBtn = document.getElementById('s-photo-clear');
+    img.src = compressed;
+    img.style.display = 'block';
+    placeholder.style.display = 'none';
+    clearBtn.style.display = 'inline-block';
+  });
+}
+
+function clearPhoto() {
+  var img = document.getElementById('s-photo-preview');
+  var placeholder = document.getElementById('s-photo-placeholder');
+  var clearBtn = document.getElementById('s-photo-clear');
+  var input = document.getElementById('s-photo-input');
+  img.src = ''; img.style.display = 'none';
+  placeholder.style.display = 'flex';
+  clearBtn.style.display = 'none';
+  input.value = '';
+}
+
+function getPhotoData() {
+  var img = document.getElementById('s-photo-preview');
+  return img && img.style.display === 'block' ? img.src : '';
+}
+
+function showToast(msg) {
+  var t = document.getElementById('toast');
+  t.textContent = msg;
+  t.classList.add('show');
+  setTimeout(function(){ t.classList.remove('show'); }, 3200);
+}
+
+function submitAdmission() {
+  var name = document.getElementById('s-name').value.trim();
+  var father = document.getElementById('s-father').value.trim();
+  var phone = document.getElementById('s-phone').value.trim();
+  var guardianName = document.getElementById('s-guardian-name').value.trim();
+
+  if (!name) { showToast('শিক্ষার্থীর নাম আবশ্যক'); return; }
+  if (!father) { showToast('পিতার নাম আবশ্যক'); return; }
+  if (!guardianName) { showToast('অভিভাবকের নাম আবশ্যক'); return; }
+  if (!phone || phone.length < 10) { showToast('সঠিক মোবাইল নম্বর দিন'); return; }
+
+  var deptEl = currentStudentType === 'new' ? document.getElementById('s-dept') : document.getElementById('s-dept-old');
+  var clsEl = currentStudentType === 'new' ? document.getElementById('s-class') : document.getElementById('s-class-old');
+  var dept = deptEl ? deptEl.value : '';
+  var cls = clsEl ? clsEl.value : '';
+
+  if (!dept) { showToast('বিভাগ নির্বাচন করুন'); return; }
+  if (!cls) { showToast('শ্রেণি নির্বাচন করুন'); return; }
+
+  if (typeof rtdb === 'undefined') { showToast('⚠️ সার্ভারের সাথে সংযোগ করা যাচ্ছে না। ইন্টারনেট সংযোগ পরীক্ষা করুন।'); return; }
+
+  var entry = {
+    type: currentStudentType === 'new' ? 'নতুন' : 'পুরাতন',
+    photo: getPhotoData(),
+    name: name,
+    father: father,
+    mother: document.getElementById('s-mother').value.trim(),
+    dob: document.getElementById('s-dob').value,
+    birthReg: document.getElementById('s-birth-reg').value.trim(),
+    currAddress: document.getElementById('s-curr-address').value.trim(),
+    address: document.getElementById('s-address').value.trim(),
+    dept: dept,
+    cls: cls,
+    prevSchool: (document.getElementById('s-prev-school')||{}).value || '',
+    prevClassNew: (document.getElementById('s-prev-class-new')||{}).value || '',
+    prevResultNew: (document.getElementById('s-prev-result-new')||{}).value || '',
+    prevClass: (document.getElementById('s-prev-class')||{}).value || '',
+    prevResult: (document.getElementById('s-prev-result')||{}).value || '',
+    guardianName: guardianName,
+    guardianRel: document.getElementById('s-guardian-rel').value,
+    guardianNid: document.getElementById('s-guardian-nid').value.trim(),
+    guardianAddress: document.getElementById('s-guardian-address').value.trim(),
+    phone: phone,
+    status: 'pending',
+    submittedAt: new Date().toISOString()
+  };
+
+  var btn = document.getElementById('submit-btn');
+  btn.disabled = true;
+  btn.textContent = 'জমা হচ্ছে...';
+
+  rtdb.ref('madrasa_pending_admissions').push(entry)
+    .then(function(ref) {
+      var refNo = ref.key.slice(-6).toUpperCase();
+      document.getElementById('form-card').style.display = 'none';
+      document.getElementById('success-screen').style.display = 'block';
+      document.getElementById('ref-no').textContent = 'রেফারেন্স: ' + refNo;
+      window.scrollTo(0, 0);
+    })
+    .catch(function(err) {
+      showToast('⚠️ জমা দিতে সমস্যা হয়েছে: ' + err.message);
+      btn.disabled = false;
+      btn.textContent = 'আবেদন জমা দিন';
+    });
+}
+</script>
+
+</body>
+</html>
