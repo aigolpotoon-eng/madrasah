@@ -771,4 +771,370 @@ function insertMathTemplate(idx, op){
 function renderEditor(){
   qlist.innerHTML = '';
   let editorQNum = 0;
-  questions.forEach((
+  questions.forEach((q, i) => {
+    if(!q.noNumber) editorQNum++;
+    const card = document.createElement('div');
+    card.className = 'qcard';
+    card.innerHTML = `
+      <div class="qcard-top">
+        <span class="qnum-badge">${q.noNumber ? '—' : toBangla(editorQNum)}</span>
+      </div>
+      <textarea class="${q.math ? 'math-mode' : ''}" data-idx="${i}" data-field="text" placeholder="প্রশ্নটি লিখো...">${q.text}</textarea>
+      <label class="math-toggle">
+        <input type="checkbox" data-idx="${i}" data-field="math" ${q.math ? 'checked' : ''}>
+        গাণিতিক (সংখ্যা নিচে নিচে সাজিয়ে লিখতে চাই)
+      </label>
+      <label class="math-toggle">
+        <input type="checkbox" data-idx="${i}" data-field="noNumber" ${q.noNumber ? 'checked' : ''}>
+        ক্রমিক নম্বর দেখাবে না (শুধু নোট/হেডিং হিসেবে)
+      </label>
+      ${q.math ? `
+      <div class="math-tools">
+        <button type="button" class="math-tool-btn" data-idx="${i}" data-op="+">+ যোগ বসাও</button>
+        <button type="button" class="math-tool-btn" data-idx="${i}" data-op="-">− বিয়োগ বসাও</button>
+        <button type="button" class="math-tool-btn" data-idx="${i}" data-op="×">× গুণ বসাও</button>
+        <button type="button" class="math-tool-btn" data-idx="${i}" data-op="÷">÷ ভাগ বসাও</button>
+      </div>
+      <p class="math-hint">ভাগ অনুভূমিকভাবে (÷ প্রতীক দিয়ে) বসবে, বাকিগুলো নিচে নিচে সাজানো থাকবে।</p>
+      ` : ''}
+      <div class="qcard-bottom">
+        <span class="marks-label">নম্বর:</span>
+        <input class="marks-input" data-idx="${i}" data-field="marks" type="text" value="${q.marks}">
+        <button class="del-btn" data-idx="${i}">মুছে ফেলো</button>
+      </div>
+    `;
+    qlist.appendChild(card);
+  });
+
+  qlist.querySelectorAll('textarea, input.marks-input').forEach(el => {
+    el.addEventListener('input', e => {
+      const idx = +e.target.dataset.idx;
+      const field = e.target.dataset.field;
+      questions[idx][field] = e.target.value;
+      renderPreview();
+      updateTotals();
+    });
+  });
+  qlist.querySelectorAll('input[data-field="math"]').forEach(el => {
+    el.addEventListener('change', e => {
+      const idx = +e.target.dataset.idx;
+      questions[idx].math = e.target.checked;
+      renderEditor();
+      renderPreview();
+    });
+  });
+  qlist.querySelectorAll('input[data-field="noNumber"]').forEach(el => {
+    el.addEventListener('change', e => {
+      const idx = +e.target.dataset.idx;
+      questions[idx].noNumber = e.target.checked;
+      renderPreview();
+    });
+  });
+  qlist.querySelectorAll('.math-tool-btn').forEach(btn => {
+    btn.addEventListener('click', e => {
+      const idx = +e.target.dataset.idx;
+      const op = e.target.dataset.op;
+      insertMathTemplate(idx, op);
+    });
+  });
+  qlist.querySelectorAll('.del-btn').forEach(btn => {
+    btn.addEventListener('click', e => {
+      const idx = +e.target.dataset.idx;
+      questions.splice(idx, 1);
+      renderEditor();
+      renderPreview();
+      updateTotals();
+    });
+  });
+}
+
+function banglaToNumber(s){
+  const engStr = String(s).replace(/[০-৯]/g, d => banglaDigits.indexOf(d));
+  const n = parseFloat(engStr);
+  return isNaN(n) ? 0 : n;
+}
+
+function updateTotals(){
+  const sum = questions.reduce((acc, q) => acc + banglaToNumber(q.marks), 0);
+  const full = banglaToNumber(document.getElementById('fullmarks').value);
+  totalsText.textContent = toBangla(sum) + (full ? ' / ' + toBangla(full) : '');
+  totalsBox.classList.toggle('mismatch', full && sum !== full);
+}
+
+function renderPreview(){
+  document.getElementById('pv-institute').textContent = document.getElementById('institute').value;
+  document.getElementById('pv-address').textContent = document.getElementById('address').value;
+  document.getElementById('pv-exam').textContent = document.getElementById('examname').value;
+  document.getElementById('pv-classline').textContent =
+    'শ্রেণি: ' + document.getElementById('classname').value + ' , বিষয়: ' + document.getElementById('subject').value;
+  document.getElementById('pv-time').textContent = 'সময়: ' + document.getElementById('time').value;
+  document.getElementById('pv-fullmarks').textContent = 'পূর্ণমান: ' + document.getElementById('fullmarks').value;
+
+  const qwrap = document.getElementById('pv-questions');
+  qwrap.innerHTML = '';
+  let qNum = 0;
+  if(questions.length === 0){
+    qwrap.innerHTML = '<div class="p-empty-hint">এখনো কোনো প্রশ্ন যোগ করা হয়নি।</div>';
+  } else {
+    questions.forEach((q, i) => {
+      const row = document.createElement('div');
+      row.className = 'p-qrow';
+      if(!q.noNumber) qNum++;
+      const numLabel = q.noNumber ? '' : `<span class="qn">${toBangla(qNum)}।</span>`;
+      const bodyHtml = q.math
+        ? `${numLabel}<div class="p-mathblock">${escapeHtml(q.text)}</div>`
+        : `${numLabel}${q.noNumber ? '' : ' '}${escapeHtml(q.text)}`;
+      row.innerHTML = `
+        <div class="p-qtext">${bodyHtml}</div>
+        <div class="p-qmarks">${q.marks}</div>
+      `;
+      qwrap.appendChild(row);
+    });
+  }
+
+  const arabicVal = document.getElementById('arabicline').value.trim();
+  const footer = document.getElementById('pv-footer');
+  footer.innerHTML = arabicVal ? `<div class="p-arabic">${arabicVal}</div>` : '';
+}
+
+document.getElementById('addQ').addEventListener('click', () => {
+  questions.push({text:"", marks:"", math:false});
+  renderEditor();
+  renderPreview();
+  updateTotals();
+});
+
+['institute','address','examname','classname','subject','time','fullmarks','arabicline'].forEach(id => {
+  document.getElementById(id).addEventListener('input', () => {
+    renderPreview();
+    updateTotals();
+  });
+});
+
+document.getElementById('downloadBtn').addEventListener('click', () => {
+  window.print();
+});
+
+renderEditor();
+renderPreview();
+updateTotals();
+</script>
+
+<script type="module">
+import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
+import { getAuth, GoogleAuthProvider, signInWithPopup, signInWithRedirect, getRedirectResult, onAuthStateChanged, signOut }
+  from "https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js";
+import { getFirestore, collection, addDoc, updateDoc, doc, query, where, onSnapshot, serverTimestamp, orderBy }
+  from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
+
+const firebaseConfig = {
+  apiKey: "AIzaSyDpgUvNgSaUpq5sqr6rFldC30SXzf_gX24",
+  authDomain: "question-paper-app-23515.firebaseapp.com",
+  projectId: "question-paper-app-23515",
+  storageBucket: "question-paper-app-23515.firebasestorage.app",
+  messagingSenderId: "236946951412",
+  appId: "1:236946951412:web:90eb89a2458627410662a1"
+};
+
+const fbApp = initializeApp(firebaseConfig);
+const auth = getAuth(fbApp);
+const db = getFirestore(fbApp);
+const provider = new GoogleAuthProvider();
+
+let currentUser = null;
+let currentPaperId = null;
+let unsubscribePapersList = null;
+let saveTimer = null;
+
+const authGate = document.getElementById('authGate');
+const appRoot = document.getElementById('appRoot');
+const authStatus = document.getElementById('authStatus');
+const userEmail = document.getElementById('userEmail');
+const papersListEl = document.getElementById('papersList');
+const saveStatus = document.getElementById('saveStatus');
+const fieldIdsAll = ['institute','address','examname','classname','subject','time','fullmarks','arabicline'];
+
+function isMobileBrowser(){
+  return /Android|iPhone|iPad|iPod/i.test(navigator.userAgent);
+}
+
+document.getElementById('googleSignInBtn').addEventListener('click', async () => {
+  authStatus.textContent = 'সাইন ইন হচ্ছে...';
+  if(isMobileBrowser()){
+    try{
+      await signInWithRedirect(auth, provider);
+    }catch(err){
+      authStatus.textContent = 'সাইন ইন করা যায়নি, আবার চেষ্টা করো।';
+    }
+    return;
+  }
+  try{
+    await signInWithPopup(auth, provider);
+  }catch(err){
+    // Popup often fails silently on some browsers (blocked, or third-party
+    // cookies disabled) — fall back to a full-page redirect flow instead.
+    try{
+      await signInWithRedirect(auth, provider);
+    }catch(err2){
+      authStatus.textContent = 'সাইন ইন করা যায়নি, আবার চেষ্টা করো।';
+    }
+  }
+});
+
+// Completes sign-in after returning from the redirect flow above
+getRedirectResult(auth).catch(() => {});
+
+document.getElementById('signOutBtn').addEventListener('click', () => {
+  signOut(auth);
+});
+
+document.getElementById('newPaperBtn').addEventListener('click', () => {
+  currentPaperId = null;
+  document.getElementById('institute').value = "দারুস সালিম ইন্টারন্যাশনাল মাদ্রাসা";
+  document.getElementById('address').value = "";
+  document.getElementById('examname').value = "";
+  document.getElementById('classname').value = "";
+  document.getElementById('subject').value = "";
+  document.getElementById('time').value = "";
+  document.getElementById('fullmarks').value = "";
+  document.getElementById('arabicline').value = "";
+  questions = [];
+  renderEditor();
+  renderPreview();
+  updateTotals();
+  highlightActivePaper();
+  saveStatus.textContent = 'নতুন প্রশ্নপত্র — লেখা শুরু করলেই সেভ হবে';
+});
+
+document.getElementById('saveDraftBtn').addEventListener('click', () => {
+  saveNow();
+});
+
+function collectPayload(){
+  const fields = {};
+  fieldIdsAll.forEach(id => fields[id] = document.getElementById(id).value);
+  return { fields, questions };
+}
+
+function applyPayload(payload){
+  if(!payload) return;
+  fieldIdsAll.forEach(id => {
+    if(payload.fields && payload.fields[id] !== undefined){
+      document.getElementById(id).value = payload.fields[id];
+    }
+  });
+  questions = Array.isArray(payload.questions) ? payload.questions : [];
+  renderEditor();
+  renderPreview();
+  updateTotals();
+}
+
+function paperTitleFor(payload){
+  const f = payload.fields || {};
+  return (f.examname || f.institute || 'প্রশ্নপত্র') + (f.subject ? ' — ' + f.subject : '');
+}
+
+async function saveNow(){
+  if(!currentUser) return;
+  const payload = collectPayload();
+  const title = paperTitleFor(payload);
+  saveStatus.textContent = 'সেভ হচ্ছে...';
+  try{
+    if(currentPaperId){
+      await updateDoc(doc(db, 'papers', currentPaperId), {
+        title,
+        payload: JSON.stringify(payload),
+        updatedAt: serverTimestamp()
+      });
+    } else {
+      const ref = await addDoc(collection(db, 'papers'), {
+        ownerId: currentUser.uid,
+        ownerEmail: currentUser.email,
+        title,
+        payload: JSON.stringify(payload),
+        createdAt: serverTimestamp(),
+        updatedAt: serverTimestamp()
+      });
+      currentPaperId = ref.id;
+    }
+    saveStatus.textContent = 'সেভ হয়েছে ✓';
+    highlightActivePaper();
+  }catch(err){
+    saveStatus.textContent = 'সেভ করা যায়নি, আবার চেষ্টা করো।';
+  }
+  setTimeout(() => { if(saveStatus.textContent === 'সেভ হয়েছে ✓') saveStatus.textContent = ''; }, 2500);
+}
+
+function scheduleAutoSave(){
+  if(!currentUser) return;
+  saveStatus.textContent = 'টাইপ করছো...';
+  clearTimeout(saveTimer);
+  saveTimer = setTimeout(saveNow, 1200);
+}
+
+function highlightActivePaper(){
+  papersListEl.querySelectorAll('.paper-item').forEach(el => {
+    el.classList.toggle('active', el.dataset.id === currentPaperId);
+  });
+}
+
+function renderPapersList(docs){
+  if(docs.length === 0){
+    papersListEl.innerHTML = '<p class="papers-empty">এখনো কোনো প্রশ্নপত্র সেভ হয়নি।</p>';
+    return;
+  }
+  papersListEl.innerHTML = '';
+  docs.forEach(d => {
+    const data = d.data();
+    const btn = document.createElement('button');
+    btn.type = 'button';
+    btn.className = 'paper-item' + (d.id === currentPaperId ? ' active' : '');
+    btn.dataset.id = d.id;
+    const updated = data.updatedAt && data.updatedAt.toDate ? data.updatedAt.toDate() : null;
+    const dateStr = updated ? updated.toLocaleDateString('bn-BD') : '';
+    btn.innerHTML = `<span class="pi-title">${escapeHtml(data.title || 'প্রশ্নপত্র')}</span><span class="pi-meta">${dateStr}</span>`;
+    btn.addEventListener('click', () => {
+      currentPaperId = d.id;
+      applyPayload(JSON.parse(data.payload));
+      highlightActivePaper();
+      saveStatus.textContent = '';
+    });
+    papersListEl.appendChild(btn);
+  });
+}
+
+function listenToPapers(){
+  if(unsubscribePapersList) unsubscribePapersList();
+  const q = query(collection(db, 'papers'), where('ownerId', '==', currentUser.uid), orderBy('updatedAt', 'desc'));
+  unsubscribePapersList = onSnapshot(q, snap => {
+    renderPapersList(snap.docs);
+  }, err => {
+    papersListEl.innerHTML = '<p class="papers-empty">তালিকা লোড করা যায়নি।</p>';
+  });
+}
+
+onAuthStateChanged(auth, user => {
+  if(user){
+    currentUser = user;
+    authGate.style.display = 'none';
+    appRoot.style.display = '';
+    userEmail.textContent = user.displayName ? (user.displayName + ' · ' + user.email) : user.email;
+    listenToPapers();
+  } else {
+    currentUser = null;
+    currentPaperId = null;
+    if(unsubscribePapersList) unsubscribePapersList();
+    authGate.style.display = 'flex';
+    appRoot.style.display = 'none';
+  }
+});
+
+document.getElementById('qlist').addEventListener('input', scheduleAutoSave);
+document.getElementById('qlist').addEventListener('click', scheduleAutoSave);
+document.getElementById('addQ').addEventListener('click', scheduleAutoSave);
+fieldIdsAll.forEach(id => {
+  document.getElementById(id).addEventListener('input', scheduleAutoSave);
+});
+</script>
+</body>
+</html>
