@@ -355,6 +355,74 @@
     min-height:16px;
     margin:14px 0 0;
   }
+  .authgate-divider{
+    display:flex;
+    align-items:center;
+    gap:10px;
+    margin:18px 0;
+    color:#8a9587;
+    font-size:12px;
+  }
+  .authgate-divider::before, .authgate-divider::after{
+    content:"";
+    flex:1;
+    height:1px;
+    background:rgba(201,162,75,0.2);
+  }
+  .email-tabs{
+    display:flex;
+    gap:6px;
+    margin-bottom:14px;
+    background:#1b2c22;
+    border-radius:8px;
+    padding:4px;
+  }
+  .email-tab{
+    flex:1;
+    background:none;
+    border:none;
+    color:#a9b3a5;
+    padding:8px;
+    border-radius:6px;
+    font-size:12.5px;
+    font-weight:600;
+    cursor:pointer;
+    font-family:'Hind Siliguri', sans-serif;
+  }
+  .email-tab.active{
+    background:var(--panel-accent);
+    color:#20342a;
+  }
+  .authgate-card .field label{
+    color:#a9b3a5;
+  }
+  .authgate-card .field input{
+    background:#1b2c22;
+  }
+  .email-submit-btn{
+    width:100%;
+    background:linear-gradient(135deg, var(--maroon), var(--maroon-dark));
+    color:#f8f4e9;
+    border:none;
+    border-radius:8px;
+    padding:12px;
+    font-family:'Hind Siliguri', sans-serif;
+    font-weight:700;
+    font-size:14px;
+    cursor:pointer;
+    margin-top:6px;
+  }
+  .email-submit-btn:hover{filter:brightness(1.08);}
+  .forgot-btn{
+    background:none;
+    border:none;
+    color:var(--panel-accent);
+    font-size:12px;
+    cursor:pointer;
+    margin-top:10px;
+    font-family:'Hind Siliguri', sans-serif;
+    text-decoration:underline;
+  }
 
   /* ---------- USER BAR & PAPERS LIST ---------- */
   .userbar{
@@ -603,11 +671,29 @@
 <div class="authgate" id="authGate">
   <div class="authgate-card">
     <p class="authgate-title">প্রশ্নপত্র তৈরির অ্যাপ</p>
-    <p class="authgate-sub">প্রশ্নপত্র তৈরি ও সংরক্ষণ করতে গুগল অ্যাকাউন্ট দিয়ে সাইন ইন করো।</p>
+    <p class="authgate-sub">প্রশ্নপত্র তৈরি ও সংরক্ষণ করতে সাইন ইন করো।</p>
     <button class="google-btn" id="googleSignInBtn">
       <svg width="18" height="18" viewBox="0 0 18 18"><path fill="#4285F4" d="M17.64 9.2c0-.64-.06-1.25-.16-1.84H9v3.48h4.84a4.14 4.14 0 01-1.8 2.72v2.26h2.9c1.7-1.57 2.7-3.88 2.7-6.62z"/><path fill="#34A853" d="M9 18c2.43 0 4.47-.8 5.96-2.18l-2.9-2.26c-.8.54-1.84.86-3.06.86-2.35 0-4.34-1.59-5.05-3.72H.98v2.33A9 9 0 009 18z"/><path fill="#FBBC05" d="M3.95 10.7A5.4 5.4 0 013.68 9c0-.59.1-1.17.27-1.7V4.97H.98A9 9 0 000 9c0 1.45.35 2.83.98 4.03l2.97-2.33z"/><path fill="#EA4335" d="M9 3.58c1.32 0 2.5.45 3.44 1.35l2.58-2.58C13.46.89 11.43 0 9 0A9 9 0 00.98 4.97l2.97 2.33C4.66 5.17 6.65 3.58 9 3.58z"/></svg>
       গুগল দিয়ে সাইন ইন করো
     </button>
+
+    <div class="authgate-divider"><span>অথবা</span></div>
+
+    <div class="email-tabs">
+      <button type="button" class="email-tab active" id="tabSignIn">সাইন ইন</button>
+      <button type="button" class="email-tab" id="tabSignUp">নতুন অ্যাকাউন্ট</button>
+    </div>
+    <div class="field" style="text-align:left;">
+      <label>ইমেইল</label>
+      <input type="email" id="emailInput" autocomplete="email" placeholder="you@example.com">
+    </div>
+    <div class="field" style="text-align:left;">
+      <label>পাসওয়ার্ড</label>
+      <input type="password" id="passwordInput" autocomplete="current-password" placeholder="কমপক্ষে ৬ অক্ষর">
+    </div>
+    <button class="email-submit-btn" id="emailSubmitBtn">সাইন ইন করো</button>
+    <button class="forgot-btn" id="forgotBtn" type="button">পাসওয়ার্ড ভুলে গেছো?</button>
+
     <p class="authgate-status" id="authStatus"></p>
   </div>
 </div>
@@ -922,7 +1008,9 @@ updateTotals();
 
 <script type="module">
 import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
-import { getAuth, GoogleAuthProvider, signInWithPopup, signInWithRedirect, getRedirectResult, onAuthStateChanged, signOut }
+import { getAuth, GoogleAuthProvider, signInWithPopup, signInWithRedirect, getRedirectResult,
+  createUserWithEmailAndPassword, signInWithEmailAndPassword, sendPasswordResetEmail,
+  onAuthStateChanged, signOut }
   from "https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js";
 import { getFirestore, collection, addDoc, updateDoc, doc, query, where, onSnapshot, serverTimestamp, orderBy }
   from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
@@ -983,6 +1071,73 @@ document.getElementById('googleSignInBtn').addEventListener('click', async () =>
 
 // Completes sign-in after returning from the redirect flow above
 getRedirectResult(auth).catch(() => {});
+
+// ---- Email / password sign-in ----
+let authMode = 'signin';
+const tabSignIn = document.getElementById('tabSignIn');
+const tabSignUp = document.getElementById('tabSignUp');
+const emailSubmitBtn = document.getElementById('emailSubmitBtn');
+const emailInput = document.getElementById('emailInput');
+const passwordInput = document.getElementById('passwordInput');
+
+function setAuthMode(mode){
+  authMode = mode;
+  tabSignIn.classList.toggle('active', mode === 'signin');
+  tabSignUp.classList.toggle('active', mode === 'signup');
+  emailSubmitBtn.textContent = mode === 'signin' ? 'সাইন ইন করো' : 'অ্যাকাউন্ট তৈরি করো';
+  authStatus.textContent = '';
+}
+tabSignIn.addEventListener('click', () => setAuthMode('signin'));
+tabSignUp.addEventListener('click', () => setAuthMode('signup'));
+
+function friendlyAuthError(code){
+  const map = {
+    'auth/invalid-email': 'ইমেইলের ফরম্যাট সঠিক নয়।',
+    'auth/missing-password': 'পাসওয়ার্ড দাও।',
+    'auth/weak-password': 'পাসওয়ার্ড কমপক্ষে ৬ অক্ষরের হতে হবে।',
+    'auth/email-already-in-use': 'এই ইমেইল দিয়ে আগেই অ্যাকাউন্ট আছে, "সাইন ইন" ট্যাবে গিয়ে ঢোকো।',
+    'auth/invalid-credential': 'ইমেইল বা পাসওয়ার্ড ভুল হয়েছে।',
+    'auth/wrong-password': 'পাসওয়ার্ড ভুল হয়েছে।',
+    'auth/user-not-found': 'এই ইমেইলে কোনো অ্যাকাউন্ট নেই, "নতুন অ্যাকাউন্ট" ট্যাবে গিয়ে খোলো।',
+    'auth/too-many-requests': 'অনেকবার চেষ্টা হয়েছে, কিছুক্ষণ পর আবার চেষ্টা করো।'
+  };
+  return map[code] || 'কিছু একটা ভুল হয়েছে, আবার চেষ্টা করো।';
+}
+
+emailSubmitBtn.addEventListener('click', async () => {
+  const email = emailInput.value.trim();
+  const password = passwordInput.value;
+  if(!email || !password){
+    authStatus.textContent = 'ইমেইল ও পাসওয়ার্ড দুটোই দাও।';
+    return;
+  }
+  authStatus.textContent = authMode === 'signin' ? 'সাইন ইন হচ্ছে...' : 'অ্যাকাউন্ট তৈরি হচ্ছে...';
+  try{
+    if(authMode === 'signin'){
+      await signInWithEmailAndPassword(auth, email, password);
+    } else {
+      await createUserWithEmailAndPassword(auth, email, password);
+    }
+  }catch(err){
+    authStatus.textContent = friendlyAuthError(err.code);
+  }
+});
+
+document.getElementById('forgotBtn').addEventListener('click', async () => {
+  const email = emailInput.value.trim();
+  if(!email){
+    authStatus.textContent = 'আগে ইমেইলের ঘরে তোমার ইমেইলটা লিখো।';
+    return;
+  }
+  try{
+    await sendPasswordResetEmail(auth, email);
+    authStatus.textContent = 'পাসওয়ার্ড রিসেট লিঙ্ক ইমেইলে পাঠানো হয়েছে।';
+    authStatus.style.color = '#9bd1a0';
+  }catch(err){
+    authStatus.textContent = friendlyAuthError(err.code);
+    authStatus.style.color = '';
+  }
+});
 
 document.getElementById('signOutBtn').addEventListener('click', () => {
   signOut(auth);
