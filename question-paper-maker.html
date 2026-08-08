@@ -1010,6 +1010,7 @@ updateTotals();
 import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
 import { getAuth, GoogleAuthProvider, signInWithPopup, signInWithRedirect, getRedirectResult,
   createUserWithEmailAndPassword, signInWithEmailAndPassword, sendPasswordResetEmail,
+  setPersistence, browserLocalPersistence, inMemoryPersistence,
   onAuthStateChanged, signOut }
   from "https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js";
 import { getFirestore, collection, addDoc, updateDoc, doc, query, where, onSnapshot, serverTimestamp, orderBy }
@@ -1029,6 +1030,13 @@ const auth = getAuth(fbApp);
 const db = getFirestore(fbApp);
 const provider = new GoogleAuthProvider();
 
+// Some mobile browsers block IndexedDB-based auth persistence (e.g. strict
+// privacy modes). Fall back to in-memory persistence so sign-in still works
+// for the current session even if it won't be remembered after closing the tab.
+setPersistence(auth, browserLocalPersistence).catch(() => {
+  setPersistence(auth, inMemoryPersistence).catch(() => {});
+});
+
 let currentUser = null;
 let currentPaperId = null;
 let unsubscribePapersList = null;
@@ -1042,34 +1050,28 @@ const papersListEl = document.getElementById('papersList');
 const saveStatus = document.getElementById('saveStatus');
 const fieldIdsAll = ['institute','address','examname','classname','subject','time','fullmarks','arabicline'];
 
-function isMobileBrowser(){
-  return /Android|iPhone|iPad|iPod/i.test(navigator.userAgent);
-}
-
 document.getElementById('googleSignInBtn').addEventListener('click', async () => {
   authStatus.textContent = 'সাইন ইন হচ্ছে...';
-  if(isMobileBrowser()){
-    try{
-      await signInWithRedirect(auth, provider);
-    }catch(err){
-      authStatus.textContent = friendlyAuthError(err.code);
-    }
-    return;
-  }
   try{
     await signInWithPopup(auth, provider);
+    authStatus.textContent = '';
   }catch(err){
-    // Popup often fails silently on some browsers (blocked, or third-party
-    // cookies disabled) — fall back to a full-page redirect flow instead.
-    try{
-      await signInWithRedirect(auth, provider);
-    }catch(err2){
-      authStatus.textContent = friendlyAuthError(err2.code);
+    // Popup blocked or unsupported — fall back to a full-page redirect flow.
+    if(err.code === 'auth/popup-blocked' || err.code === 'auth/operation-not-supported-in-this-environment' || err.code === 'auth/cancelled-popup-request'){
+      try{
+        await signInWithRedirect(auth, provider);
+      }catch(err2){
+        authStatus.textContent = friendlyAuthError(err2.code);
+      }
+    } else if(err.code !== 'auth/popup-closed-by-user'){
+      authStatus.textContent = friendlyAuthError(err.code);
+    } else {
+      authStatus.textContent = '';
     }
   }
 });
 
-// Completes sign-in after returning from the redirect flow above
+// Completes sign-in after returning from the redirect flow above (fallback path)
 getRedirectResult(auth).catch(err => {
   authStatus.textContent = friendlyAuthError(err.code);
 });
