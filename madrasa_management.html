@@ -1990,6 +1990,10 @@
           <label>প্রাপক</label>
           <input type="text" id="exp-to" placeholder="নাম / প্রতিষ্ঠান">
         </div>
+        <div class="form-group">
+          <label>প্রাপকের মোবাইল (SMS পাঠাতে)</label>
+          <input type="tel" id="exp-phone" placeholder="যেমন: 01712345678">
+        </div>
         <div class="form-group form-full">
           <label>বিবরণ</label>
           <textarea id="exp-note" rows="2" placeholder="বিস্তারিত বিবরণ"></textarea>
@@ -3288,6 +3292,20 @@ function saveAttendance(type) {
     const status = selectedBtn ? (selectedBtn.classList.contains('present-btn') ? 'present' : 'absent') : 'present';
     DB.attendance.push({ date, type, id: person.id, name: person.name, extra: person.dept || person.cls || '', status });
     saved++;
+
+    // SMS পাঠানো (শুধু ছাত্র/ছাত্রীর অভিভাবককে - উপস্থিত ও অনুপস্থিত দুই ক্ষেত্রেই)
+    if (type === 'student') {
+      var guardianPhone = person.guardianPhone || person.phone || '';
+      if (guardianPhone) {
+        var statusText = status === 'present' ? 'উপস্থিত' : 'অনুপস্থিত';
+        var attSmsMsg = 'দারুস সালিম ইন্টারন্যাশনাল মাদ্রাসা\n'
+          + 'নাম: ' + person.name + '\n'
+          + 'শ্রেণি: ' + (person.cls || '') + '\n'
+          + 'তারিখ: ' + date + '\n'
+          + 'হাজিরা: আজ ' + statusText + ' ছিল।';
+        sendSMS(guardianPhone, attSmsMsg);
+      }
+    }
   });
   saveDB(); // একবারই save করো
   renderAttHistory(type);
@@ -3504,15 +3522,28 @@ function saveExpense() {
   const type = document.getElementById('exp-type').value;
   const amount = parseFloat(document.getElementById('exp-amount').value);
   if (!date || !type || !amount) { showToast('⚠️ তারিখ, ধরন ও পরিমাণ আবশ্যক'); return; }
+  const month = document.getElementById('exp-month').value;
+  const to = document.getElementById('exp-to').value;
+  const phone = document.getElementById('exp-phone').value;
   DB.expense.push({
-    date, type, amount,
-    month: document.getElementById('exp-month').value,
-    to: document.getElementById('exp-to').value,
+    date, type, amount, month, to, phone,
     note: document.getElementById('exp-note').value
   });
   saveDB();
   renderExpenseTable();
-  ['exp-date','exp-amount','exp-to','exp-note'].forEach(id => document.getElementById(id).value = '');
+
+  // SMS পাঠানো
+  if (phone) {
+    var smsMsg = 'দারুস সালিম ইন্টারন্যাশনাল মাদ্রাসা\n'
+      + 'প্রাপক: ' + (to || '-') + '\n'
+      + (month ? 'মাস: ' + month + '\n' : '')
+      + 'ব্যয়ের ধরন: ' + type + '\n'
+      + 'পরিমাণ: ' + amount + ' টাকা\n'
+      + 'তারিখ: ' + date;
+    sendSMS(phone, smsMsg);
+  }
+
+  ['exp-date','exp-amount','exp-to','exp-phone','exp-note'].forEach(id => document.getElementById(id).value = '');
   document.getElementById('exp-type').value = '';
   document.getElementById('exp-month').value = '';
   showToast('✅ ব্যয় সফলভাবে সংরক্ষিত হয়েছে');
@@ -5047,6 +5078,7 @@ function openEditModal(type, idx) {
       + selField('ধরন','type',exp.type,['শিক্ষক বেতন','বিদ্যুৎ','পানি','মেরামত','কেনাকাটা','অন্যান্য'])
       + field('মাস','month',exp.month)
       + field('প্রদানকারী','to',exp.to)
+      + field('প্রদানকারীর মোবাইল','phone',exp.phone,'tel')
       + field('পরিমাণ (টাকা)','amount',exp.amount,'number')
       + field('নোট','note',exp.note);
 
@@ -5097,7 +5129,7 @@ function saveEdit() {
   } else if (_editType === 'expense') {
     var exp = DB.expense[_editIdx];
     exp.date = gv('date'); exp.type = gv('type'); exp.month = gv('month');
-    exp.to = gv('to'); exp.amount = gn('amount'); exp.note = gv('note');
+    exp.to = gv('to'); exp.phone = gv('phone'); exp.amount = gn('amount'); exp.note = gv('note');
     saveDB(); renderExpenseTable(); updateStats(); showToast('✅ ব্যয় এন্ট্রি আপডেট হয়েছে');
 
   } else if (_editType === 'result') {
