@@ -921,20 +921,56 @@
   }
   .lw-crescent {
     position: absolute;
-    top: 10%;
+    top: 8%;
     right: 12%;
-    width: 70px;
-    height: 70px;
+    width: 46px;
+    height: 46px;
     border-radius: 50%;
-    box-shadow: 18px 6px 0 2px #f4e3a1;
+    box-shadow: 12px 4px 0 2px #f4e3a1;
     transform: rotate(-20deg);
-    opacity: 0.85;
+    opacity: 0.75;
     filter: blur(0.3px);
     animation: lwGlowPulse 6s ease-in-out infinite;
   }
   @keyframes lwGlowPulse {
     0%, 100% { filter: drop-shadow(0 0 6px rgba(244,227,161,0.5)); }
     50% { filter: drop-shadow(0 0 16px rgba(244,227,161,0.9)); }
+  }
+
+  /* --- Study scene: mosque + students reading --- */
+  .lw-scene {
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    width: 100%;
+    height: 46%;
+    opacity: 0.95;
+  }
+  .lw-groundlight {
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    width: 100%;
+    height: 40%;
+    background: linear-gradient(to top, rgba(244,227,161,0.10), transparent);
+    pointer-events: none;
+  }
+  .lw-lantern-pulse { animation: lwLanternFlicker 3.2s ease-in-out infinite; transform-origin: center; }
+  @keyframes lwLanternFlicker {
+    0%, 100% { opacity: 0.55; transform: scale(1); }
+    50% { opacity: 0.9; transform: scale(1.12); }
+  }
+  .lw-student { animation: lwStudentSway 5.5s ease-in-out infinite; transform-origin: 50% 100%; }
+  .lw-student.s2 { animation-duration: 6.8s; animation-delay: -2s; }
+  @keyframes lwStudentSway {
+    0%, 100% { transform: rotate(0deg); }
+    50% { transform: rotate(1.2deg); }
+  }
+  .lw-page { animation: lwPageTurn 4.2s ease-in-out infinite; transform-origin: center; }
+  .lw-page.s2 { animation-delay: -2.1s; }
+  @keyframes lwPageTurn {
+    0%, 82%, 100% { transform: scaleX(1); }
+    88% { transform: scaleX(0.82); }
   }
 
   .lock-box {
@@ -1060,6 +1096,53 @@
     <div class="lw-pattern"></div>
     <div class="lw-crescent"></div>
     <div id="lw-stars"></div>
+    <div class="lw-groundlight"></div>
+    <svg class="lw-scene" viewBox="0 0 400 200" preserveAspectRatio="xMidYMax slice" xmlns="http://www.w3.org/2000/svg">
+      <defs>
+        <filter id="lwSoftBlur" x="-60%" y="-60%" width="220%" height="220%">
+          <feGaussianBlur stdDeviation="5"/>
+        </filter>
+      </defs>
+      <!-- ground -->
+      <rect x="0" y="186" width="400" height="14" fill="rgba(6,16,12,0.45)"/>
+      <!-- mosque -->
+      <g fill="rgba(6,16,12,0.55)">
+        <rect x="150" y="112" width="100" height="74" />
+        <path d="M150,112 Q200,52 250,112 Z" />
+        <rect x="197" y="34" width="6" height="18" />
+        <circle cx="200" cy="30" r="4" />
+        <rect x="262" y="72" width="13" height="114" />
+        <ellipse cx="268.5" cy="70" rx="9" ry="6" />
+        <rect x="266.5" y="56" width="4" height="14" />
+        <circle cx="268.5" cy="52" r="3" />
+      </g>
+      <!-- hanging lantern -->
+      <line x1="200" y1="120" x2="200" y2="138" stroke="rgba(6,16,12,0.6)" stroke-width="2"/>
+      <circle class="lw-lantern-pulse" cx="200" cy="150" r="16" fill="#f4e3a1" opacity="0.55" filter="url(#lwSoftBlur)"/>
+      <ellipse cx="200" cy="150" rx="6" ry="9" fill="#f4e3a1"/>
+      <!-- student left, reading on a rehal -->
+      <g transform="translate(102,0)">
+      <g class="lw-student">
+        <ellipse cx="0" cy="184" rx="30" ry="6" fill="rgba(6,16,12,0.25)"/>
+        <path d="M-24,182 Q-24,146 0,140 Q24,146 24,182 Z" fill="rgba(6,16,12,0.6)"/>
+        <circle cx="0" cy="128" r="11" fill="rgba(6,16,12,0.6)"/>
+        <path d="M-9,120 Q0,111 9,120 Z" fill="rgba(6,16,12,0.6)"/>
+        <path d="M-14,180 L-4,157 M14,180 L4,157" stroke="rgba(120,90,50,0.65)" stroke-width="3" stroke-linecap="round"/>
+        <path class="lw-page" d="M-11,157 L0,151 L11,157 L0,163 Z" fill="#f4e3a1" opacity="0.9"/>
+      </g>
+      </g>
+      <!-- student right, reading on a rehal -->
+      <g transform="translate(300,0)">
+      <g class="lw-student s2">
+        <ellipse cx="0" cy="184" rx="30" ry="6" fill="rgba(6,16,12,0.25)"/>
+        <path d="M-24,182 Q-24,146 0,140 Q24,146 24,182 Z" fill="rgba(6,16,12,0.6)"/>
+        <circle cx="0" cy="128" r="11" fill="rgba(6,16,12,0.6)"/>
+        <path d="M-9,120 Q0,111 9,120 Z" fill="rgba(6,16,12,0.6)"/>
+        <path d="M-14,180 L-4,157 M14,180 L4,157" stroke="rgba(120,90,50,0.65)" stroke-width="3" stroke-linecap="round"/>
+        <path class="lw-page s2" d="M-11,157 L0,151 L11,157 L0,163 Z" fill="#f4e3a1" opacity="0.9"/>
+      </g>
+      </g>
+    </svg>
   </div>
   <div class="lock-box">
     <div class="lock-logo">🔐</div>
