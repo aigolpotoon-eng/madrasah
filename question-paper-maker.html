@@ -1269,10 +1269,24 @@ function listenToPapers(){
   const q = query(collection(db, 'papers'), where('ownerId', '==', currentUser.uid), orderBy('updatedAt', 'desc'));
   unsubscribePapersList = onSnapshot(q, snap => {
     renderPapersList(snap.docs);
+    // Right after signing in, automatically open the most recently edited
+    // paper instead of leaving a blank/default form — this way typing right
+    // away continues that paper instead of silently creating a duplicate.
+    if(!hasAutoOpenedPaper){
+      hasAutoOpenedPaper = true;
+      if(snap.docs.length > 0 && currentPaperId === null){
+        const first = snap.docs[0];
+        currentPaperId = first.id;
+        applyPayload(JSON.parse(first.data().payload));
+        highlightActivePaper();
+      }
+    }
   }, err => {
     papersListEl.innerHTML = '<p class="papers-empty">তালিকা লোড করা যায়নি।</p>';
   });
 }
+
+let hasAutoOpenedPaper = false;
 
 onAuthStateChanged(auth, user => {
   if(user){
@@ -1280,10 +1294,12 @@ onAuthStateChanged(auth, user => {
     authGate.style.display = 'none';
     appRoot.style.display = '';
     userEmail.textContent = user.displayName ? (user.displayName + ' · ' + user.email) : user.email;
+    hasAutoOpenedPaper = false;
     listenToPapers();
   } else {
     currentUser = null;
     currentPaperId = null;
+    hasAutoOpenedPaper = false;
     if(unsubscribePapersList) unsubscribePapersList();
     authGate.style.display = 'flex';
     appRoot.style.display = 'none';
