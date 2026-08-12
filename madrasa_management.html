@@ -527,6 +527,39 @@
 
   .att-toggle button.present-btn.selected { background: #1a6b4a; color: white; }
   .att-toggle button.absent-btn.selected  { background: #c0392b; color: white; }
+  .att-toggle button.late-btn.selected    { background: #e67e22; color: white; }
+
+  .late-detail {
+    display: none;
+    gap: 6px;
+    margin-top: 2px;
+  }
+  .late-detail.show { display: flex; }
+  .late-detail input {
+    flex: 1;
+    min-width: 0;
+    padding: 6px 7px;
+    border: 1.5px solid #f0c896;
+    border-radius: 6px;
+    font-family: var(--bn-font);
+    font-size: 11px;
+    background: #fff8f0;
+  }
+
+  /* ===== ATTENDANCE MONTHLY SUMMARY ===== */
+  .att-summary-table { width: 100%; border-collapse: collapse; font-size: 13px; }
+  .att-summary-table th {
+    background: #0a3d2e; color: white; padding: 7px; text-align: center;
+  }
+  .att-summary-table td { padding: 7px; text-align: center; border-bottom: 1px solid #f0ece0; }
+  .att-summary-table td.name-cell { text-align: left; font-weight: 600; color: var(--green-dark); }
+  .att-summary-badge {
+    display: inline-block; min-width: 22px; padding: 2px 7px; border-radius: 10px;
+    font-size: 12px; font-weight: 700;
+  }
+  .att-summary-badge.absent { background: #fde8e8; color: #c0392b; }
+  .att-summary-badge.late   { background: #fdeedb; color: #e67e22; }
+  .att-summary-badge.present{ background: #d4f1e4; color: #1a6b4a; }
 
   /* ===== FINANCE SUMMARY ===== */
   .finance-summary {
@@ -1967,6 +2000,10 @@
           <label>তারিখ নির্বাচন</label>
           <input type="date" id="t-att-date" onchange="loadAttForDate('teacher')">
         </div>
+        <div class="form-group" style="flex:1;min-width:140px">
+          <label>নির্ধারিত উপস্থিতির সময়</label>
+          <input type="time" id="t-att-scheduled-time" value="08:00" onchange="recalcAllLateMinutes()">
+        </div>
         <button class="btn-primary" style="margin-top:24px" onclick="saveAttendance('teacher')">হাজিরা সংরক্ষণ</button>
       </div>
     </div>
@@ -1985,8 +2022,32 @@
             <th style="padding:7px;">নাম</th>
             <th style="padding:7px;">বিভাগ</th>
             <th style="padding:7px;">অবস্থা</th>
+            <th style="padding:7px;">বিলম্ব তথ্য</th>
           </tr></thead>
           <tbody id="teacher-att-history"></tbody>
+        </table>
+      </div>
+    </div>
+
+    <!-- শিক্ষক মাসিক উপস্থিতি সারাংশ -->
+    <div class="form-card" style="margin-top:16px;">
+      <strong style="color:#0a3d2e;font-size:14px;">📊 মাসিক উপস্থিতি সারাংশ (সকল শিক্ষক একসাথে)</strong>
+      <div style="display:flex;gap:12px;align-items:center;flex-wrap:wrap;margin-top:10px;">
+        <div class="form-group" style="flex:1;min-width:160px;margin:0;">
+          <label>মাস নির্বাচন</label>
+          <input type="month" id="t-att-summary-month">
+        </div>
+        <button class="btn-primary" style="margin-top:24px" onclick="renderAttSummary('teacher')">সারাংশ দেখুন</button>
+      </div>
+      <div style="overflow-x:auto;margin-top:12px;">
+        <table class="att-summary-table">
+          <thead><tr>
+            <th>আইডি</th><th style="text-align:left">নাম</th><th>বিভাগ</th>
+            <th>উপস্থিত</th><th>অনুপস্থিত</th><th>লেট</th>
+          </tr></thead>
+          <tbody id="teacher-att-summary-body">
+            <tr><td colspan="6" style="text-align:center;color:#aaa;padding:16px">মাস নির্বাচন করে "সারাংশ দেখুন" চাপুন</td></tr>
+          </tbody>
         </table>
       </div>
     </div>
@@ -2036,6 +2097,39 @@
             <th style="padding:7px;">অবস্থা</th>
           </tr></thead>
           <tbody id="student-att-history"></tbody>
+        </table>
+      </div>
+    </div>
+
+    <!-- ছাত্র মাসিক উপস্থিতি সারাংশ -->
+    <div class="form-card" style="margin-top:16px;">
+      <strong style="color:#0a3d2e;font-size:14px;">📊 মাসিক উপস্থিতি সারাংশ (সকল ছাত্র একসাথে)</strong>
+      <div style="display:flex;gap:12px;align-items:center;flex-wrap:wrap;margin-top:10px;">
+        <div class="form-group" style="flex:1;min-width:160px;margin:0;">
+          <label>মাস নির্বাচন</label>
+          <input type="month" id="s-att-summary-month">
+        </div>
+        <div class="form-group" style="flex:1;min-width:140px;margin:0;">
+          <label>শ্রেণি ফিল্টার</label>
+          <select id="s-att-summary-class-filter" style="width:100%;padding:10px;border:1.5px solid #ddd;border-radius:10px;font-family:var(--bn-font);font-size:14px;">
+            <option value="">সব শ্রেণি</option>
+            <option>নূরাণী প্লে</option><option>নূরাণী রার্সারী</option><option>নাযেরা</option><option>হিফজ</option>
+            <option>১ম</option><option>২য়</option><option>৩য়</option>
+            <option>৪র্থ</option><option>৫ম</option><option>৬ষ্ঠ</option>
+            <option>৭ম</option><option>৮ম</option><option>৯ম</option><option>১০ম</option>
+          </select>
+        </div>
+        <button class="btn-primary" style="margin-top:24px" onclick="renderAttSummary('student')">সারাংশ দেখুন</button>
+      </div>
+      <div style="overflow-x:auto;margin-top:12px;">
+        <table class="att-summary-table">
+          <thead><tr>
+            <th>আইডি</th><th style="text-align:left">নাম</th><th>শ্রেণি</th>
+            <th>উপস্থিত</th><th>অনুপস্থিত</th>
+          </tr></thead>
+          <tbody id="student-att-summary-body">
+            <tr><td colspan="5" style="text-align:center;color:#aaa;padding:16px">মাস নির্বাচন করে "সারাংশ দেখুন" চাপুন</td></tr>
+          </tbody>
         </table>
       </div>
     </div>
@@ -3454,6 +3548,17 @@ function loadAttForDate(type) {
     if (rec.status === 'absent') {
       var absentBtn = toggle.querySelector('.absent-btn');
       if (absentBtn) absentBtn.classList.add('selected');
+    } else if (rec.status === 'late') {
+      var lateBtn = toggle.querySelector('.late-btn');
+      if (lateBtn) lateBtn.classList.add('selected');
+      var detail = card.querySelector('.late-detail');
+      if (detail) {
+        detail.classList.add('show');
+        var timeEl = detail.querySelector('.late-time');
+        var minEl = detail.querySelector('.late-minutes');
+        if (timeEl) timeEl.value = rec.arrivalTime || '';
+        if (minEl) minEl.value = (rec.lateMinutes != null) ? rec.lateMinutes : '';
+      }
     } else {
       var presentBtn = toggle.querySelector('.present-btn');
       if (presentBtn) presentBtn.classList.add('selected');
@@ -3477,13 +3582,25 @@ function renderAttGrid(type) {
   var html2 = '';
   for (var j=0; j<list.length; j++) {
     var p = list[j];
+    var lateBtnHtml = '';
+    var lateDetailHtml = '';
+    if (type === 'teacher') {
+      lateBtnHtml = '<button class="late-btn" onclick="toggleAtt(this,&quot;late&quot;)">লেট</button>';
+      lateDetailHtml = '<div class="late-detail">'
+        + '<input type="time" class="late-time" title="আগমনের সময়" onchange="recalcLateMinutes(this)">'
+        + '<input type="number" class="late-minutes" min="0" placeholder="বিলম্ব (মিনিট)" title="বিলম্ব কত মিনিট">'
+        + '</div>';
+    }
     html2 += '<div class="attendance-card">'
       + '<div class="att-name">' + (p.name||'') + '</div>'
       + '<div class="att-id"><strong style="color:var(--green-mid)">' + p.id + '</strong> | ' + (p.dept||p.cls||'') + '</div>'
       + '<div class="att-toggle">'
       + '<button class="present-btn selected" onclick="toggleAtt(this,&quot;present&quot;)">উপস্থিত</button>'
+      + lateBtnHtml
       + '<button class="absent-btn" onclick="toggleAtt(this,&quot;absent&quot;)">অনুপস্থিত</button>'
-      + '</div></div>';
+      + '</div>'
+      + lateDetailHtml
+      + '</div>';
   }
   grid.innerHTML = html2;
 }
@@ -3492,6 +3609,34 @@ function toggleAtt(btn, status) {
   const toggle = btn.parentElement;
   toggle.querySelectorAll('button').forEach(b => b.classList.remove('selected'));
   btn.classList.add('selected');
+  const card = toggle.closest('.attendance-card');
+  const detail = card ? card.querySelector('.late-detail') : null;
+  if (detail) {
+    if (status === 'late') { detail.classList.add('show'); }
+    else { detail.classList.remove('show'); }
+  }
+}
+
+// আগমনের সময় দেওয়া হলে নির্ধারিত সময়ের সাথে তুলনা করে বিলম্ব (মিনিট) অটো হিসাব করে
+function recalcLateMinutes(timeInput) {
+  var detail = timeInput.closest('.late-detail');
+  if (!detail) return;
+  var minEl = detail.querySelector('.late-minutes');
+  var scheduledEl = document.getElementById('t-att-scheduled-time');
+  var arrival = timeInput.value;
+  var scheduled = scheduledEl ? scheduledEl.value : '';
+  if (!arrival || !scheduled || !minEl) return;
+  var aParts = arrival.split(':').map(Number);
+  var sParts = scheduled.split(':').map(Number);
+  var diff = (aParts[0]*60 + aParts[1]) - (sParts[0]*60 + sParts[1]);
+  minEl.value = diff > 0 ? diff : 0;
+}
+
+// নির্ধারিত সময় পরিবর্তন হলে, ইতিমধ্যে সময় দেওয়া কার্ডগুলোর বিলম্ব পুনরায় হিসাব করে
+function recalcAllLateMinutes() {
+  document.querySelectorAll('#teacher-att-grid .late-time').forEach(function(timeEl){
+    if (timeEl.value) recalcLateMinutes(timeEl);
+  });
 }
 
 function saveAttendance(type) {
@@ -3507,20 +3652,37 @@ function saveAttendance(type) {
     var classFilter = (document.getElementById('s-att-class-filter')||{}).value || '';
     if (classFilter) list = list.filter(function(s){ return s.cls === classFilter; });
   }
+  // পূর্বে এই তারিখের জন্য সংরক্ষিত রেকর্ড থাকলে মুছে নতুন করে বসানো হচ্ছে (ডুপ্লিকেট এড়াতে)
+  DB.attendance = DB.attendance.filter(function(a){ return !(a.type === type && a.date === date); });
   let saved = 0;
   cards.forEach((card, i) => {
     const person = list[i];
     if (!person) return;
     const selectedBtn = card.querySelector('.att-toggle .selected');
-    const status = selectedBtn ? (selectedBtn.classList.contains('present-btn') ? 'present' : 'absent') : 'present';
-    DB.attendance.push({ date, type, id: person.id, name: person.name, extra: person.dept || person.cls || '', status });
+    let status = 'present';
+    if (selectedBtn) {
+      if (selectedBtn.classList.contains('absent-btn')) status = 'absent';
+      else if (selectedBtn.classList.contains('late-btn')) status = 'late';
+      else status = 'present';
+    }
+    const rec = { date, type, id: person.id, name: person.name, extra: person.dept || person.cls || '', status };
+    if (status === 'late') {
+      const detail = card.querySelector('.late-detail');
+      if (detail) {
+        const timeEl = detail.querySelector('.late-time');
+        const minEl = detail.querySelector('.late-minutes');
+        rec.arrivalTime = timeEl ? timeEl.value : '';
+        rec.lateMinutes = (minEl && minEl.value !== '') ? parseInt(minEl.value, 10) : null;
+      }
+    }
+    DB.attendance.push(rec);
     saved++;
 
-    // SMS পাঠানো (শুধু ছাত্র/ছাত্রীর অভিভাবককে - উপস্থিত ও অনুপস্থিত দুই ক্ষেত্রেই)
+    // SMS পাঠানো (শুধু ছাত্র/ছাত্রীর অভিভাবককে - উপস্থিত, অনুপস্থিত ও লেট তিন ক্ষেত্রেই)
     if (type === 'student') {
       var guardianPhone = person.guardianPhone || person.phone || '';
       if (guardianPhone) {
-        var statusText = status === 'present' ? 'উপস্থিত' : 'অনুপস্থিত';
+        var statusText = status === 'present' ? 'উপস্থিত' : (status === 'late' ? 'লেট উপস্থিত' : 'অনুপস্থিত');
         var attSmsMsg = 'দারুস সালিম ইন্টারন্যাশনাল মাদ্রাসা\n'
           + 'নাম: ' + person.name + '\n'
           + 'শ্রেণি: ' + (person.cls || '') + '\n'
@@ -3540,15 +3702,71 @@ function renderAttHistory(type) {
   var tbodyId = type === 'teacher' ? 'teacher-att-history' : 'student-att-history';
   var tbody = document.getElementById(tbodyId);
   if (!tbody) return;
+  var colCount = type === 'teacher' ? 6 : 5;
   if (!records.length) {
-    tbody.innerHTML = '<tr><td colspan="5" style="text-align:center;color:#aaa;padding:20px">কোনো হাজিরা রেকর্ড নেই</td></tr>';
+    tbody.innerHTML = '<tr><td colspan="' + colCount + '" style="text-align:center;color:#aaa;padding:20px">কোনো হাজিরা রেকর্ড নেই</td></tr>';
     return;
   }
   tbody.innerHTML = records.map(function(r) {
-    var sc = r.status === 'present' ? 'badge-income' : 'badge-expense';
-    var st = r.status === 'present' ? 'উপস্থিত' : 'অনুপস্থিত';
-    return '<tr><td>' + r.date + '</td><td>' + r.id + '</td><td>' + r.name + '</td><td>' + (r.extra||'-') + '</td><td><span class="badge ' + sc + '">' + st + '</span></td></tr>';
+    var sc = r.status === 'present' ? 'badge-income' : (r.status === 'late' ? '' : 'badge-expense');
+    var st = r.status === 'present' ? 'উপস্থিত' : (r.status === 'late' ? 'লেট' : 'অনুপস্থিত');
+    var badgeStyle = r.status === 'late' ? ' style="background:#fdeedb;color:#e67e22;"' : '';
+    var lateInfoCell = '';
+    if (type === 'teacher') {
+      var lateInfo = '-';
+      if (r.status === 'late') {
+        var parts = [];
+        if (r.arrivalTime) parts.push(toBn(r.arrivalTime));
+        if (r.lateMinutes != null && r.lateMinutes !== '') parts.push(toBn(r.lateMinutes) + ' মিনিট দেরি');
+        lateInfo = parts.length ? parts.join(' | ') : '-';
+      }
+      lateInfoCell = '<td>' + lateInfo + '</td>';
+    }
+    return '<tr><td>' + r.date + '</td><td>' + r.id + '</td><td>' + r.name + '</td><td>' + (r.extra||'-') + '</td><td><span class="badge ' + sc + '"' + badgeStyle + '>' + st + '</span></td>' + lateInfoCell + '</tr>';
   }).join('');
+}
+
+// ===== মাসিক উপস্থিতি সারাংশ (শিক্ষক/ছাত্র একসাথে দেখা) =====
+function renderAttSummary(type) {
+  var monthId = type === 'teacher' ? 't-att-summary-month' : 's-att-summary-month';
+  var month = document.getElementById(monthId).value; // format: YYYY-MM
+  var bodyId = type === 'teacher' ? 'teacher-att-summary-body' : 'student-att-summary-body';
+  var tbody = document.getElementById(bodyId);
+  if (!tbody) return;
+  if (!month) { showToast('⚠️ মাস নির্বাচন করুন'); return; }
+
+  var list = type === 'teacher' ? DB.teachers : DB.students;
+  if (type === 'student') {
+    var classFilter = (document.getElementById('s-att-summary-class-filter')||{}).value || '';
+    if (classFilter) list = list.filter(function(s){ return s.cls === classFilter; });
+  }
+  if (!list.length) {
+    var colCount = type === 'teacher' ? 6 : 5;
+    tbody.innerHTML = '<tr><td colspan="' + colCount + '" style="text-align:center;color:#aaa;padding:16px">কোনো ' + (type==='teacher'?'শিক্ষক':'ছাত্র') + ' নেই</td></tr>';
+    return;
+  }
+
+  var monthRecords = DB.attendance.filter(function(a){
+    return a.type === type && a.date && a.date.indexOf(month) === 0;
+  });
+
+  var rows = list.map(function(p) {
+    var recs = monthRecords.filter(function(r){ return r.id === p.id; });
+    var presentCount = recs.filter(function(r){ return r.status === 'present'; }).length;
+    var absentCount = recs.filter(function(r){ return r.status === 'absent'; }).length;
+    var lateCount = recs.filter(function(r){ return r.status === 'late'; }).length;
+    var lateCell = type === 'teacher' ? '<td><span class="att-summary-badge late">' + toBn(lateCount) + '</span></td>' : '';
+    return '<tr>'
+      + '<td>' + p.id + '</td>'
+      + '<td class="name-cell">' + (p.name||'') + '</td>'
+      + '<td>' + (p.dept||p.cls||'-') + '</td>'
+      + '<td><span class="att-summary-badge present">' + toBn(presentCount) + '</span></td>'
+      + '<td><span class="att-summary-badge absent">' + toBn(absentCount) + '</span></td>'
+      + lateCell
+      + '</tr>';
+  });
+
+  tbody.innerHTML = rows.join('');
 }
 
 // ===== INCOME =====
