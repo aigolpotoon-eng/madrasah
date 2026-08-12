@@ -645,22 +645,51 @@
     padding:20px;
   }
 
+  /* ---------- PRINT: two copies of the paper side by side on one A4 sheet ---------- */
+  #printSheet{ display:none; }
+
+  @page{
+    size: A4 landscape;
+    margin: 0.5in;
+  }
+
   @media print{
     body{background:#fff;}
     .editor{display:none;}
     .authgate{display:none !important;}
-    .preview-wrap{
-      padding:0;
-      background:#fff;
-      max-height:none;
-      overflow:visible;
-    }
+    .preview-wrap{display:none;}
     .app{display:block;}
-    #paper{
-      box-shadow:none;
+
+    #printSheet{
+      display:flex;
+      flex-direction:row;
+      align-items:flex-start;
       width:100%;
+      gap:1in;
+    }
+    .print-copy{
+      flex:1 1 0;
+      min-width:0;
+      background:#fff;
+      box-shadow:none;
+      padding:0;
       min-height:auto;
     }
+    .print-copy, .print-copy *{
+      line-height:1.0 !important;
+    }
+    .print-copy .p-institute{ font-size:20pt; font-weight:700; }
+    .print-copy .p-exam{ font-size:18pt; font-weight:700; }
+    .print-copy .p-address,
+    .print-copy .p-classline,
+    .print-copy .p-meta,
+    .print-copy .p-qtext,
+    .print-copy .p-qmarks,
+    .print-copy .p-mathblock,
+    .print-copy .p-footer,
+    .print-copy .p-arabic{ font-size:16pt; font-weight:normal; }
+    .print-copy .p-meta{ font-weight:700; }
+    .print-copy .p-noteline{ font-size:16pt; font-weight:700; }
   }
 
   @media (max-width: 900px){
@@ -803,6 +832,9 @@
   </div>
 
 </div>
+
+<!-- PRINT-ONLY: filled with two copies of #paper right before printing -->
+<div id="printSheet"></div>
 
 <script>
 const banglaDigits = ['০','১','২','৩','৪','৫','৬','৭','৮','৯'];
@@ -1004,6 +1036,23 @@ document.getElementById('addQ').addEventListener('click', () => {
     updateTotals();
   });
 });
+
+function stripIds(el){
+  el.removeAttribute('id');
+  el.querySelectorAll('[id]').forEach(child => child.removeAttribute('id'));
+}
+
+function buildPrintSheet(){
+  const sheet = document.getElementById('printSheet');
+  sheet.innerHTML = '';
+  for(let i = 0; i < 2; i++){
+    const copy = document.getElementById('paper').cloneNode(true);
+    stripIds(copy);
+    copy.classList.add('print-copy');
+    sheet.appendChild(copy);
+  }
+}
+window.addEventListener('beforeprint', buildPrintSheet);
 
 document.getElementById('downloadBtn').addEventListener('click', () => {
   window.print();
