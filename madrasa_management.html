@@ -847,7 +847,7 @@
   #lock-screen {
     position: fixed;
     inset: 0;
-    background: linear-gradient(-45deg, #0a1f33, #123a52, #0a3d2e, #1a6b4a, #0d2137);
+    background: linear-gradient(-45deg, #01111f, #013a5e, #015c7a, #0288a8, #012a4a);
     background-size: 400% 400%;
     animation: lockGradientShift 18s ease infinite;
     z-index: 9999;
@@ -880,9 +880,9 @@
     opacity: 0.35;
     animation: lwDrift 22s ease-in-out infinite;
   }
-  .lw-glow.g1 { width: 320px; height: 320px; background: #2ecc91; top: -60px; left: -60px; animation-duration: 26s; }
-  .lw-glow.g2 { width: 260px; height: 260px; background: #c9a84c; bottom: -40px; right: -40px; animation-duration: 20s; animation-delay: -6s; }
-  .lw-glow.g3 { width: 220px; height: 220px; background: #1a6b4a; top: 40%; left: 60%; animation-duration: 30s; animation-delay: -12s; }
+  .lw-glow.g1 { width: 320px; height: 320px; background: #2fd8e5; top: -60px; left: -60px; animation-duration: 26s; }
+  .lw-glow.g2 { width: 260px; height: 260px; background: #7fe3c0; bottom: -40px; right: -40px; animation-duration: 20s; animation-delay: -6s; }
+  .lw-glow.g3 { width: 220px; height: 220px; background: #1a8fa3; top: 40%; left: 60%; animation-duration: 30s; animation-delay: -12s; }
   @keyframes lwDrift {
     0%   { transform: translate(0,0) scale(1); }
     33%  { transform: translate(30px,-40px) scale(1.15); }
@@ -891,26 +891,28 @@
   }
   .lw-star {
     position: absolute;
-    background: #fff;
+    background: radial-gradient(circle at 32% 28%, rgba(255,255,255,0.95), rgba(255,255,255,0.25) 55%, rgba(255,255,255,0.08) 100%);
+    border: 1px solid rgba(255,255,255,0.45);
     border-radius: 50%;
-    opacity: 0.8;
+    opacity: 0.7;
     animation: lwTwinkle linear infinite, lwFloatUp linear infinite;
   }
   @keyframes lwTwinkle {
-    0%, 100% { opacity: 0.15; }
-    50% { opacity: 0.9; }
+    0%, 100% { opacity: 0.25; }
+    50% { opacity: 0.85; }
   }
   @keyframes lwFloatUp {
-    0%   { transform: translateY(0); }
-    100% { transform: translateY(-120vh); }
+    0%   { transform: translateX(0) translateY(0); }
+    50%  { transform: translateX(6px) translateY(-60vh); }
+    100% { transform: translateX(-4px) translateY(-120vh); }
   }
   .lw-pattern {
     position: absolute;
     inset: -10%;
-    opacity: 0.07;
+    opacity: 0.06;
     background-image:
-      radial-gradient(circle, transparent 0, transparent 22px, rgba(255,255,255,0.9) 23px, transparent 24px),
-      radial-gradient(circle, transparent 0, transparent 22px, rgba(255,255,255,0.9) 23px, transparent 24px);
+      radial-gradient(circle, transparent 0, transparent 22px, rgba(210,245,255,0.9) 23px, transparent 24px),
+      radial-gradient(circle, transparent 0, transparent 22px, rgba(210,245,255,0.9) 23px, transparent 24px);
     background-size: 80px 80px;
     background-position: 0 0, 40px 40px;
     animation: lwPatternSpin 120s linear infinite;
@@ -919,25 +921,32 @@
     0%   { transform: rotate(0deg) scale(1.2); }
     100% { transform: rotate(360deg) scale(1.2); }
   }
+  /* Sunlight shafts filtering down through the water */
   .lw-crescent {
     position: absolute;
-    top: 8%;
-    right: 12%;
-    width: 46px;
-    height: 46px;
-    border-radius: 50%;
-    box-shadow: 12px 4px 0 2px #f4e3a1;
-    transform: rotate(-20deg);
-    opacity: 0.75;
-    filter: blur(0.3px);
-    animation: lwGlowPulse 6s ease-in-out infinite;
+    top: -5%;
+    left: 15%;
+    width: 140px;
+    height: 130%;
+    background: linear-gradient(180deg, rgba(255,255,255,0.28), rgba(255,255,255,0) 75%);
+    transform: rotate(12deg);
+    opacity: 0.5;
+    filter: blur(2px);
+    animation: lwGlowPulse 7s ease-in-out infinite;
+  }
+  .lw-crescent.ray2 {
+    left: 62%;
+    width: 90px;
+    transform: rotate(-9deg);
+    animation-duration: 9s;
+    animation-delay: -3s;
   }
   @keyframes lwGlowPulse {
-    0%, 100% { filter: drop-shadow(0 0 6px rgba(244,227,161,0.5)); }
-    50% { filter: drop-shadow(0 0 16px rgba(244,227,161,0.9)); }
+    0%, 100% { opacity: 0.28; }
+    50% { opacity: 0.55; }
   }
 
-  /* --- Study scene: mosque + students reading --- */
+  /* --- Aquarium scene: sandy floor, seaweed, coral, swimming fish --- */
   .lw-scene {
     position: absolute;
     bottom: 0;
@@ -952,25 +961,70 @@
     left: 0;
     width: 100%;
     height: 40%;
-    background: linear-gradient(to top, rgba(244,227,161,0.10), transparent);
+    background: linear-gradient(to top, rgba(180,230,255,0.12), transparent);
     pointer-events: none;
   }
+  /* gentle bubble stream rising from the gravel */
   .lw-lantern-pulse { animation: lwLanternFlicker 3.2s ease-in-out infinite; transform-origin: center; }
   @keyframes lwLanternFlicker {
-    0%, 100% { opacity: 0.55; transform: scale(1); }
-    50% { opacity: 0.9; transform: scale(1.12); }
+    0%, 100% { opacity: 0.45; transform: translateY(0) scale(1); }
+    50% { opacity: 0.85; transform: translateY(-10px) scale(1.12); }
   }
-  .lw-student { animation: lwStudentSway 5.5s ease-in-out infinite; transform-origin: 50% 100%; }
-  .lw-student.s2 { animation-duration: 6.8s; animation-delay: -2s; }
+  /* seaweed swaying in the current */
+  .lw-student { animation: lwStudentSway 4.5s ease-in-out infinite; transform-origin: 50% 100%; }
+  .lw-student.s2 { animation-duration: 5.6s; animation-delay: -2s; }
   @keyframes lwStudentSway {
-    0%, 100% { transform: rotate(0deg); }
-    50% { transform: rotate(1.2deg); }
+    0%, 100% { transform: rotate(-6deg); }
+    50% { transform: rotate(7deg); }
   }
-  .lw-page { animation: lwPageTurn 4.2s ease-in-out infinite; transform-origin: center; }
-  .lw-page.s2 { animation-delay: -2.1s; }
+  /* small fish darting near the seaweed, tail wiggling */
+  .lw-page { animation: lwPageTurn 0.9s ease-in-out infinite; transform-origin: 100% 50%; }
+  .lw-page.s2 { animation-delay: -0.4s; }
   @keyframes lwPageTurn {
-    0%, 82%, 100% { transform: scaleX(1); }
-    88% { transform: scaleX(0.82); }
+    0%, 100% { transform: rotate(-14deg); }
+    50% { transform: rotate(14deg); }
+  }
+  /* free-swimming fish drifting across the aquarium */
+  #lw-fish-layer {
+    position: absolute;
+    inset: 0;
+    overflow: hidden;
+    pointer-events: none;
+  }
+  .aq-fish-wrap {
+    position: absolute;
+    top: 0; left: 0;
+    animation: aqSwimAcross linear infinite;
+  }
+  .aq-fish-wrap.rev { animation-name: aqSwimAcrossRev; }
+  @keyframes aqSwimAcross {
+    0%   { transform: translate(-18vw, 0); }
+    100% { transform: translate(118vw, 0); }
+  }
+  @keyframes aqSwimAcrossRev {
+    0%   { transform: translate(118vw, 0) scaleX(-1); }
+    100% { transform: translate(-18vw, 0) scaleX(-1); }
+  }
+  /* hero fish swimming inside the 400x200 local scene viewBox (SVG user units) */
+  .aq-fish-swim { animation: aqSwimSvg linear infinite; }
+  .aq-fish-swim.rev { animation-name: aqSwimSvgRev; }
+  @keyframes aqSwimSvg {
+    0%   { transform: translate(-40px, 0); }
+    100% { transform: translate(440px, 0); }
+  }
+  @keyframes aqSwimSvgRev {
+    0%   { transform: translate(440px, 0) scaleX(-1); }
+    100% { transform: translate(-40px, 0) scaleX(-1); }
+  }
+  .aq-fish-bob { animation: aqBob ease-in-out infinite alternate; }
+  @keyframes aqBob {
+    0%   { transform: translateY(0); }
+    100% { transform: translateY(14px); }
+  }
+  .aq-tail { animation: aqTailWag 0.7s ease-in-out infinite alternate; transform-origin: 100% 50%; }
+  @keyframes aqTailWag {
+    0%   { transform: rotate(-16deg); }
+    100% { transform: rotate(16deg); }
   }
 
   .lock-box {
@@ -1095,7 +1149,9 @@
     <div class="lw-glow g3"></div>
     <div class="lw-pattern"></div>
     <div class="lw-crescent"></div>
+    <div class="lw-crescent ray2"></div>
     <div id="lw-stars"></div>
+    <div id="lw-fish-layer"></div>
     <div class="lw-groundlight"></div>
     <svg class="lw-scene" viewBox="0 0 400 200" preserveAspectRatio="xMidYMax slice" xmlns="http://www.w3.org/2000/svg">
       <defs>
@@ -1103,44 +1159,95 @@
           <feGaussianBlur stdDeviation="5"/>
         </filter>
       </defs>
-      <!-- ground -->
-      <rect x="0" y="186" width="400" height="14" fill="rgba(6,16,12,0.45)"/>
-      <!-- mosque -->
-      <g fill="rgba(6,16,12,0.55)">
-        <rect x="150" y="112" width="100" height="74" />
-        <path d="M150,112 Q200,52 250,112 Z" />
-        <rect x="197" y="34" width="6" height="18" />
-        <circle cx="200" cy="30" r="4" />
-        <rect x="262" y="72" width="13" height="114" />
-        <ellipse cx="268.5" cy="70" rx="9" ry="6" />
-        <rect x="266.5" y="56" width="4" height="14" />
-        <circle cx="268.5" cy="52" r="3" />
+      <!-- sandy aquarium floor -->
+      <path d="M0,196 Q60,186 130,194 Q220,204 300,192 Q350,184 400,192 L400,210 L0,210 Z" fill="rgba(6,26,36,0.55)"/>
+      <rect x="0" y="196" width="400" height="14" fill="rgba(4,18,26,0.5)"/>
+      <!-- rocks -->
+      <g fill="rgba(4,20,28,0.55)">
+        <ellipse cx="52" cy="196" rx="26" ry="12"/>
+        <ellipse cx="86" cy="200" rx="18" ry="9"/>
+        <ellipse cx="330" cy="198" rx="30" ry="13"/>
+        <ellipse cx="362" cy="201" rx="16" ry="8"/>
       </g>
-      <!-- hanging lantern -->
-      <line x1="200" y1="120" x2="200" y2="138" stroke="rgba(6,16,12,0.6)" stroke-width="2"/>
-      <circle class="lw-lantern-pulse" cx="200" cy="150" r="16" fill="#f4e3a1" opacity="0.55" filter="url(#lwSoftBlur)"/>
-      <ellipse cx="200" cy="150" rx="6" ry="9" fill="#f4e3a1"/>
-      <!-- student left, reading on a rehal -->
-      <g transform="translate(102,0)">
-      <g class="lw-student">
-        <ellipse cx="0" cy="184" rx="30" ry="6" fill="rgba(6,16,12,0.25)"/>
-        <path d="M-24,182 Q-24,146 0,140 Q24,146 24,182 Z" fill="rgba(6,16,12,0.6)"/>
-        <circle cx="0" cy="128" r="11" fill="rgba(6,16,12,0.6)"/>
-        <path d="M-9,120 Q0,111 9,120 Z" fill="rgba(6,16,12,0.6)"/>
-        <path d="M-14,180 L-4,157 M14,180 L4,157" stroke="rgba(120,90,50,0.65)" stroke-width="3" stroke-linecap="round"/>
-        <path class="lw-page" d="M-11,157 L0,151 L11,157 L0,163 Z" fill="#f4e3a1" opacity="0.9"/>
+      <!-- coral -->
+      <g fill="rgba(255,140,120,0.35)">
+        <path d="M300,196 q-4,-22 6,-30 q10,8 4,30 Z"/>
+        <path d="M312,196 q6,-16 14,-20 q4,10 -4,20 Z"/>
+        <path d="M40,196 q4,-14 12,-18 q4,8 -3,18 Z"/>
       </g>
+      <!-- bubble streams rising from the gravel -->
+      <g opacity="0.6">
+        <circle class="lw-lantern-pulse" cx="70" cy="188" r="3" fill="#dff6ff"/>
+        <circle class="lw-lantern-pulse" cx="345" cy="190" r="3.4" fill="#dff6ff"/>
       </g>
-      <!-- student right, reading on a rehal -->
-      <g transform="translate(300,0)">
-      <g class="lw-student s2">
-        <ellipse cx="0" cy="184" rx="30" ry="6" fill="rgba(6,16,12,0.25)"/>
-        <path d="M-24,182 Q-24,146 0,140 Q24,146 24,182 Z" fill="rgba(6,16,12,0.6)"/>
-        <circle cx="0" cy="128" r="11" fill="rgba(6,16,12,0.6)"/>
-        <path d="M-9,120 Q0,111 9,120 Z" fill="rgba(6,16,12,0.6)"/>
-        <path d="M-14,180 L-4,157 M14,180 L4,157" stroke="rgba(120,90,50,0.65)" stroke-width="3" stroke-linecap="round"/>
-        <path class="lw-page s2" d="M-11,157 L0,151 L11,157 L0,163 Z" fill="#f4e3a1" opacity="0.9"/>
+      <!-- seaweed left -->
+      <g transform="translate(96,196)">
+        <g class="lw-student">
+          <path d="M-6,0 Q-14,-34 -2,-62 Q4,-34 -6,0 Z" fill="rgba(30,150,110,0.55)"/>
+        </g>
+        <g class="lw-student s2">
+          <path d="M6,0 Q16,-28 4,-50 Q-2,-26 6,0 Z" fill="rgba(30,160,120,0.5)"/>
+        </g>
       </g>
+      <!-- seaweed right -->
+      <g transform="translate(304,196)">
+        <g class="lw-student s2">
+          <path d="M-6,0 Q-16,-30 -4,-54 Q2,-28 -6,0 Z" fill="rgba(30,150,110,0.55)"/>
+        </g>
+        <g class="lw-student">
+          <path d="M6,0 Q14,-32 2,-58 Q-4,-32 6,0 Z" fill="rgba(30,160,120,0.5)"/>
+        </g>
+      </g>
+      <!-- small fish darting near the seaweed -->
+      <g transform="translate(150,150)">
+        <g class="lw-student">
+          <path class="lw-page" d="M18,0 L4,-6 L4,6 Z" fill="#ffb454" opacity="0.9"/>
+          <ellipse cx="20" cy="0" rx="12" ry="6" fill="#ff9f43"/>
+          <circle cx="27" cy="-1.5" r="1.2" fill="#0a1f2e"/>
+        </g>
+      </g>
+      <g transform="translate(250,168) scale(-1,1)">
+        <g class="lw-student s2">
+          <path class="lw-page s2" d="M16,0 L4,-5 L4,5 Z" fill="#66d1ff" opacity="0.9"/>
+          <ellipse cx="18" cy="0" rx="10" ry="5" fill="#48b8f0"/>
+          <circle cx="24" cy="-1.2" r="1" fill="#0a1f2e"/>
+        </g>
+      </g>
+      <!-- hero fish swimming across the tank (SVG-local coordinates) -->
+      <g transform="translate(0,70)">
+        <g class="aq-fish-swim" style="animation-duration:14s;">
+          <g class="aq-fish-bob" style="animation-duration:2.4s;">
+            <g class="aq-tail" style="transform-origin:8px 0;">
+              <path d="M8,0 L-8,-9 L-8,9 Z" fill="#ff6b6b"/>
+            </g>
+            <ellipse cx="26" cy="0" rx="20" ry="10" fill="#ff7f6b"/>
+            <path d="M20,-9 Q26,-18 34,-9 Z" fill="#ff6b6b" opacity="0.85"/>
+            <circle cx="40" cy="-2" r="2" fill="#0a1f2e"/>
+          </g>
+        </g>
+      </g>
+      <g transform="translate(0,112)">
+        <g class="aq-fish-swim rev" style="animation-duration:18s; animation-delay:-6s;">
+          <g class="aq-fish-bob" style="animation-duration:3s; animation-delay:-1s;">
+            <g class="aq-tail" style="transform-origin:8px 0;">
+              <path d="M8,0 L-8,-8 L-8,8 Z" fill="#1dd1a1"/>
+            </g>
+            <ellipse cx="24" cy="0" rx="17" ry="8.5" fill="#2ee6b5"/>
+            <path d="M18,-7 Q24,-15 30,-7 Z" fill="#1dd1a1" opacity="0.85"/>
+            <circle cx="36" cy="-1.5" r="1.7" fill="#0a1f2e"/>
+          </g>
+        </g>
+      </g>
+      <g transform="translate(0,38)">
+        <g class="aq-fish-swim" style="animation-duration:22s; animation-delay:-10s;">
+          <g class="aq-fish-bob" style="animation-duration:2.8s; animation-delay:-0.5s;">
+            <g class="aq-tail" style="transform-origin:6px 0;">
+              <path d="M6,0 L-6,-6 L-6,6 Z" fill="#feca57"/>
+            </g>
+            <ellipse cx="18" cy="0" rx="13" ry="6.5" fill="#ffd873"/>
+            <circle cx="27" cy="-1.2" r="1.3" fill="#0a1f2e"/>
+          </g>
+        </g>
       </g>
     </svg>
   </div>
@@ -5229,26 +5336,68 @@ function saveEdit() {
 </script>
 <script>
 (function initLoginWallpaper(){
+  // rising bubbles
   var box = document.getElementById('lw-stars');
-  if (!box) return;
-  var count = 45;
-  var frag = document.createDocumentFragment();
-  for (var i = 0; i < count; i++) {
-    var s = document.createElement('div');
-    s.className = 'lw-star';
-    var size = (Math.random() * 2.4 + 1).toFixed(1);
-    s.style.width = size + 'px';
-    s.style.height = size + 'px';
-    s.style.left = (Math.random() * 100) + '%';
-    s.style.top = (Math.random() * 100) + '%';
-    var twinkleDur = (Math.random() * 3 + 2).toFixed(1);
-    var floatDur = (Math.random() * 18 + 14).toFixed(1);
-    var delay = (Math.random() * 8).toFixed(1);
-    s.style.animationDuration = twinkleDur + 's, ' + floatDur + 's';
-    s.style.animationDelay = '-' + delay + 's, -' + (Math.random() * floatDur).toFixed(1) + 's';
-    frag.appendChild(s);
+  if (box) {
+    var count = 45;
+    var frag = document.createDocumentFragment();
+    for (var i = 0; i < count; i++) {
+      var s = document.createElement('div');
+      s.className = 'lw-star';
+      var size = (Math.random() * 5 + 2).toFixed(1);
+      s.style.width = size + 'px';
+      s.style.height = size + 'px';
+      s.style.left = (Math.random() * 100) + '%';
+      s.style.top = (Math.random() * 100 + 20) + '%';
+      var twinkleDur = (Math.random() * 3 + 2).toFixed(1);
+      var floatDur = (Math.random() * 14 + 10).toFixed(1);
+      var delay = (Math.random() * 8).toFixed(1);
+      s.style.animationDuration = twinkleDur + 's, ' + floatDur + 's';
+      s.style.animationDelay = '-' + delay + 's, -' + (Math.random() * floatDur).toFixed(1) + 's';
+      frag.appendChild(s);
+    }
+    box.appendChild(frag);
   }
-  box.appendChild(frag);
+
+  // background fish swimming at various depths, for a lively aquarium feel
+  var fishLayer = document.getElementById('lw-fish-layer');
+  if (fishLayer) {
+    var colors = ['#ff9f43', '#feca57', '#ff6b6b', '#48dbfb', '#1dd1a1', '#f368e0', '#54a0ff', '#a29bfe'];
+    var fishCount = 9;
+    var ffrag = document.createDocumentFragment();
+    for (var j = 0; j < fishCount; j++) {
+      var color = colors[Math.floor(Math.random() * colors.length)];
+      var scale = (Math.random() * 0.6 + 0.5).toFixed(2);
+      var reverse = Math.random() < 0.5;
+      var swimDur = (Math.random() * 14 + 10).toFixed(1);
+      var swimDelay = (-(Math.random() * 20)).toFixed(1);
+      var bobDur = (Math.random() * 1.5 + 1.8).toFixed(1);
+      var top = (Math.random() * 80 + 5).toFixed(1);
+      var opacity = (Math.random() * 0.35 + 0.45).toFixed(2);
+
+      var wrap = document.createElement('div');
+      wrap.className = 'aq-fish-wrap' + (reverse ? ' rev' : '');
+      wrap.style.top = top + '%';
+      wrap.style.animationDuration = swimDur + 's';
+      wrap.style.animationDelay = swimDelay + 's';
+      wrap.style.opacity = opacity;
+
+      wrap.innerHTML =
+        '<div class="aq-fish-bob" style="animation-duration:' + bobDur + 's;">' +
+          '<svg width="' + (46 * scale) + '" height="' + (26 * scale) + '" viewBox="0 0 46 26">' +
+            '<g class="aq-tail" style="transform-origin:16px 13px;">' +
+              '<path d="M16,13 L2,4 L2,22 Z" fill="' + color + '"/>' +
+            '</g>' +
+            '<ellipse cx="30" cy="13" rx="15" ry="8" fill="' + color + '"/>' +
+            '<path d="M24,5 Q30,-2 36,5 Z" fill="' + color + '" opacity="0.85"/>' +
+            '<circle cx="41" cy="10.5" r="1.6" fill="#0a1f2e"/>' +
+          '</svg>' +
+        '</div>';
+
+      ffrag.appendChild(wrap);
+    }
+    fishLayer.appendChild(ffrag);
+  }
 })();
 </script>
 </body>
