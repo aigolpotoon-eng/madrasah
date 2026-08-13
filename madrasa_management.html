@@ -2839,7 +2839,8 @@ function approvePendingAdmission(key) {
     guardianRel: p.guardianRel || '',
     guardianNid: p.guardianNid || '',
     guardianAddress: p.guardianAddress || '',
-    phone: p.phone || '',
+    phone: normalizePhoneNumber(p.phone || p.guardianPhone || p.mobile || p.guardianMobile || ''),
+    guardianPhone: normalizePhoneNumber(p.guardianPhone || p.phone || p.mobile || p.guardianMobile || ''),
     prevSchool: p.prevSchool || '',
     prevClassNew: p.prevClassNew || '',
     prevResultNew: p.prevResultNew || '',
@@ -3467,7 +3468,7 @@ function setStudentType(type) {
 // ===== SAVE STUDENT =====
 function saveStudent() {
   var name = document.getElementById('s-name').value.trim();
-  var phone = document.getElementById('s-phone').value.trim();
+  var phone = normalizePhoneNumber(document.getElementById('s-phone').value);
   if (!name) { showToast('শিক্ষার্থীর নাম আবশ্যক'); return; }
   if (!phone) { showToast('অভিভাবকের মোবাইল নম্বর আবশ্যক'); return; }
 
@@ -3782,6 +3783,24 @@ function renderAttSummary(type) {
 // ===== INCOME SEARCH =====
 var incSelectedPerson = null;
 
+function normalizePhoneNumber(phone) {
+  phone = String(phone || '').trim();
+  // বাংলা অঙ্ককে ইংরেজি অঙ্কে রূপান্তর
+  phone = phone.replace(/[০-৯]/g, function(d){ return '০১২৩৪৫৬৭৮৯'.indexOf(d); });
+  // স্পেস, ড্যাশ, ব্র্যাকেট ইত্যাদি বাদ
+  phone = phone.replace(/[\s\-\(\)]/g, '');
+  // +880 / 880 ফরম্যাটকে 01XXXXXXXXX এ আনা
+  phone = phone.replace(/^\+?880/, '0');
+  // যদি 1XXXXXXXXX থাকে, শুরুতে 0 যোগ
+  if (/^1\d{9}$/.test(phone)) phone = '0' + phone;
+  return phone;
+}
+
+function getPersonPhone(person) {
+  if (!person) return '';
+  return normalizePhoneNumber(person.phone || person.guardianPhone || person.mobile || person.guardianMobile || '');
+}
+
 function incSearchPerson(q) {
   var res = document.getElementById('inc-search-results');
   if (!q || q.length < 1) { res.style.display = 'none'; return; }
@@ -3789,7 +3808,7 @@ function incSearchPerson(q) {
   var all = [];
   DB.students.forEach(function(s) {
     if ((s.name||'').toLowerCase().includes(q) || (s.id||'').toLowerCase().includes(q))
-      all.push({ type:'ছাত্র', id:s.id, name:s.name, father:s.father||'', cls:s.cls||'', phone:s.phone||s.guardianPhone||'', photo:s.photo||'' });
+      all.push({ type:'ছাত্র', id:s.id, name:s.name, father:s.father||'', cls:s.cls||'', phone:getPersonPhone(s), photo:s.photo||'' });
   });
   DB.teachers.forEach(function(t) {
     if ((t.name||'').toLowerCase().includes(q) || (t.id||'').toLowerCase().includes(q))
@@ -3858,8 +3877,9 @@ function saveIncome() {
   renderIncomeTable();
   updateStats();
 
-  // SMS পাঠানো
-  if (incSelectedPerson && incSelectedPerson.phone) {
+  // SMS পাঠানো — নতুন/পুরাতন উভয় ছাত্রের সংরক্ষিত মোবাইল নম্বর থেকে
+  var smsPhone = getPersonPhone(incSelectedPerson);
+  if (smsPhone) {
     var smsMsg = 'দারুস সালিম ইন্টারন্যাশনাল মাদ্রাসা\n'
       + 'নাম: ' + incSelectedPerson.name + '\n'
       + 'শ্রেণি: ' + (incSelectedPerson.cls || '') + '\n'
@@ -3867,7 +3887,9 @@ function saveIncome() {
       + 'পরিশোধ: ' + source + '\n'
       + 'পরিমাণ: ' + amount + ' টাকা\n'
       + 'তারিখ: ' + date;
-    sendSMS(incSelectedPerson.phone, smsMsg);
+    sendSMS(smsPhone, smsMsg);
+  } else if (incSelectedPerson) {
+    showToast('⚠️ এই ছাত্রের মোবাইল নম্বর পাওয়া যায়নি, তাই SMS পাঠানো হয়নি');
   }
 
   incClearPerson();
@@ -5564,10 +5586,10 @@ function saveEdit() {
   } else if (_editType === 'student') {
     var s = DB.students[_editIdx];
     s.name = gv('name'); s.father = gv('father'); s.mother = gv('mother');
-    s.dept = gv('dept'); s.cls = gv('cls'); s.phone = gv('phone');
+    s.dept = gv('dept'); s.cls = gv('cls'); s.phone = normalizePhoneNumber(gv('phone'));
     s.dob = gv('dob'); s.admit = gv('admit'); s.fee = gn('fee');
     s.address = gv('address'); s.guardianName = gv('guardianName');
-    s.guardianPhone = gv('guardianPhone');
+    s.guardianPhone = normalizePhoneNumber(gv('guardianPhone'));
     saveDB(); renderStudentTable(); updateStats(); showToast('✅ ছাত্র তথ্য আপডেট হয়েছে');
 
   } else if (_editType === 'income') {
