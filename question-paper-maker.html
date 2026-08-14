@@ -7,6 +7,15 @@
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link href="https://fonts.googleapis.com/css2?family=Baloo+Da+2:wght@500;600;700;800&family=Hind+Siliguri:wght@400;500;600;700&family=Amiri+Quran&display=swap" rel="stylesheet">
 <style>
+  /* Preferred Bengali font: SutonnyMJ. If it is installed on the device, it is used first. */
+  @font-face{
+    font-family:'SutonnyMJ';
+    src:local('SutonnyMJ'), local('Sutonny MJ');
+    font-weight:400;
+    font-style:normal;
+  }
+</style>
+<style>
   /* SolaimanLipi restricted to the Bengali unicode block only, so any
      English letters in the same text automatically fall back to Times New Roman */
   @font-face{
@@ -533,19 +542,19 @@
     background:#fff;
     background-image:none;
     box-shadow:0 20px 60px rgba(0,0,0,0.5);
-    padding:48px;
+    padding:48px; /* 0.5 inch = 48px at 96dpi */
     color:#000;
     position:relative;
   }
   #paper{
-    font-family:'SolaimanLipi','Times New Roman',Times,serif;
+    font-family:'SutonnyMJ','SolaimanLipi','Times New Roman',Times,serif;
   }
   .p-head{
     text-align:center;
     margin-bottom:6px;
   }
   .p-institute{
-    font-family:'SolaimanLipi','Times New Roman',Times,serif;
+    font-family:'SutonnyMJ','SolaimanLipi','Times New Roman',Times,serif;
     font-weight:700;
     font-size:25px;
     color:#000;
@@ -578,7 +587,7 @@
     margin:0 0 10px;
   }
   .p-noteline{
-    font-size:17px;
+    font-size:20px;
     font-weight:700;
     text-align:center;
     margin:0;
@@ -592,15 +601,15 @@
   }
   .p-qrow{
     display:flex;
-    line-height:1.3;
+    line-height:1.7;
     margin:0;
     justify-content:space-between;
     align-items:flex-start;
     gap:14px;
   }
   .p-qtext{
-    font-size:20px !important;
-    line-height:1.3;
+    font-size:20px;
+    line-height:1.7;
     flex:1;
     white-space:pre-line;
   }
@@ -610,17 +619,17 @@
   }
   .p-mathblock{
     white-space:pre;
-    font-family:'SolaimanLipi','Courier New',monospace;
+    font-family:'SutonnyMJ','SolaimanLipi','Courier New',monospace;
     letter-spacing:1px;
     font-size:20px;
-    line-height:1.3;
+    line-height:1.7;
     display:inline-block;
     margin-top:6px;
     vertical-align:top;
   }
   .p-qmarks{
     font-size:20px;
-    line-height:1.3;
+    line-height:1.7;
     font-weight:400;
     white-space:nowrap;
     min-width:34px;
@@ -670,7 +679,12 @@
       padding:0;
       min-height:auto;
     }
-    .print-copy, .print-copy *{line-height:1.3 !important;}
+    .print-copy{font-family:'SutonnyMJ','SolaimanLipi','Times New Roman',Times,serif;}
+    .print-copy .p-head{line-height:1.2 !important;}
+    .print-copy .p-qrow,
+    .print-copy .p-qtext,
+    .print-copy .p-qmarks,
+    .print-copy .p-mathblock{line-height:1.7 !important;}
     .print-copy .p-noteline{line-height:1.0 !important;}
     .print-copy .p-institute{font-size:25px; font-weight:700;}
     .print-copy .p-exam{font-size:22px; font-weight:700;}
@@ -678,11 +692,10 @@
     .print-copy .p-meta,
     .print-copy .p-qtext,
     .print-copy .p-qmarks,
-    .print-copy .p-mathblock,
+    .print-copy .p-mathblock{font-size:20px; font-weight:400;}
     .print-copy .p-footer,
     .print-copy .p-arabic{font-size:20px; font-weight:400;}
-    .print-copy .p-qtext{font-size:20px !important;}
-    .print-copy .p-noteline{font-size:17px !important; font-weight:700;}
+    .print-copy .p-noteline{font-size:20px; font-weight:700;}
     .print-copy .p-address{display:none;}
   }
 
@@ -733,7 +746,7 @@
   <!-- EDITOR -->
   <div class="editor">
     <p class="editor-title">প্রশ্নপত্র তৈরির অ্যাপ</p>
-    <p class="editor-sub">তথ্য পূরণ করো, ডান পাশে সরাসরি প্রিভিউ দেখতে পাবে। লেখা সাথে সাথেই সেভ হয়ে যাবে।</p>
+    <p class="editor-sub">তথ্য পূরণ করো, ডান পাশে A4 প্রিভিউ দেখতে পাবে। লেখা পরিবর্তন হলেই অটো সেভ হবে। বাংলা ফন্ট SutonnyMJ, প্রশ্নের line spacing 1.7।</p>
 
     <div class="userbar">
       <span class="userbar-email" id="userEmail"></span>
@@ -755,7 +768,7 @@
     </div>
     <div class="field">
       <label>পরীক্ষার নাম</label>
-      <input id="examname" type="text" value="দ্বিতীয় সাময়িক পরীক্ষা - ২০২৬ইং">
+      <input id="examname" type="text" value="দ্বিতীয় সাময়িক পরীক্ষা ২০২৬ইং">
     </div>
     <div class="row2">
       <div class="field">
@@ -779,6 +792,10 @@
     </div>
 
     <div class="section-label">প্রশ্নসমূহ</div>
+    <label class="math-toggle" style="margin-bottom:12px;">
+      <input type="checkbox" id="hideAllSerial">
+      সব প্রশ্নের সিরিয়াল নম্বর মুছে দাও
+    </label>
     <div id="qlist"></div>
     <button class="add-btn" id="addQ">+ নতুন প্রশ্ন যোগ করো</button>
 
@@ -814,7 +831,7 @@
         <span id="pv-fullmarks"></span>
       </div>
       <hr class="p-divider">
-      <p class="p-noteline">(প্রশ্নের ভিতর কোন ধরনের দাগ দেয়া যাবে না)</p>
+      <p class="p-noteline">(প্রশ্নের ভিতর কোন ধরনের দাগ দেওয়া যাবে না)</p>
       <div class="p-questions" id="pv-questions"></div>
       <div class="p-footer" id="pv-footer"></div>
     </div>
@@ -850,6 +867,7 @@ let questions = [
 const qlist = document.getElementById('qlist');
 const totalsText = document.getElementById('totalsText');
 const totalsBox = document.getElementById('totalsBox');
+const hideAllSerial = document.getElementById('hideAllSerial');
 
 // Builds a right-aligned column block (addition/subtraction/multiplication)
 // e.g. for a=245, b=38, op="+":
@@ -996,7 +1014,8 @@ function renderPreview(){
       const row = document.createElement('div');
       row.className = 'p-qrow';
       if(!q.noNumber) qNum++;
-      const numLabel = q.noNumber ? '' : `<span class="qn">${toBangla(qNum)}।</span>`;
+      const suppressSerial = hideAllSerial && hideAllSerial.checked;
+      const numLabel = (q.noNumber || suppressSerial) ? '' : `<span class="qn">${toBangla(qNum)}।</span>`;
       const bodyHtml = q.math
         ? `${numLabel}<div class="p-mathblock">${escapeHtml(q.text)}</div>`
         : `${numLabel}${q.noNumber ? '' : ' '}${escapeHtml(q.text)}`;
@@ -1020,7 +1039,12 @@ document.getElementById('addQ').addEventListener('click', () => {
   updateTotals();
 });
 
-['institute','address','examname','classname','subject','time','fullmarks','arabicline'].forEach(id => {
+document.getElementById('hideAllSerial').addEventListener('change', () => {
+  renderPreview();
+  scheduleAutoSave(150);
+});
+
+['institute','examname','classname','subject','time','fullmarks','arabicline'].forEach(id => {
   document.getElementById(id).addEventListener('input', () => {
     renderPreview();
     updateTotals();
@@ -1057,12 +1081,6 @@ document.getElementById('downloadBtn').addEventListener('click', async () => {
       throw new Error('html2pdf library is not loaded');
     }
 
-    // ফন্ট (SolaimanLipi ইত্যাদি) সম্পূর্ণ লোড হওয়া পর্যন্ত অপেক্ষা করি, নাহলে
-    // ক্যানভাসে লেখা ভুল ফন্টে বা ফাঁকা আসতে পারে।
-    if (document.fonts && document.fonts.ready) {
-      try { await document.fonts.ready; } catch(e) {}
-    }
-
     const clone = paper.cloneNode(true);
     clone.id = 'pdfPaperClone';
     clone.style.width = '210mm';
@@ -1073,16 +1091,22 @@ document.getElementById('downloadBtn').addEventListener('click', async () => {
     clone.style.background = '#fff';
     clone.style.boxShadow = 'none';
     clone.style.color = '#000';
-    clone.style.fontFamily = "'SolaimanLipi','Times New Roman',Times,serif";
+    clone.style.fontFamily = "'SutonnyMJ','SolaimanLipi','Times New Roman',Times,serif";
     clone.querySelector('.p-address')?.remove();
     clone.querySelector('.p-footer')?.remove();
 
-    // PDF-এ প্রতিটি প্রশ্নের line-height 1.3 রাখা হবে; প্রশ্নগুলোর মধ্যকার আলাদা gap থাকবে না।
+    // PDF-এ ১ নং প্রশ্ন থেকে প্রতিটি লাইনের line-height 1.7 রাখা হবে; প্রশ্নগুলোর মধ্যকার আলাদা gap থাকবে না।
     clone.querySelectorAll('*').forEach(el => {
-      el.style.lineHeight = '1.3';
+      el.style.lineHeight = '1.7';
     });
     const qwrap = clone.querySelector('.p-questions');
-    if (qwrap) qwrap.style.gap = '0';
+    if (qwrap) { qwrap.style.gap = '0'; qwrap.style.lineHeight = '1.7'; }
+    clone.querySelector('.p-noteline')?.style.setProperty('line-height','1.0','important');
+    clone.querySelector('.p-institute')?.style.setProperty('font-size','25px','important');
+    clone.querySelector('.p-exam')?.style.setProperty('font-size','22px','important');
+    clone.querySelectorAll('.p-classline,.p-meta,.p-qtext,.p-qmarks,.p-mathblock,.p-footer,.p-arabic').forEach(el => el.style.setProperty('font-size','20px','important'));
+    clone.querySelector('.p-noteline')?.style.setProperty('font-size','20px','important');
+    clone.querySelector('.p-noteline')?.style.setProperty('font-weight','700','important');
 
     document.body.appendChild(clone);
 
@@ -1112,9 +1136,7 @@ document.getElementById('downloadBtn').addEventListener('click', async () => {
   } catch (err) {
     console.error('PDF generation failed:', err);
     document.getElementById('pdfPaperClone')?.remove();
-    // ডাইরেক্ট PDF তৈরি ব্যর্থ হলে ঠিক কী কারণে হয়েছে সেটা দেখাই, যাতে সমস্যা
-    // ধরা যায়। এরপর Chrome-এর নিজস্ব Save as PDF (প্রিন্ট ডায়ালগ) ফলব্যাক হিসেবে খুলবে।
-    alert('সরাসরি PDF তৈরি করা যায়নি (কারণ: ' + (err && err.message ? err.message : err) + ')। এখন প্রিন্ট ডায়ালগ খুলছে — সেখান থেকে "Save as PDF" বেছে নাও।');
+    // HTML-to-PDF ব্যর্থ হলে Chrome-এর নিজস্ব Save as PDF ব্যবহার হবে।
     try {
       buildPrintSheet();
       window.print();
@@ -1174,7 +1196,6 @@ const authStatus = document.getElementById('authStatus');
 const userEmail = document.getElementById('userEmail');
 const papersListEl = document.getElementById('papersList');
 const saveStatus = document.getElementById('saveStatus');
-window.saveStatus = saveStatus;
 const fieldIdsAll = ['institute','examname','classname','subject','time','fullmarks','arabicline'];
 
 document.getElementById('googleSignInBtn').addEventListener('click', async () => {
@@ -1279,7 +1300,6 @@ document.getElementById('signOutBtn').addEventListener('click', () => {
 document.getElementById('newPaperBtn').addEventListener('click', () => {
   currentPaperId = null;
   document.getElementById('institute').value = "দারুস সালিম ইন্টারন্যাশনাল মাদ্রাসা";
-  document.getElementById('address').value = "";
   document.getElementById('examname').value = "";
   document.getElementById('classname').value = "";
   document.getElementById('subject').value = "";
@@ -1287,6 +1307,7 @@ document.getElementById('newPaperBtn').addEventListener('click', () => {
   document.getElementById('fullmarks').value = "";
   document.getElementById('arabicline').value = "";
   questions = [];
+  document.getElementById('hideAllSerial').checked = false;
   renderEditor();
   renderPreview();
   updateTotals();
@@ -1301,7 +1322,7 @@ document.getElementById('saveDraftBtn').addEventListener('click', () => {
 function collectPayload(){
   const fields = {};
   fieldIdsAll.forEach(id => fields[id] = document.getElementById(id).value);
-  return { fields, questions };
+  return { fields, questions, hideAllSerial: !!document.getElementById('hideAllSerial')?.checked };
 }
 
 function applyPayload(payload){
@@ -1312,6 +1333,7 @@ function applyPayload(payload){
     }
   });
   questions = Array.isArray(payload.questions) ? payload.questions : [];
+  if(document.getElementById('hideAllSerial')) document.getElementById('hideAllSerial').checked = !!payload.hideAllSerial;
   renderEditor();
   renderPreview();
   updateTotals();
@@ -1322,7 +1344,6 @@ function paperTitleFor(payload){
   return (f.examname || f.institute || 'প্রশ্নপত্র') + (f.subject ? ' — ' + f.subject : '');
 }
 
-window.saveNow = saveNow;
 async function saveNow(){
   if(!currentUser) return;
   const payload = collectPayload();
