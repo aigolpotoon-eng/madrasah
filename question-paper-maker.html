@@ -592,7 +592,7 @@
   }
   .p-qrow{
     display:flex;
-    line-height:1.0;
+    line-height:1.3;
     margin:0;
     justify-content:space-between;
     align-items:flex-start;
@@ -600,7 +600,7 @@
   }
   .p-qtext{
     font-size:20px;
-    line-height:1.0;
+    line-height:1.3;
     flex:1;
     white-space:pre-line;
   }
@@ -613,14 +613,14 @@
     font-family:'SolaimanLipi','Courier New',monospace;
     letter-spacing:1px;
     font-size:20px;
-    line-height:1.0;
+    line-height:1.3;
     display:inline-block;
     margin-top:6px;
     vertical-align:top;
   }
   .p-qmarks{
     font-size:20px;
-    line-height:1.0;
+    line-height:1.3;
     font-weight:400;
     white-space:nowrap;
     min-width:34px;
@@ -670,7 +670,8 @@
       padding:0;
       min-height:auto;
     }
-    .print-copy, .print-copy *{line-height:1.0 !important;}
+    .print-copy, .print-copy *{line-height:1.3 !important;}
+    .print-copy .p-noteline{line-height:1.0 !important;}
     .print-copy .p-institute{font-size:25px; font-weight:700;}
     .print-copy .p-exam{font-size:22px; font-weight:700;}
     .print-copy .p-classline,
@@ -1069,9 +1070,9 @@ document.getElementById('downloadBtn').addEventListener('click', async () => {
     clone.querySelector('.p-address')?.remove();
     clone.querySelector('.p-footer')?.remove();
 
-    // PDF-এ প্রতিটি প্রশ্নের line-height এবং প্রশ্নগুলোর মধ্যকার gap 1.0 রাখা হবে।
+    // PDF-এ প্রতিটি প্রশ্নের line-height 1.3 রাখা হবে; প্রশ্নগুলোর মধ্যকার আলাদা gap থাকবে না।
     clone.querySelectorAll('*').forEach(el => {
-      el.style.lineHeight = '1.0';
+      el.style.lineHeight = '1.3';
     });
     const qwrap = clone.querySelector('.p-questions');
     if (qwrap) qwrap.style.gap = '0';
