@@ -530,12 +530,11 @@
   #paper{
     width:794px;
     min-height:1123px;
-    background:var(--paper);
-    background-image:
-      radial-gradient(ellipse at top, rgba(122,46,46,0.04), transparent 60%);
+    background:#fff;
+    background-image:none;
     box-shadow:0 20px 60px rgba(0,0,0,0.5);
-    padding:56px 64px 70px;
-    color:var(--ink);
+    padding:48px;
+    color:#000;
     position:relative;
   }
   #paper{
@@ -548,16 +547,12 @@
   .p-institute{
     font-family:'SolaimanLipi','Times New Roman',Times,serif;
     font-weight:700;
-    font-size:30px;
+    font-size:25px;
     color:#000;
     margin:0;
     letter-spacing:0.3px;
   }
-  .p-address{
-    font-size:22px;
-    margin:4px 0 0;
-    color:#000;
-  }
+  .p-address{display:none;}
   .p-exam{
     font-size:22px;
     font-weight:700;
@@ -575,7 +570,7 @@
     align-items:baseline;
     margin:22px 0 6px;
     font-size:20px;
-    font-weight:700;
+    font-weight:400;
   }
   .p-divider{
     border:none;
@@ -583,7 +578,7 @@
     margin:0 0 10px;
   }
   .p-noteline{
-    font-size:18px;
+    font-size:20px;
     font-weight:700;
     text-align:center;
     margin:0 0 22px;
@@ -622,7 +617,7 @@
   }
   .p-qmarks{
     font-size:20px;
-    font-weight:700;
+    font-weight:400;
     white-space:nowrap;
     min-width:34px;
     text-align:right;
@@ -649,7 +644,7 @@
   #printSheet{ display:none; }
 
   @page{
-    size: A4 landscape;
+    size: A4 portrait;
     margin: 0.5in;
   }
 
@@ -661,35 +656,27 @@
     .app{display:block;}
 
     #printSheet{
-      display:flex;
-      flex-direction:row;
-      align-items:flex-start;
+      display:block;
       width:100%;
-      gap:1in;
     }
     .print-copy{
-      flex:1 1 0;
-      min-width:0;
+      width:100%;
       background:#fff;
       box-shadow:none;
       padding:0;
       min-height:auto;
     }
-    .print-copy, .print-copy *{
-      line-height:1.0 !important;
-    }
-    .print-copy .p-institute{ font-size:20pt; font-weight:700; }
-    .print-copy .p-exam{ font-size:18pt; font-weight:700; }
-    .print-copy .p-address,
+    .print-copy .p-institute{font-size:25px; font-weight:700;}
+    .print-copy .p-exam{font-size:22px; font-weight:700;}
     .print-copy .p-classline,
     .print-copy .p-meta,
     .print-copy .p-qtext,
     .print-copy .p-qmarks,
     .print-copy .p-mathblock,
     .print-copy .p-footer,
-    .print-copy .p-arabic{ font-size:16pt; font-weight:normal; }
-    .print-copy .p-meta{ font-weight:700; }
-    .print-copy .p-noteline{ font-size:14pt; font-weight:700; }
+    .print-copy .p-arabic{font-size:20px; font-weight:400;}
+    .print-copy .p-noteline{font-size:20px; font-weight:700;}
+    .print-copy .p-address{display:none;}
   }
 
   @media (max-width: 900px){
@@ -760,21 +747,17 @@
       <input id="institute" type="text" value="দারুস সালিম ইন্টারন্যাশনাল মাদ্রাসা">
     </div>
     <div class="field">
-      <label>ঠিকানা</label>
-      <input id="address" type="text" value="বরিশাল সদর, বরিশাল">
-    </div>
-    <div class="field">
       <label>পরীক্ষার নাম</label>
-      <input id="examname" type="text" value="দ্বিতীয় সাময়িক পরীক্ষা - ২০২৬ইং">
+      <input id="examname" type="text" value="দ্বিতীয় সাময়িক পরীক্ষা - ২০২৬ইং">
     </div>
     <div class="row2">
       <div class="field">
         <label>শ্রেণি</label>
-        <input id="classname" type="text" value="তৃতীয়">
+        <input id="classname" type="text" value="প্রথম">
       </div>
       <div class="field">
         <label>বিষয়</label>
-        <input id="subject" type="text" value="আরবী ১ম">
+        <input id="subject" type="text" value="আরবি ২য়">
       </div>
     </div>
     <div class="row2">
@@ -816,7 +799,6 @@
     <div id="paper">
       <div class="p-head">
         <p class="p-institute" id="pv-institute"></p>
-        <p class="p-address" id="pv-address"></p>
         <p class="p-exam" id="pv-exam"></p>
         <p class="p-classline" id="pv-classline"></p>
       </div>
@@ -825,7 +807,7 @@
         <span id="pv-fullmarks"></span>
       </div>
       <hr class="p-divider">
-      <p class="p-noteline">(প্রশ্নের ভিতরে কোন ধরনের দাগ দেওয়া যাবে না)</p>
+      <p class="p-noteline">(প্রশ্নের ভিতর কোন ধরনের দাগ দেয়া যাবে না)</p>
       <div class="p-questions" id="pv-questions"></div>
       <div class="p-footer" id="pv-footer"></div>
     </div>
@@ -833,7 +815,7 @@
 
 </div>
 
-<!-- PRINT-ONLY: filled with two copies of #paper right before printing -->
+<!-- PRINT-ONLY: one A4 portrait copy of #paper right before printing -->
 <div id="printSheet"></div>
 
 <script>
@@ -989,10 +971,9 @@ function updateTotals(){
 
 function renderPreview(){
   document.getElementById('pv-institute').textContent = document.getElementById('institute').value;
-  document.getElementById('pv-address').textContent = document.getElementById('address').value;
   document.getElementById('pv-exam').textContent = document.getElementById('examname').value;
   document.getElementById('pv-classline').textContent =
-    'শ্রেণি: ' + document.getElementById('classname').value + ' , বিষয়: ' + document.getElementById('subject').value;
+    'শ্রেণি: ' + document.getElementById('classname').value + ' , বিষয় : ' + document.getElementById('subject').value;
   document.getElementById('pv-time').textContent = 'সময়: ' + document.getElementById('time').value;
   document.getElementById('pv-fullmarks').textContent = 'পূর্ণমান: ' + document.getElementById('fullmarks').value;
 
@@ -1045,12 +1026,10 @@ function stripIds(el){
 function buildPrintSheet(){
   const sheet = document.getElementById('printSheet');
   sheet.innerHTML = '';
-  for(let i = 0; i < 2; i++){
-    const copy = document.getElementById('paper').cloneNode(true);
-    stripIds(copy);
-    copy.classList.add('print-copy');
-    sheet.appendChild(copy);
-  }
+  const copy = document.getElementById('paper').cloneNode(true);
+  stripIds(copy);
+  copy.classList.add('print-copy');
+  sheet.appendChild(copy);
 }
 window.addEventListener('beforeprint', buildPrintSheet);
 
@@ -1105,7 +1084,7 @@ const authStatus = document.getElementById('authStatus');
 const userEmail = document.getElementById('userEmail');
 const papersListEl = document.getElementById('papersList');
 const saveStatus = document.getElementById('saveStatus');
-const fieldIdsAll = ['institute','address','examname','classname','subject','time','fullmarks','arabicline'];
+const fieldIdsAll = ['institute','examname','classname','subject','time','fullmarks','arabicline'];
 
 document.getElementById('googleSignInBtn').addEventListener('click', async () => {
   authStatus.textContent = 'সাইন ইন হচ্ছে...';
