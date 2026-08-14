@@ -581,16 +581,19 @@
     font-size:20px;
     font-weight:700;
     text-align:center;
-    margin:0 0 22px;
+    margin:0;
     color:#000;
+    line-height:1.0;
   }
   .p-questions{
     display:flex;
     flex-direction:column;
-    gap:24px;
+    gap:0;
   }
   .p-qrow{
     display:flex;
+    line-height:1.0;
+    margin:0;
     justify-content:space-between;
     align-items:flex-start;
     gap:14px;
@@ -617,6 +620,7 @@
   }
   .p-qmarks{
     font-size:20px;
+    line-height:1.0;
     font-weight:400;
     white-space:nowrap;
     min-width:34px;
@@ -1043,40 +1047,70 @@ document.getElementById('downloadBtn').addEventListener('click', async () => {
   btn.disabled = true;
   btn.textContent = 'PDF তৈরি হচ্ছে...';
 
+  // আগে সর্বশেষ লেখা Firestore-এ সেভ করে নিই।
+  try { await saveNow(); } catch(e) {}
+
   try {
-    // Build a clean A4-sized clone so the PDF contains exactly one question paper.
+    if (typeof html2pdf !== 'function') {
+      throw new Error('html2pdf library is not loaded');
+    }
+
     const clone = paper.cloneNode(true);
     clone.id = 'pdfPaperClone';
     clone.style.width = '210mm';
     clone.style.minHeight = '297mm';
     clone.style.boxSizing = 'border-box';
-    clone.style.padding = '18mm';
+    clone.style.padding = '12.7mm'; /* 0.5 inch */
     clone.style.margin = '0';
     clone.style.background = '#fff';
     clone.style.boxShadow = 'none';
     clone.style.color = '#000';
+    clone.style.fontFamily = "'SolaimanLipi','Times New Roman',Times,serif";
     clone.querySelector('.p-address')?.remove();
+    clone.querySelector('.p-footer')?.remove();
+
+    // PDF-এ প্রতিটি প্রশ্নের line-height এবং প্রশ্নগুলোর মধ্যকার gap 1.0 রাখা হবে।
+    clone.querySelectorAll('*').forEach(el => {
+      el.style.lineHeight = '1.0';
+    });
+    const qwrap = clone.querySelector('.p-questions');
+    if (qwrap) qwrap.style.gap = '0';
+
     document.body.appendChild(clone);
 
     const exam = document.getElementById('examname').value.trim() || 'প্রশ্নপত্র';
     const subject = document.getElementById('subject').value.trim();
-    const safeName = (exam + (subject ? '_' + subject : '')).replace(/[\\/:*?"<>|]+/g, '_').trim();
+    const safeName = (exam + (subject ? '_' + subject : ''))
+      .replace(/[\\/:*?"<>|]+/g, '_').trim() || 'প্রশ্নপত্র';
 
     await html2pdf().set({
       margin: 0,
       filename: safeName + '.pdf',
       image: { type: 'jpeg', quality: 0.98 },
-      html2canvas: { scale: 2, useCORS: true, backgroundColor: '#ffffff', logging: false },
-      jsPDF: { unit: 'mm', format: 'a4', orientation: 'portrait' },
-      pagebreak: { mode: ['avoid-all', 'css', 'legacy'] }
+      html2canvas: {
+        scale: 2,
+        useCORS: true,
+        allowTaint: false,
+        backgroundColor: '#ffffff',
+        logging: false,
+        windowWidth: 794
+      },
+      jsPDF: { unit: 'mm', format: 'a4', orientation: 'portrait', compress: true },
+      pagebreak: { mode: ['css', 'legacy'] }
     }).from(clone).save();
 
     clone.remove();
+    saveStatus.textContent = 'PDF সেভ হয়েছে ✓';
   } catch (err) {
     console.error('PDF generation failed:', err);
     document.getElementById('pdfPaperClone')?.remove();
-    // Fallback to the browser's native print-to-PDF dialog.
-    try { window.print(); } catch(e) { alert('PDF তৈরি করা যায়নি। Chrome ব্রাউজার দিয়ে আবার চেষ্টা করুন।'); }
+    // HTML-to-PDF ব্যর্থ হলে Chrome-এর নিজস্ব Save as PDF ব্যবহার হবে।
+    try {
+      buildPrintSheet();
+      window.print();
+    } catch(e) {
+      alert('PDF তৈরি করা যায়নি। Chrome ব্রাউজারে ফাইলটি খুলে আবার চেষ্টা করুন।');
+    }
   } finally {
     btn.disabled = false;
     btn.textContent = originalText;
@@ -1308,11 +1342,13 @@ async function saveNow(){
   setTimeout(() => { if(saveStatus.textContent === 'সেভ হয়েছে ✓') saveStatus.textContent = ''; }, 2500);
 }
 
-function scheduleAutoSave(){
+function scheduleAutoSave(delay = 700){
   if(!currentUser) return;
-  saveStatus.textContent = 'টাইপ করছো...';
+  saveStatus.textContent = 'অটো সেভ হচ্ছে...';
   clearTimeout(saveTimer);
-  saveTimer = setTimeout(saveNow, 1200);
+  saveTimer = setTimeout(async () => {
+    await saveNow();
+  }, delay);
 }
 
 function highlightActivePaper(){
@@ -1388,11 +1424,21 @@ onAuthStateChanged(auth, user => {
   }
 });
 
-document.getElementById('qlist').addEventListener('input', scheduleAutoSave);
-document.getElementById('qlist').addEventListener('click', scheduleAutoSave);
-document.getElementById('addQ').addEventListener('click', scheduleAutoSave);
+// প্রশ্ন লিখলে/পরিবর্তন করলে অটো সেভ।
+document.getElementById('qlist').addEventListener('input', () => scheduleAutoSave(700));
+
+// প্রশ্ন মুছে ফেললে দ্রুত অটো সেভ।
+document.getElementById('qlist').addEventListener('click', e => {
+  if(e.target.closest('.del-btn')) scheduleAutoSave(150);
+  else scheduleAutoSave(700);
+});
+
+// নতুন প্রশ্ন যোগ করলেও দ্রুত অটো সেভ।
+document.getElementById('addQ').addEventListener('click', () => scheduleAutoSave(150));
+
+// উপরের সব তথ্য পরিবর্তন করলেও অটো সেভ।
 fieldIdsAll.forEach(id => {
-  document.getElementById(id).addEventListener('input', scheduleAutoSave);
+  document.getElementById(id).addEventListener('input', () => scheduleAutoSave(700));
 });
 </script>
 </body>
