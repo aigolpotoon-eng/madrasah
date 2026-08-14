@@ -597,7 +597,7 @@
   }
   .p-qtext{
     font-size:20px;
-    line-height:1.7;
+    line-height:1.0;
     flex:1;
     white-space:pre-line;
   }
@@ -610,7 +610,7 @@
     font-family:'SolaimanLipi','Courier New',monospace;
     letter-spacing:1px;
     font-size:20px;
-    line-height:1.5;
+    line-height:1.0;
     display:inline-block;
     margin-top:6px;
     vertical-align:top;
@@ -666,6 +666,7 @@
       padding:0;
       min-height:auto;
     }
+    .print-copy, .print-copy *{line-height:1.0 !important;}
     .print-copy .p-institute{font-size:25px; font-weight:700;}
     .print-copy .p-exam{font-size:22px; font-weight:700;}
     .print-copy .p-classline,
@@ -817,6 +818,8 @@
 
 <!-- PRINT-ONLY: one A4 portrait copy of #paper right before printing -->
 <div id="printSheet"></div>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
 
 <script>
 const banglaDigits = ['০','১','২','৩','৪','৫','৬','৭','৮','৯'];
@@ -1033,8 +1036,51 @@ function buildPrintSheet(){
 }
 window.addEventListener('beforeprint', buildPrintSheet);
 
-document.getElementById('downloadBtn').addEventListener('click', () => {
-  window.print();
+document.getElementById('downloadBtn').addEventListener('click', async () => {
+  const btn = document.getElementById('downloadBtn');
+  const paper = document.getElementById('paper');
+  const originalText = btn.textContent;
+  btn.disabled = true;
+  btn.textContent = 'PDF তৈরি হচ্ছে...';
+
+  try {
+    // Build a clean A4-sized clone so the PDF contains exactly one question paper.
+    const clone = paper.cloneNode(true);
+    clone.id = 'pdfPaperClone';
+    clone.style.width = '210mm';
+    clone.style.minHeight = '297mm';
+    clone.style.boxSizing = 'border-box';
+    clone.style.padding = '18mm';
+    clone.style.margin = '0';
+    clone.style.background = '#fff';
+    clone.style.boxShadow = 'none';
+    clone.style.color = '#000';
+    clone.querySelector('.p-address')?.remove();
+    document.body.appendChild(clone);
+
+    const exam = document.getElementById('examname').value.trim() || 'প্রশ্নপত্র';
+    const subject = document.getElementById('subject').value.trim();
+    const safeName = (exam + (subject ? '_' + subject : '')).replace(/[\\/:*?"<>|]+/g, '_').trim();
+
+    await html2pdf().set({
+      margin: 0,
+      filename: safeName + '.pdf',
+      image: { type: 'jpeg', quality: 0.98 },
+      html2canvas: { scale: 2, useCORS: true, backgroundColor: '#ffffff', logging: false },
+      jsPDF: { unit: 'mm', format: 'a4', orientation: 'portrait' },
+      pagebreak: { mode: ['avoid-all', 'css', 'legacy'] }
+    }).from(clone).save();
+
+    clone.remove();
+  } catch (err) {
+    console.error('PDF generation failed:', err);
+    document.getElementById('pdfPaperClone')?.remove();
+    // Fallback to the browser's native print-to-PDF dialog.
+    try { window.print(); } catch(e) { alert('PDF তৈরি করা যায়নি। Chrome ব্রাউজার দিয়ে আবার চেষ্টা করুন।'); }
+  } finally {
+    btn.disabled = false;
+    btn.textContent = originalText;
+  }
 });
 
 renderEditor();
