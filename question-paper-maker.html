@@ -578,7 +578,7 @@
     margin:0 0 10px;
   }
   .p-noteline{
-    font-size:20px;
+    font-size:17px;
     font-weight:700;
     text-align:center;
     margin:0;
@@ -681,7 +681,7 @@
     .print-copy .p-mathblock,
     .print-copy .p-footer,
     .print-copy .p-arabic{font-size:20px; font-weight:400;}
-    .print-copy .p-noteline{font-size:20px; font-weight:700;}
+    .print-copy .p-noteline{font-size:17px; font-weight:700;}
     .print-copy .p-address{display:none;}
   }
 
@@ -1165,6 +1165,7 @@ const authStatus = document.getElementById('authStatus');
 const userEmail = document.getElementById('userEmail');
 const papersListEl = document.getElementById('papersList');
 const saveStatus = document.getElementById('saveStatus');
+window.saveStatus = saveStatus;
 const fieldIdsAll = ['institute','examname','classname','subject','time','fullmarks','arabicline'];
 
 document.getElementById('googleSignInBtn').addEventListener('click', async () => {
@@ -1312,6 +1313,7 @@ function paperTitleFor(payload){
   return (f.examname || f.institute || 'প্রশ্নপত্র') + (f.subject ? ' — ' + f.subject : '');
 }
 
+window.saveNow = saveNow;
 async function saveNow(){
   if(!currentUser) return;
   const payload = collectPayload();
