@@ -599,7 +599,7 @@
     gap:14px;
   }
   .p-qtext{
-    font-size:20px;
+    font-size:20px !important;
     line-height:1.3;
     flex:1;
     white-space:pre-line;
@@ -681,7 +681,8 @@
     .print-copy .p-mathblock,
     .print-copy .p-footer,
     .print-copy .p-arabic{font-size:20px; font-weight:400;}
-    .print-copy .p-noteline{font-size:17px; font-weight:700;}
+    .print-copy .p-qtext{font-size:20px !important;}
+    .print-copy .p-noteline{font-size:17px !important; font-weight:700;}
     .print-copy .p-address{display:none;}
   }
 
@@ -1056,6 +1057,12 @@ document.getElementById('downloadBtn').addEventListener('click', async () => {
       throw new Error('html2pdf library is not loaded');
     }
 
+    // ফন্ট (SolaimanLipi ইত্যাদি) সম্পূর্ণ লোড হওয়া পর্যন্ত অপেক্ষা করি, নাহলে
+    // ক্যানভাসে লেখা ভুল ফন্টে বা ফাঁকা আসতে পারে।
+    if (document.fonts && document.fonts.ready) {
+      try { await document.fonts.ready; } catch(e) {}
+    }
+
     const clone = paper.cloneNode(true);
     clone.id = 'pdfPaperClone';
     clone.style.width = '210mm';
@@ -1105,7 +1112,9 @@ document.getElementById('downloadBtn').addEventListener('click', async () => {
   } catch (err) {
     console.error('PDF generation failed:', err);
     document.getElementById('pdfPaperClone')?.remove();
-    // HTML-to-PDF ব্যর্থ হলে Chrome-এর নিজস্ব Save as PDF ব্যবহার হবে।
+    // ডাইরেক্ট PDF তৈরি ব্যর্থ হলে ঠিক কী কারণে হয়েছে সেটা দেখাই, যাতে সমস্যা
+    // ধরা যায়। এরপর Chrome-এর নিজস্ব Save as PDF (প্রিন্ট ডায়ালগ) ফলব্যাক হিসেবে খুলবে।
+    alert('সরাসরি PDF তৈরি করা যায়নি (কারণ: ' + (err && err.message ? err.message : err) + ')। এখন প্রিন্ট ডায়ালগ খুলছে — সেখান থেকে "Save as PDF" বেছে নাও।');
     try {
       buildPrintSheet();
       window.print();
