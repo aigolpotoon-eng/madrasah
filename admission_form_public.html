@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>ভর্তি আবেদন ফরম — দারুস সালিম ইন্টারন্যাশনাল মাদ্রাসা</title>
+<title>ভর্তি আবেদন ফরম — হিফজুল কুরআন রশিদিয়া হোসাইনিয়া নূরানী মাদ্রাসা</title>
 <link href="https://fonts.googleapis.com/css2?family=Hind+Siliguri:wght@300;400;500;600;700&family=Noto+Serif+Bengali:wght@600;700&display=swap" rel="stylesheet">
 
 <!-- Firebase SDK - Realtime Database -->
@@ -31,140 +31,225 @@
 
 <style>
   :root {
-    --green-dark:#0a3d2e; --green-mid:#1a6b4a; --green-light:#2d9e6e;
-    --gold:#c9a84c; --gold-light:#e8c97a;
-    --cream:#fdf8ef; --cream-dark:#f0e6d2;
-    --white:#ffffff; --text-dark:#2a2a2a;
+    --sapphire-dark:#0f2544; --sapphire-mid:#173a63; --teal-mid:#0d7a72; --teal-light:#14998e;
+    --gold:#c98a2c; --gold-light:#f3cf8a;
+    --pearl:#f4f7fb; --pearl-border:#dce5f0;
+    --white:#ffffff; --text-dark:#142235; --text-muted:#55657a;
     --bn-font:'Hind Siliguri', sans-serif;
-    --bn-serif:'Noto Serif Bengali', serif;
-    --shadow:0 4px 20px rgba(10,61,46,0.08);
+    --bn-serif:'Noto Serif Bengali', 'Hind Siliguri', serif;
+    --shadow:0 10px 30px rgba(15,37,68,0.08);
+    --shadow-hover:0 14px 34px rgba(15,37,68,0.12);
   }
   * { margin:0; padding:0; box-sizing:border-box; }
   body {
     font-family: var(--bn-font);
-    background: linear-gradient(180deg, var(--cream) 0%, #f5f0e0 100%);
+    background:
+      radial-gradient(ellipse at 15% 10%, rgba(13,122,114,0.08) 0%, transparent 55%),
+      radial-gradient(ellipse at 85% 90%, rgba(201,138,44,0.07) 0%, transparent 55%),
+      linear-gradient(180deg, #f4f7fb 0%, #ebf1f8 100%);
     color: var(--text-dark);
-    padding-bottom: 60px;
+    min-height: 100vh;
+    padding-bottom: 64px;
+    -webkit-font-smoothing: antialiased;
   }
   .header {
-    background: linear-gradient(135deg, #0d2137 0%, #1a3a5c 40%, #1a6b4a 100%);
-    padding: 28px 16px 24px;
+    background: linear-gradient(135deg, #0b1c36 0%, #0f2544 42%, #173a63 74%, #0d7a72 100%);
+    padding: 0 0 38px;
     text-align: center;
     color: white;
+    position: relative;
+    overflow: hidden;
+    box-shadow: 0 10px 32px rgba(15,37,68,0.22);
   }
-  .header .mosque { font-size: 34px; margin-bottom: 6px; }
-  .header .madrasa-name { font-family: var(--bn-serif); font-size: 21px; font-weight: 700; }
-  .header .madrasa-sub { font-size: 13px; opacity: 0.85; margin-top: 4px; }
-  .header .form-title { margin-top: 14px; display:inline-block; background: rgba(255,255,255,0.12); padding: 8px 20px; border-radius: 30px; font-size: 15px; font-weight:600; border:1px solid rgba(255,255,255,0.3); }
+  .header::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background:
+      radial-gradient(ellipse at 20% 45%, rgba(201,138,44,0.2) 0%, transparent 55%),
+      radial-gradient(ellipse at 82% 55%, rgba(20,153,142,0.24) 0%, transparent 55%);
+    pointer-events: none;
+  }
+  .header::after {
+    content: '';
+    position: absolute;
+    inset: -40px;
+    background-image: url("data:image/svg+xml,%3Csvg width='80' height='80' viewBox='0 0 80 80' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='none' fill-rule='evenodd'%3E%3Cg fill='%23ffffff' fill-opacity='0.03'%3E%3Cpath d='M40 40 L20 20 L40 0 L60 20 Z'/%3E%3Cpath d='M40 40 L60 60 L40 80 L20 60 Z'/%3E%3C/g%3E%3C/g%3E%3C/svg%3E");
+    pointer-events: none;
+  }
+  .header-top-band {
+    height: 5px;
+    width: 100%;
+    background: linear-gradient(90deg, #c98a2c, #f3cf8a, #c98a2c);
+  }
+  .header-inner {
+    position: relative;
+    z-index: 1;
+    padding: 24px 16px 6px;
+    max-width: 780px;
+    margin: 0 auto;
+  }
+  .mosque-badge {
+    width: 68px;
+    height: 68px;
+    margin: 0 auto 12px;
+    border-radius: 20px;
+    background: rgba(255,255,255,0.1);
+    border: 1.5px solid rgba(243,207,138,0.55);
+    box-shadow: 0 8px 24px rgba(0,0,0,0.25);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    backdrop-filter: blur(8px);
+  }
+  .header .madrasa-name {
+    font-family: var(--bn-serif);
+    font-size: clamp(19px, 3.8vw, 25px);
+    font-weight: 700;
+    line-height: 1.4;
+    letter-spacing: -0.01em;
+    text-shadow: 0 2px 10px rgba(0,0,0,0.25);
+  }
+  .header .madrasa-sub { font-size: 13px; color: rgba(255,255,255,0.82); margin-top: 4px; }
+  .header .form-title {
+    margin-top: 14px;
+    display: inline-block;
+    background: rgba(255,255,255,0.12);
+    backdrop-filter: blur(8px);
+    padding: 8px 22px;
+    border-radius: 30px;
+    font-size: 14.5px;
+    font-weight: 600;
+    border: 1px solid rgba(243,207,138,0.45);
+    box-shadow: 0 4px 14px rgba(0,0,0,0.14);
+  }
 
-  .wrap { max-width: 760px; margin: -18px auto 0; padding: 0 14px; }
+  .wrap { max-width: 780px; margin: -22px auto 0; padding: 0 14px; position: relative; z-index: 2; }
 
   .form-card {
     background: var(--white);
-    border-radius: 16px;
-    padding: 22px;
+    border-radius: 20px;
+    padding: 26px;
     box-shadow: var(--shadow);
-    border: 1px solid var(--cream-dark);
+    border: 1px solid var(--pearl-border);
     margin-bottom: 18px;
   }
 
-  .student-type-toggle { display:flex; gap:12px; margin-bottom:18px; flex-wrap:wrap; }
+  .student-type-toggle { display:flex; gap:12px; margin-bottom:20px; flex-wrap:wrap; }
   .type-btn {
     flex:1; min-width:150px; padding:14px 20px; border-radius:14px;
-    border:2px solid var(--cream-dark); background:var(--white); color:#888;
+    border:1.5px solid var(--pearl-border); background:#f8fafd; color:var(--text-muted);
     font-family:var(--bn-serif); font-size:15px; font-weight:600; cursor:pointer;
     display:flex; align-items:center; justify-content:center; gap:8px;
-    transition:all 0.25s ease; box-shadow: var(--shadow);
+    transition:all 0.25s ease;
   }
   .type-btn span { font-size:20px; }
-  .type-btn:hover { border-color: var(--green-light); color: var(--green-mid); }
+  .type-btn:hover { border-color: var(--teal-light); color: var(--teal-mid); background: #ffffff; }
   .type-btn.active {
-    border-color: var(--green-mid);
-    background: linear-gradient(135deg, var(--green-mid), var(--green-dark));
+    border-color: var(--teal-mid);
+    background: linear-gradient(135deg, var(--sapphire-dark), var(--teal-mid));
     color: white;
-    box-shadow: 0 4px 16px rgba(26,107,74,0.3);
+    box-shadow: 0 8px 20px rgba(13,122,114,0.26);
   }
 
   .form-section-title {
-    font-family: var(--bn-serif); font-size: 14px; font-weight: 700; color: var(--green-dark);
-    padding: 8px 12px; background: linear-gradient(90deg, #e8f4ed, transparent);
-    border-left: 4px solid var(--green-mid); border-radius: 0 8px 8px 0; margin: 18px 0 14px;
+    font-family: var(--bn-serif); font-size: 14.5px; font-weight: 700; color: var(--sapphire-dark);
+    padding: 9px 14px; background: linear-gradient(90deg, #e8f3f8, rgba(232,243,248,0));
+    border-left: 4px solid var(--teal-mid); border-radius: 0 10px 10px 0; margin: 22px 0 16px;
   }
   .form-section-title:first-of-type { margin-top: 0; }
 
   .form-grid { display:grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap:16px; }
   .form-group { display:flex; flex-direction:column; gap:6px; }
-  .form-group label { font-size:13px; font-weight:600; color: var(--green-dark); }
+  .form-group label { font-size:13px; font-weight:600; color: var(--sapphire-mid); }
   .form-group input, .form-group select, .form-group textarea {
-    padding:10px 14px; border:1.5px solid #dde8e3; border-radius:10px;
+    padding:11px 14px; border:1.5px solid #d5e0ec; border-radius:12px;
     font-family: var(--bn-font); font-size:14px; color: var(--text-dark);
-    background:#f9fcfa; transition:border-color 0.2s, box-shadow 0.2s; outline:none;
+    background:#f8fafd; transition:border-color 0.2s, box-shadow 0.2s, background 0.2s; outline:none;
   }
   .form-group input:focus, .form-group select:focus, .form-group textarea:focus {
-    border-color: var(--green-light); box-shadow: 0 0 0 3px rgba(45,158,110,0.1); background: var(--white);
+    border-color: var(--teal-mid); box-shadow: 0 0 0 3.5px rgba(13,122,114,0.12); background: var(--white);
   }
   .form-full { grid-column: 1 / -1; }
 
-  .photo-upload-wrap { display:flex; flex-direction:column; align-items:center; gap:10px; margin-bottom:18px; }
+  .photo-upload-wrap { display:flex; flex-direction:column; align-items:center; gap:10px; margin-bottom:20px; }
   .photo-frame {
-    width:113px; height:142px; border:2px dashed var(--gold); border-radius:10px;
-    background: linear-gradient(135deg, #fffbf0, #fdf6e3);
+    width:116px; height:146px; border:2px dashed var(--gold); border-radius:14px;
+    background: linear-gradient(135deg, #fffcf5, #fdf6e6);
     display:flex; flex-direction:column; align-items:center; justify-content:center;
-    cursor:pointer; overflow:hidden; position:relative; transition:border-color 0.2s, box-shadow 0.2s;
+    cursor:pointer; overflow:hidden; position:relative; transition:border-color 0.2s, box-shadow 0.2s, transform 0.2s;
   }
-  .photo-frame:hover { border-color: var(--green-mid); box-shadow: 0 0 0 3px rgba(45,158,110,0.1); }
+  .photo-frame:hover { border-color: var(--teal-mid); box-shadow: 0 0 0 4px rgba(13,122,114,0.12); transform: translateY(-1px); }
   .photo-frame img { width:100%; height:100%; object-fit:cover; display:none; }
-  .photo-frame .photo-placeholder { text-align:center; color:#aaa; font-size:12px; padding:8px; }
+  .photo-frame .photo-placeholder { text-align:center; color:#7b8ba1; font-size:12px; padding:8px; }
   .photo-frame .photo-placeholder span { font-size:28px; display:block; margin-bottom:6px; }
-  .photo-size-label { font-size:11px; color:#999; font-weight:500; text-align:center; }
-  .btn-photo-clear { font-size:11px; padding:4px 12px; border-radius:8px; border:1px solid #dde8e3; background:#fff; color:#c0392b; cursor:pointer; display:none; transition:all 0.2s; }
+  .photo-size-label { font-size:11px; color:#7b8ba1; font-weight:500; text-align:center; }
+  .btn-photo-clear { font-size:11.5px; padding:5px 14px; border-radius:8px; border:1px solid #f5c6c2; background:#fff; color:#c0392b; cursor:pointer; display:none; transition:all 0.2s; font-weight:600; }
   .btn-photo-clear:hover { background:#fde8e8; }
 
   .btn-primary {
-    width:100%; margin-top:22px; padding:15px 32px;
-    background: linear-gradient(135deg, var(--green-mid), var(--green-dark));
-    color: var(--white); border:none; border-radius:12px;
-    font-family: var(--bn-serif); font-size:16px; font-weight:700; cursor:pointer;
-    box-shadow: 0 4px 14px rgba(26,107,74,0.35); transition: all 0.2s;
+    width:100%; margin-top:24px; padding:15px 32px;
+    background: linear-gradient(135deg, var(--sapphire-dark), var(--teal-mid));
+    color: var(--white); border:none; border-radius:14px;
+    font-family:var(--bn-serif); font-size:16px; font-weight:700; cursor:pointer;
+    box-shadow: 0 8px 22px rgba(15,37,68,0.26); transition: all 0.22s;
   }
-  .btn-primary:hover { transform: translateY(-2px); box-shadow: 0 6px 20px rgba(26,107,74,0.4); }
+  .btn-primary:hover { transform: translateY(-2px); box-shadow: 0 10px 26px rgba(13,122,114,0.34); }
   .btn-primary:disabled { opacity:0.6; cursor:not-allowed; transform:none; }
 
   .note-box {
-    background:#fff3e0; border:1px solid #e8c97a; border-radius:10px;
-    padding:12px 14px; font-size:12.5px; color:#5d3a00; margin-bottom:18px; line-height:1.6;
+    background: linear-gradient(135deg, #fffaf0, #fef4e0);
+    border:1px solid #f0d290; border-radius:12px;
+    padding:13px 16px; font-size:13px; color:#6b460a; margin-bottom:20px; line-height:1.65;
   }
 
   .toast {
     position:fixed; bottom:24px; left:50%; transform:translateX(-50%);
-    background: var(--green-dark); color:white; padding:12px 22px; border-radius:30px;
-    font-size:14px; box-shadow:0 6px 20px rgba(0,0,0,0.25); z-index:999;
+    background: var(--sapphire-dark); color:white; padding:12px 24px; border-radius:30px;
+    font-size:14px; box-shadow:0 10px 28px rgba(15,37,68,0.32); z-index:999;
+    border-left: 4px solid var(--gold);
     opacity:0; pointer-events:none; transition: opacity 0.3s, bottom 0.3s;
   }
   .toast.show { opacity:1; bottom:34px; }
 
   /* SUCCESS SCREEN */
   .success-screen {
-    display:none; text-align:center; padding: 40px 20px;
+    display:none; text-align:center; padding: 44px 20px;
   }
   .success-screen .icon { font-size:56px; margin-bottom:14px; }
-  .success-screen h2 { font-family: var(--bn-serif); color: var(--green-dark); margin-bottom:10px; }
-  .success-screen p { color:#555; font-size:14.5px; line-height:1.7; margin-bottom:6px; }
-  .success-screen .ref { display:inline-block; margin-top:14px; padding:10px 20px; background:linear-gradient(90deg,#fffbf0,#fdf6e3); border:1.5px solid var(--gold); border-radius:10px; font-family:var(--bn-serif); font-weight:700; color:var(--green-dark); letter-spacing:1px; }
+  .success-screen h2 { font-family: var(--bn-serif); color: var(--sapphire-dark); margin-bottom:10px; }
+  .success-screen p { color:var(--text-muted); font-size:14.5px; line-height:1.7; margin-bottom:6px; }
+  .success-screen .ref { display:inline-block; margin-top:16px; padding:11px 22px; background:linear-gradient(90deg,#fffcf5,#fdf4e1); border:1.5px solid var(--gold); border-radius:12px; font-family:var(--bn-serif); font-weight:700; color:var(--sapphire-dark); letter-spacing:1px; }
 
   @media (max-width:480px){
     .header .madrasa-name { font-size:17px; }
-    .form-card { padding:16px; border-radius:12px; }
+    .form-card { padding:18px; border-radius:16px; }
   }
 </style>
-</head>
+<script src="/_aistudio-iframe.js?v=29045eb3"></script></head>
 <body>
 
 <div class="header">
-  <div class="mosque">🕌</div>
-  <div class="madrasa-name">দারুস সালিম ইন্টারন্যাশনাল মাদ্রাসা</div>
-  <div class="madrasa-sub">অনলাইন ভর্তি আবেদন</div>
-  <div class="form-title">📝 ছাত্র-ছাত্রী ভর্তি আবেদন ফরম</div>
+  <div class="header-top-band"></div>
+  <div class="header-inner">
+    <div class="mosque-badge" aria-hidden="true">
+      <svg viewBox="0 0 64 64" width="42" height="42" fill="none" xmlns="http://www.w3.org/2000/svg">
+        <path d="M32 6C30.2 8.2 29.8 10.6 31.2 12.2C32.4 13.5 34.6 13.4 35.7 12C33.8 12.4 32.3 10.7 32.8 8.8C33 7.7 32.6 6.7 32 6Z" fill="#f3cf8a"/>
+        <path d="M32 14V18" stroke="#f3cf8a" stroke-width="2" stroke-linecap="round"/>
+        <path d="M18 33C18 23.5 24.5 18 32 18C39.5 18 46 23.5 46 33H18Z" fill="#f3cf8a" fill-opacity="0.92"/>
+        <rect x="11" y="27" width="4.5" height="25" rx="1.5" fill="#dce7f5" fill-opacity="0.9"/>
+        <path d="M10.5 27L13.25 21L16 27H10.5Z" fill="#f3cf8a"/>
+        <rect x="48.5" y="27" width="4.5" height="25" rx="1.5" fill="#dce7f5" fill-opacity="0.9"/>
+        <path d="M48 27L50.75 21L53.5 27H48Z" fill="#f3cf8a"/>
+        <rect x="16" y="33" width="32" height="19" rx="2" fill="#ffffff" fill-opacity="0.95"/>
+        <path d="M27 52V42C27 38.8 29.2 37 32 37C34.8 37 37 38.8 37 42V52H27Z" fill="#0d7a72"/>
+        <path d="M8 52H56" stroke="#f3cf8a" stroke-width="2.5" stroke-linecap="round"/>
+      </svg>
+    </div>
+    <div class="madrasa-name">হিফজুল কুরআন রশিদিয়া হোসাইনিয়া নূরানী মাদ্রাসা</div>
+    <div class="madrasa-sub">অনলাইন ভর্তি আবেদন</div>
+    <div class="form-title">📝 ছাত্র-ছাত্রী ভর্তি আবেদন ফরম</div>
+  </div>
 </div>
 
 <div class="wrap">
@@ -180,7 +265,7 @@
     </div>
 
     <div class="photo-upload-wrap">
-      <label style="font-size:13px;font-weight:600;color:var(--green-dark)">পাসপোর্ট সাইজ ছবি (ঐচ্ছিক)</label>
+      <label style="font-size:13px;font-weight:600;color:var(--sapphire-dark)">পাসপোর্ট সাইজ ছবি (ঐচ্ছিক)</label>
       <div class="photo-frame" id="s-photo-frame" onclick="document.getElementById('s-photo-input').click()">
         <img id="s-photo-preview" src="" alt="">
         <div class="photo-placeholder" id="s-photo-placeholder"><span>📷</span>ছবি আপলোড করুন</div>
@@ -224,7 +309,7 @@
 
     <!-- OLD STUDENT SECTION -->
     <div id="old-student-section" style="display:none;">
-      <div class="form-section-title" style="background:linear-gradient(90deg,#fff3e0,transparent); border-left-color:#e67e22;">পুরাতন শিক্ষার্থীর তথ্য</div>
+      <div class="form-section-title" style="background:linear-gradient(90deg,#fef3e2,transparent); border-left-color:#c98a2c;">পুরাতন শিক্ষার্থীর তথ্য</div>
       <div class="form-grid">
         <div class="form-group">
           <label>পূর্বের বিভাগ / শ্রেণি</label>
@@ -264,7 +349,7 @@
 
     <!-- NEW STUDENT SECTION -->
     <div id="new-student-section">
-      <div class="form-section-title" style="background:linear-gradient(90deg,#e8f4f8,transparent); border-left-color:#2980b9;">নতুন শিক্ষার্থীর তথ্য</div>
+      <div class="form-section-title" style="background:linear-gradient(90deg,#e8f1fa,transparent); border-left-color:#173a63;">নতুন শিক্ষার্থীর তথ্য</div>
       <div class="form-grid">
         <div class="form-group">
           <label>পূর্বের শিক্ষা প্রতিষ্ঠানের নাম</label>
